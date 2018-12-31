@@ -22,6 +22,8 @@ export default {
     let {data} = await app.$axios.get(`${serverUrl}/api/article/${params.id}`)
     let {article} = data
     return {article}
-  }
+  },
+
+  layout: 'article'
 }
 </script>

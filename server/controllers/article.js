@@ -1,9 +1,10 @@
 const articleModel = require('../models/article')
+const categoryController = require('./category')
 
 module.exports = {
 
-  // 获取文章列表
-  getArticles: async (ctx) => {
+  // 获取 前台|后台 文章列表
+  getArticles: async (ctx, next) => {
     try {
       let totalArticleCount = await articleModel.countDocuments()
       let {pageNum, pageSize} = ctx.query
@@ -11,7 +12,7 @@ module.exports = {
       pageSize = parseInt(pageSize)
       let articleList = await articleModel.find(
         {}, 
-        null, 
+        {}, 
         {
           sort: {time: -1}, 
           skip: (pageNum -1) * pageSize,
@@ -24,14 +25,15 @@ module.exports = {
     }
   },
 
-  getPopularArticles: async (ctx) => {
+  // 获取前台主页文章热门列表
+  getPopularArticles: async (ctx, next) => {
     try {
       let {pageNum, pageSize} = ctx.query
       pageNum = pageNum ? parseInt(pageNum) : 1
       pageSize = parseInt(pageSize)
       let popularList = await articleModel.find(
         {}, 
-        null, 
+        {}, 
         {
           sort: {pv: -1}, 
           limit: pageSize
@@ -43,7 +45,7 @@ module.exports = {
     }
   },
 
-  // 获取一篇文章
+  // 获取前台单篇文章内容
   getOneArticle: async (ctx, next) => {
     try {
       let id = ctx.params.id
@@ -60,31 +62,79 @@ module.exports = {
     }
   },
 
-  // 保存文章至数据库
+  // 发布文章（保存至数据库）
   saveArticle: async (ctx, next) => {
     try {
       let time = {
         ms: new Date().getTime()  //获取服务器系统时间，并定义时间对象
       }
-      let {title, content, abstract} = ctx.request.body
+      let {title, content, abstract, tags, category} = ctx.request.body
       let newDoc = new articleModel({
         title,
         content,
         abstract,
-        time
+        time,
+        tags,
+        category
       })
-      await newDoc.save()
+      let articleDoc = await newDoc.save()
+      let result = await categoryController.saveToCategory(articleDoc.category, articleDoc._id)
+      if(result.nModified)
+        throw new Error('文章类型未成功保存至数据库！')
       ctx.body = {
-        code: 1,
-        msg: '文章发表成功！'
+        success: true,
+        message: '文章发表成功！'
       }
     } catch (err) {
       console.log("发现问题：",err)
       ctx.body = {
-        code: -1,
-        msg: '文章发表失败！'
+        success: false,
+        message: '文章发表失败！'
       }
     }
-  }
+  },
+
+  // 修改文章方法
+  updateArticle: async function (ctx, next) {
+    try{
+      let {id, content, category} = ctx.request.body
+      let getUpdateResult = articleModel.updateOne({_id: id}, {$set: {content:content, category:category}})
+      let getSaveCateResult = categoryController.saveToCategory(category, id)
+      let [updateResult, saveCateResult] = await Promise.all([getUpdateResult, getSaveCateResult])
+      if(!updateResult.nModified)
+        throw new Error('文章修改未成功保存至数据库')
+      if(!saveCateResult.nModified)
+        throw new Error('文章类型未成功保存至数据库')
+      ctx.body = {
+        success: true,
+        message:'修改成功！'
+      }
+    } catch (err) {
+      console.log(err)
+      ctx.body = {
+        success: false,
+        message:'修改失败'
+      }
+    }
+  },
+
+  // 删除文章方法
+  deleteArticle: async function (ctx, next) {
+    try {
+      let id = ctx.params.id
+      await articleModel.deleteOne({_id: id})
+      ctx.body = {
+        success: true,
+        msg:'删除成功！'
+      }
+    } catch (err) {
+      console.log(err)
+      ctx.body = {
+        success: false,
+        msg: '删除失败'
+      }
+    }
+  },
+
 
 }

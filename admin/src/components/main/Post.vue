@@ -12,12 +12,55 @@
         placeholder="请输入作者"
       />
     </el-row>
-
+    <el-row>
+      <el-col :span="12">
+        <span>标签：</span>
+        <el-tag
+          v-for="tag in dynamicTags"
+          :key="tag"
+          closable
+          :disable-transitions="true"
+          @close="handleClose(tag)"
+        >
+          {{ tag }}
+        </el-tag>
+        <el-input
+          v-if="tagInputVisible"
+          ref="saveTagInput"
+          v-model="tagInputValue"
+          size="small"
+          @keyup.enter.native="handleInputConfirm"
+          @blur="handleInputConfirm"
+        />
+        <el-button
+          v-else
+          class="button-new-tag"
+          size="small"
+          @click="showInput"
+        >
+          + New Tag
+        </el-button>
+      </el-col>
+      <el-col :span="12">
+        <span>分类：</span>
+        <el-select
+          v-model="category"
+          placeholder="请选择文章类别"
+        >
+          <el-option
+            v-for="item in selectData"
+            :key="item.nameEN"
+            :label="item.nameCN"
+            :value="item._id"
+          />
+        </el-select>
+      </el-col>
+    </el-row>
     <markdown-editor
       ref="markdownEditor"
       v-model="content"
     />
-    <h4>封面和摘要</h4>
+    <h4>题图和摘要</h4>
     <el-row>
       <el-col :span="12">
         <el-upload
@@ -86,40 +129,23 @@
         author: '',
         content: '',
         abstract: '',
-        fileList2: [{name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}, {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}]
+        fileList2: [{name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}, {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}],
+
+        dynamicTags: [],
+        tagInputVisible: false,
+        tagInputValue: '',
+
+        selectData: [],
+        category: ''
       }
     },
 
-    methods: {
-      /* 定义发布文章函数 */
-      publish: async function () {
-        // 依次检查：标题、作者、内容是否填写，并进行相应提示
-        if(!this.title.trim())
-          return this.showMessage('请输入文章标题', 'warning')
-        if(!this.author.trim())
-          return this.showMessage('请输入文章作者', 'warning')
-        if(!this.content.trim())
-          return this.showMessage('请输入文章内容', 'warning')
-        // 如摘要未填写，则从正文内容截取54个字
-        if(!this.abstract.trim())
-          this.abstract = this.content.slice(0, 54)+'...'
-        let articleObj = {
-          title: this.title,
-          content: this.content,
-          abstract: this.abstract
-        }
-        // 相对应API发送ajax请求，并接收服务器响应结果
-        let {data} = await this.$axios.post('/api/article', articleObj)
-        let {code, msg} = data
-        // 根据响应结果进行逻辑判断，并提示
-        if(code > 0) {
-          this.showMessage(msg, 'success')
-          this.$router.push({name: 'Main'})
-        } else {
-          this.showMessage(msg, 'error')
-        }
-      },
+    created: async function () {
+      let {data} = await this.$axios.get('/api/categories')
+      this.selectData = data.result
+    },
 
+    methods: {
       /* 定义elementUi消息提示函数 */
       showMessage (msg, type) {
         this.$message({
@@ -129,7 +155,62 @@
           showClose: true,
           duration: 1500
         })
-      }
+      },
+
+      /* 定义标签添加、删除方法 */
+      showInput () {
+        this.tagInputVisible = true;
+        this.$nextTick(_ => {
+          this.$refs.saveTagInput.$refs.input.focus();
+        });
+      },
+      handleInputConfirm () {
+        let tagInputValue = this.tagInputValue;
+        if (tagInputValue) {
+          this.dynamicTags.push(tagInputValue);
+        }
+        this.tagInputVisible = false;
+        this.tagInputValue = '';
+      },
+      handleClose (tag) {
+        this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
+      },
+
+
+      /* 定义发布文章函数 */
+      publish: async function () {
+        // 依次检查：标题、作者、内容是否填写，并进行相应提示
+        if(!this.title.trim())
+          return this.showMessage('请输入文章标题', 'warning')
+        if(!this.author.trim())
+          return this.showMessage('请输入文章作者', 'warning')
+        if(!this.content.trim())
+          return this.showMessage('请输入文章内容', 'warning')
+        if(!this.category)
+          return this.showMessage('请选择文章类别', 'warning')
+        // 如摘要未填写，则从正文内容截取54个字
+        if(!this.abstract.trim())
+          this.abstract = this.content.slice(0, 54)+'...'
+        let obj = {
+          title: this.title,
+          content: this.content,
+          abstract: this.abstract,
+          tags: this.dynamicTags,
+          category: this.category
+        }
+        // 相对应API发送ajax请求，并接收服务器响应结果
+        let {data} = await this.$axios.post('/api/article', obj)
+        let {success, message} = data
+        // 根据响应结果进行逻辑判断，并提示
+        if(success) {
+          this.showMessage(message, 'success')
+          this.$router.push({name: 'Main'})
+        } else {
+          this.showMessage(message, 'error')
+        }
+      },
+
+
 
     }
   }

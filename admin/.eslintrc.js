@@ -17,6 +17,7 @@ module.exports = {
   // add your custom rules here
   rules: {
     'vue/component-name-in-template-casing': ["error", "kebab-case"],
-    "vue/singleline-html-element-content-newline": "off"
+    "vue/singleline-html-element-content-newline": "off",
+    'vue/no-unused-vars' : 'off',
   }
 }

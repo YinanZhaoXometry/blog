@@ -10,10 +10,16 @@
         mode="horizontal"
         @select="handleSelect"
       >
-        <el-menu-item index="1">首页</el-menu-item>
-        <el-menu-item index="2">分类</el-menu-item>
-        <el-menu-item index="3">归档</el-menu-item>
-        <el-menu-item index="4">关于</el-menu-item>
+        <el-menu-item index="/">首页</el-menu-item>
+        <el-menu-item
+          v-for="item in categories"
+          :key="item.nameEN"
+          :index="item.nameEN"
+        >
+          {{ item.nameCN }}
+        </el-menu-item>
+        <el-menu-item index="archive">归档</el-menu-item>
+        <el-menu-item index="about">关于</el-menu-item>
       </el-menu>
       <div class="line" />
     </el-row>
@@ -30,13 +36,18 @@
 export default {
   data() {
     return {
-      activeIndex: '1'
+      activeIndex: 'home',
+      categories: []
     }
   },
+  created: async function () {
+    let {data} = await this.$axios.get('http://localhost:3030/api/categories')
+    this.categories = data.result
+  },
+
   methods: {
-      handleSelect(key, keyPath) {
-        console.log(key, keyPath);
-        this.$router.push("/")
+      handleSelect(key) {
+        this.$router.push(key)
       }
   }
 }

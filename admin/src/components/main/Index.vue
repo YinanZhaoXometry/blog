@@ -4,29 +4,29 @@
     <el-container>
       <el-aside>
         <el-menu
-          default-active="/main/list"
+          default-active="/main/overview"
           background-color="#545c64"
           text-color="#fff"
           active-text-color="#ffd04b"
           :router="true"
         >
+          <el-menu-item index="/main/overview">
+            <i class="el-icon-view" />
+            <span>概览</span>
+          </el-menu-item>
           <el-menu-item index="/main/list">
-            <i class=" el-icon-tickets" />
-            <span>文章列表</span>
+            <i class="el-icon-tickets" />
+            <span>文章管理</span>
           </el-menu-item>
           <el-menu-item
-            index="post"
+            index="/main/post"
           >
             <i class="el-icon-edit" />
-            <span>发表文章</span>
+            <span>写文章</span>
           </el-menu-item>
           <el-menu-item index="/main/categories">
             <i class="el-icon-menu" />
             <span>文章分类</span>
-          </el-menu-item>
-          <el-menu-item index="/main/tags">
-            <i class="el-icon-star-off" />
-            <span>文章标签</span>
           </el-menu-item>
           <el-menu-item index="/main/google">Google Analytics</el-menu-item>
           <el-menu-item index="/main/settings">
@@ -35,7 +35,9 @@
           </el-menu-item>
         </el-menu>
       </el-aside>
-      <el-main><router-view>1</router-view></el-main>
+      <el-main>
+        <router-view>1</router-view>
+      </el-main>
     </el-container>
     <el-footer><my-footer /></el-footer>
   </el-container>
@@ -49,6 +51,8 @@ export default {
     MyHeader,
     MyFooter
   },
+  created () {
 
+  }
 }
 </script>

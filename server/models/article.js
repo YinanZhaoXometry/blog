@@ -1,20 +1,24 @@
 const mongoose = require('mongoose')
+const ObjectId = mongoose.Schema.Types.ObjectId
 
 // 定义models Schema
 const articleSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  // name: String,
+  title: String,
+  // author: String,
   absctract: String,
+  content: String,
   // htmlContent: String,
   // rawContent: String,
-  topics: Array,
-  pv: Number,
-  // likes: Number
-  title: String,
-  content: String,
+  category: {
+    type: ObjectId,
+    ref: 'categoryModel'
+  },
   comments: Array,
   pictureUrl: String,
-  time: {}
+  time: {},
+  tags: [],
+  pv: Number,
+  // likes: Number
 })
 
 const articleModel = mongoose.model('articleModel', articleSchema, 'articles')
