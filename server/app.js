@@ -24,13 +24,7 @@ const config = require('./config/default')
 const app = new Koa()
 
 app.use(cors({
-  // 根据请求发起的URL不同，允许对应的URL发送跨域请求
-    origin: function (ctx) {
-      if (ctx.header.referer === 'http://localhost:3000/') {
-        return 'http://localhost:3000'
-      }
-      return 'http://localhost:8080'
-    }, 
+    origin: 'http://localhost:8080',
     exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
     maxAge: 5,
     credentials: true,
@@ -85,7 +79,6 @@ mongoose.connect(config.dbURI, {useNewUrlParser:true}, function(err) {
 
 
 app.keys = ['nuxt koa blog']   // 设置cookie签名秘钥
-app.proxy=true
 
 app.use(session({
   store: new MongoStore()

@@ -21,8 +21,8 @@ router
     // .delete('/categories/:category', articleController.deleteCategory) // 删除某分类
     
     /* 前端 后台 公用路由 */
-    .get('/categories', categoryController.getCategories)                // 获取分类
-    // .get('/categories/:category', articleController.getCateArticles)    // 获取某分类下的所有文章
+    .get('/categories', categoryController.getCategories)                // 获取所有分类信息
+    .get('/categories/:category', categoryController.getCateArticles)    // 获取某分类下的所有文章
     // .get('/tags', articleController.getTags)                            // 获取标签
     // .get('/tags/:tags', articleController.getTagArticles)                     // 获取某标签下的所有文章
 

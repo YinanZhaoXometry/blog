@@ -14,6 +14,40 @@ module.exports = {
     }
   },
 
+  // 获取xx分类下的所有文章
+  getCateArticles: async function(ctx, next) {
+    try {
+      let categoryName = ctx.params.category
+      let {pageNum, pageSize} = ctx.query
+      pageNum = pageNum ? parseInt(pageNum) : 1
+      pageSize = parseInt(pageSize)
+      // 获取xx分类下的文章总数量
+      let result = await categoryModel.findOne({nameEN:categoryName},{})
+      let cateArticleCount = result.articles.length
+      // 获取分类对象，其中包含当前分类下的所有文章
+      let categoryObj = await categoryModel
+        .findOne({nameEN:categoryName},{})
+        .populate({
+          path: 'articles',
+          options: {
+            sort: {time: -1}, 
+            skip: (pageNum -1) * pageSize,
+            limit: pageSize,
+          }
+        })
+      ctx.body = {
+        success: true,
+        categoryObj,
+        cateArticleCount
+      }
+    } catch (err) {
+      console.log(err)
+      ctx.body = {
+        success: false
+      }
+    }
+  },
+
   // 添加新分类
   saveCategory: async function (ctx, next) {
     try {
@@ -38,8 +72,8 @@ module.exports = {
 
   // 定义方法，用于将文章ID保存至分类表
   saveToCategory: function (categoryId, articleId) {
-    let result = categoryModel.updateOne({_id: categoryId}, { $push: {articles: articleId} })
-    return result
+    let queryObj = categoryModel.updateOne({_id: categoryId}, { $push: {articles: articleId} })
+    return queryObj
   }
 }  
   

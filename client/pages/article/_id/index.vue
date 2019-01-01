@@ -19,7 +19,7 @@
 import {serverUrl} from '~/config/serverUrl'
 export default {
   async asyncData ({app, params}) {
-    let {data} = await app.$axios.get(`${serverUrl}/api/article/${params.id}`)
+    let {data} = await app.$axios.get(`/api/article/${params.id}`)
     let {article} = data
     return {article}
   },

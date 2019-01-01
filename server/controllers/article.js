@@ -48,6 +48,7 @@ module.exports = {
   // 获取前台单篇文章内容
   getOneArticle: async (ctx, next) => {
     try {
+      console.log(ctx.path)
       let id = ctx.params.id
       let getOne = articleModel.findOne({_id: id}, null)
       let addPV = articleModel.updateOne({_id: id}, {$inc: {pv: 1}})
@@ -65,8 +66,19 @@ module.exports = {
   // 发布文章（保存至数据库）
   saveArticle: async (ctx, next) => {
     try {
+      // 保存不同时间格式，方便后续使用（精确到毫秒、年、月、日、分钟）
+      let date = new Date()
+      let toYear = date.getFullYear()
+      let toMonth = year+ '-' + ( (date.getMonth() +1 ) < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1) )
+      let toDay = month +'-' + (date.getDate() < 10 ? ('0' + date.getDate()) : date.getDate())
+      let toMinute = day + " " + date.getHours() + ":"
+        + ( date.getMinutes() < 10 ? ('0' + date.getMinutes()) : date.getMinutes() )
       let time = {
-        ms: new Date().getTime()  //获取服务器系统时间，并定义时间对象
+        toMs: date.getTime(),  //获取服务器系统时间，并定义时间对象
+        toYear,
+        toMonth,
+        toDay,
+        toMinute,
       }
       let {title, content, abstract, tags, category} = ctx.request.body
       let newDoc = new articleModel({
@@ -79,7 +91,8 @@ module.exports = {
       })
       let articleDoc = await newDoc.save()
       let result = await categoryController.saveToCategory(articleDoc.category, articleDoc._id)
-      if(result.nModified)
+      console.log(result)
+      if(!result.nModified)
         throw new Error('文章类型未成功保存至数据库！')
       ctx.body = {
         success: true,

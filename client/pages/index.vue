@@ -34,12 +34,14 @@ export default {
 
   // 向文章 api 请求数据，将获取到的数据保存至 store 中
   async fetch ({ app, store }) {
-    let getArticles = app.$axios.get(`${serverUrl}/api/article`, { params: {pageSize:6} })
-    let getPopularArticles = app.$axios.get(`${serverUrl}/api/popularArticle`, { params: {pageSize:5} })
+    let getArticles = app.$axios.get(`/api/article`, { params: {pageSize:6} })
+    let getPopularArticles = app.$axios.get(`/api/popularArticle`, { params: {pageSize:5} })
     let [responseA, responseB] = await Promise.all( [getArticles, getPopularArticles] )
     let {articleList, totalArticleCount} = responseA.data
     let {popularList} = responseB.data
-    store.commit("getList", {articleList, popularList, totalArticleCount})
+    store.commit("getArticleList", {articleList, totalArticleCount})
+    store.commit("getPopularList", popularList)
+
   },
 
   mounted (){

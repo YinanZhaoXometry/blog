@@ -1,7 +1,17 @@
 const pkg = require('./package')
 
 module.exports = {
+
+
   mode: 'universal',
+
+  /*
+  ** Router config
+  */
+  router: {
+    middleware: 'redirect'
+    // base: '/app/'
+  },
 
   /*
   ** Headers of the page
@@ -42,7 +52,8 @@ module.exports = {
   */
   modules: [
     // Doc: https://github.com/nuxt-community/axios-module#usage
-    '@nuxtjs/axios'
+    '@nuxtjs/axios',
+    '@nuxtjs/proxy'
   ],
   /*
   ** Axios module configuration
@@ -52,8 +63,16 @@ module.exports = {
   },
 
   /*
+  ** 设置代理
+  */
+  proxy: {
+    '/api/': {target:'http://127.0.0.1:3030' }
+  },
+
+  /*
   ** Build configuration
   */
+
   build: {
     /*
     ** You can extend webpack config here

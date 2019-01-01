@@ -1,8 +1,11 @@
 <template>
   <section>
     <el-row>
+      <span>分类：{{ category.nameCN }}</span>
+    </el-row>
+    <el-row>
       <nuxt-link
-        v-for="item in articleList"
+        v-for="item in cateArticleList"
         :key="item._id"
         :to="{path: `/article/${item._id}`}"
       >
@@ -11,7 +14,6 @@
           style="height:200px"
         >
           <el-col :span="10">
-            <span>分类1</span>
             <h2>{{ item.title }}</h2>
             <div>
               <span><i class="el-icon-date" /> &nbsp; {{ timeTranslate(item.time.toMs) }}</span>
@@ -48,51 +50,56 @@
     <p v-show="isLastPage">---没有更多文章了---</p>
   </section>
 </template>
+
 <script>
 import timeTranslate from '../../utils/timeTranslate'
-
 export default {
   data () {
     return {
       isLoading: false,
       pageNum: 1,
-      pageSize: 8
+      pageSize: 3
     }
   },
+
   computed: {
-    articleList () {
-      return this.$store.state.articleList
+    cateArticleList () {
+      return this.$store.state.cateArticleList
+    },
+    category () {
+      return this.$store.state.category
     },
     // 计算总页数
     totalPageCount () {
-      let totalArticleCount = this.$store.state.totalArticleCount
-      return totalArticleCount % this.pageSize === 0
-        ? totalArticleCount / this.pageSize
-        : parseInt(totalArticleCount / this.pageSize + 1)
+      let cateArticleCount = this.$store.state.cateArticleCount
+      return cateArticleCount % this.pageSize === 0
+        ? cateArticleCount / this.pageSize
+        : parseInt(cateArticleCount / this.pageSize + 1)
     },
     // 判断是否为最后一页
     isLastPage () {
       return this.pageNum === this.totalPageCount
-    },
-
+    }
   },
+
   methods: {
     loadMore: async function () {
-      console.log(postTime.postTime(this.articleList[0].time.ms) )
       this.isLoading = true
       if (this.pageNum < this.totalPageCount) {
         this.pageNum++
         let {data} = await this.$axios.get(
-          `/api/article`,
+          `/api/categories/${this.category.nameEN}`,
           { params: {pageNum: this.pageNum, pageSize: this.pageSize} }
         )
-        let {articleList} = data
-        this.$store.commit('mergeList', articleList)
+        let {success, categoryObj} = data
+        if (success) {
+          this.$store.commit('mergeCateArticleList', categoryObj)
+          this.isLoading = false
+        }
       }
-      this.isLoading = false
     },
 
-    timeTranslate: timeTranslate,
+    timeTranslate: timeTranslate
   }
-};
+}
 </script>

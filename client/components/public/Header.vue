@@ -5,21 +5,16 @@
       type="flex"
     >
       <el-menu
-        :default-active="activeIndex"
+        :default-active="$route.path"
         class="el-menu-demo"
         mode="horizontal"
         @select="handleSelect"
       >
         <el-menu-item index="/">首页</el-menu-item>
-        <el-menu-item
-          v-for="item in categories"
-          :key="item.nameEN"
-          :index="item.nameEN"
-        >
-          {{ item.nameCN }}
-        </el-menu-item>
-        <el-menu-item index="archive">归档</el-menu-item>
-        <el-menu-item index="about">关于</el-menu-item>
+        <el-menu-item index="/categories/front-end">前端</el-menu-item>
+        <el-menu-item index="/categories/back-end">后端</el-menu-item>
+        <el-menu-item index="/archive">归档</el-menu-item>
+        <el-menu-item index="/about">关于</el-menu-item>
       </el-menu>
       <div class="line" />
     </el-row>
@@ -36,15 +31,9 @@
 export default {
   data() {
     return {
-      activeIndex: 'home',
       categories: []
     }
   },
-  created: async function () {
-    let {data} = await this.$axios.get('http://localhost:3030/api/categories')
-    this.categories = data.result
-  },
-
   methods: {
       handleSelect(key) {
         this.$router.push(key)
