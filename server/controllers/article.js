@@ -1,27 +1,76 @@
 const articleModel = require('../models/article')
 const categoryController = require('./category')
 
-module.exports = {
+// 定义工具函数返回time对象，储存不同时间格式，方便后续使用（精确到毫秒、年、月、日、分钟）
+function getTimeObj () {
+  let newDate = new Date()
+  let ms = newDate.getTime()
+  let year = newDate.getFullYear()
+  let month = newDate.getMonth()+1
+  let date = newDate.getDate()
+  let hours = newDate.getHours()
+  let minutes = newDate.getMinutes()
+  let fullDate = year + "年" + month + "月" + date + "日"  
+  let simpleDate = month + "月" + date + "日" 
+  let hoursMinutes = ( hours < 10 ? ('0' + hours) : hours )   
+    + ":" + ( minutes < 10 ? ('0' + minutes) : minutes )
+  if (hours >= 0 && hours < 5) {
+    hoursMinutes = '凌晨' + hoursMinutes
+  } else if (hours >= 5 && hours < 12) {
+    hoursMinutes = '早上' + hoursMinutes
+  } else if (hours >= 12 && hours < 13) {
+    hoursMinutes = '中午' + hoursMinutes
+  } else if (hours >= 13 && hours < 18) {
+    hoursMinutes = '下午' + hoursMinutes
+  } else {
+    hoursMinutes = '晚上' + hoursMinutes
+  }
+  let time = {
+    ms,           // 1546416960905
+    year,         // 2018
+    month,        // 12
+    fullDate,     // 2018年12月5日
+    simpleDate,   // 12月5日
+    hoursMinutes, // 上午06:52
+  }
+  return time
+}
 
-  // 获取 前台|后台 文章列表
+module.exports = {
+  // 获取client文章列表
   getArticles: async (ctx, next) => {
     try {
-      let totalArticleCount = await articleModel.countDocuments()
+      // 判断管理员是否登录，如已登陆则返回所有文章，否则仅返回公开文章
+      condition = 
+        ctx.session.user 
+        ? {} 
+        : condition = {
+          isPublic: true,
+          isPublished: true,
+        }
       let {pageNum, pageSize} = ctx.query
       pageNum = pageNum ? parseInt(pageNum) : 1
       pageSize = parseInt(pageSize)
+      let totalArticleCount = await articleModel.countDocuments(condition)
       let articleList = await articleModel.find(
-        {}, 
-        {}, 
+        condition, {}, 
         {
           sort: {time: -1}, 
-          skip: (pageNum -1) * pageSize,
+          skip: (pageNum - 1) * pageSize,
           limit: pageSize,
         }
       )
-      ctx.body = { articleList, totalArticleCount }
+      console.log(totalArticleCount)
+      ctx.body = {
+        success: true,
+        articleList, 
+        totalArticleCount 
+      }
     } catch (err) {
-      ctx.body = { err }
+      console.log(err)
+      ctx.body = {
+        success: false,
+      }
     }
   },
 
@@ -66,37 +115,28 @@ module.exports = {
   // 发布文章（保存至数据库）
   saveArticle: async (ctx, next) => {
     try {
-      // 保存不同时间格式，方便后续使用（精确到毫秒、年、月、日、分钟）
-      let date = new Date()
-      let toYear = date.getFullYear()
-      let toMonth = year+ '-' + ( (date.getMonth() +1 ) < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1) )
-      let toDay = month +'-' + (date.getDate() < 10 ? ('0' + date.getDate()) : date.getDate())
-      let toMinute = day + " " + date.getHours() + ":"
-        + ( date.getMinutes() < 10 ? ('0' + date.getMinutes()) : date.getMinutes() )
-      let time = {
-        toMs: date.getTime(),  //获取服务器系统时间，并定义时间对象
-        toYear,
-        toMonth,
-        toDay,
-        toMinute,
-      }
-      let {title, content, abstract, tags, category} = ctx.request.body
+      let time = getTimeObj()
+      console.log(ctx.request.body)
+      let {title, author, tags, category, isOriginal, isPublic, content, abstract,isPublished} = ctx.request.body
       let newDoc = new articleModel({
         title,
+        author,
         content,
         abstract,
         time,
         tags,
-        category
+        category,
+        isOriginal,
+        isPublic,
+        isPublished
       })
       let articleDoc = await newDoc.save()
       let result = await categoryController.saveToCategory(articleDoc.category, articleDoc._id)
-      console.log(result)
       if(!result.nModified)
         throw new Error('文章类型未成功保存至数据库！')
       ctx.body = {
         success: true,
-        message: '文章发表成功！'
+        message: articleDoc.isPublished ? '文章发表成功！' : '文章草稿保存成功！'
       }
     } catch (err) {
       console.log("发现问题：",err)

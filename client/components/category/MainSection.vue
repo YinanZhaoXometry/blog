@@ -14,11 +14,29 @@
           style="height:200px"
         >
           <el-col :span="10">
+            <span>分类1</span>
             <h2>{{ item.title }}</h2>
-            <div>
-              <span><i class="el-icon-date" /> &nbsp; {{ timeTranslate(item.time.toMs) }}</span>
-            </div>
             <p>{{ item.abstract }}</p>
+            <div>
+              <el-tag :type="item.isOriginal ? 'success' : 'info'">{{ item.isOriginal ? '原创' : '转载' }}</el-tag>
+              <span><i class="el-icon-date" /> &nbsp; {{ item.time.year === new Date().getFullYear() ? item.time.simpleDate : item.time.fullDate }}</span>
+            </div>
+            <template>
+              <!-- 为 “私有(isPublic: false)” 文章，显示“私有”字样 -->
+              <el-tag
+                v-if="!item.isPublic"
+                type="warning"
+              >
+                {{ '私有' }}
+              </el-tag>
+              <!-- 为 “草稿(isPublished: false)” 文章，显示“草稿”字样 -->
+              <el-tag
+                v-if="!item.isPublished"
+                type="warning"
+              >
+                {{ '草稿' }}
+              </el-tag>
+            </template>
           </el-col>
           <el-col :span="10">
             <img
@@ -52,7 +70,6 @@
 </template>
 
 <script>
-import timeTranslate from '../../utils/timeTranslate'
 export default {
   data () {
     return {
@@ -98,8 +115,6 @@ export default {
         }
       }
     },
-
-    timeTranslate: timeTranslate
   }
 }
 </script>

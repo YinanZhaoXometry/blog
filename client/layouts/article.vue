@@ -6,7 +6,6 @@
     <el-main>
       <nuxt />
     </el-main>
-    <el-aside>Aside</el-aside>
     <el-footer>
       <my-footer />
     </el-footer>

@@ -56,6 +56,40 @@
         </el-select>
       </el-col>
     </el-row>
+    <el-row>
+      <el-col :span="12">
+        <span>原创声明：</span>
+        <el-select
+          v-model="isOriginal"
+          placeholder="请声明原创"
+        >
+          <el-option
+            label="原创"
+            value="true"
+          />
+          <el-option
+            label="转载"
+            value="false"
+          />
+        </el-select>
+      </el-col>
+      <el-col :span="12">
+        <span>是否公开：</span>
+        <el-select
+          v-model="isPublic"
+          placeholder="请设置"
+        >
+          <el-option
+            label="公开"
+            value="true"
+          />
+          <el-option
+            label="私有"
+            value="false"
+          />
+        </el-select>
+      </el-col>
+    </el-row>
     <markdown-editor
       ref="markdownEditor"
       v-model="content"
@@ -99,6 +133,7 @@
           size="small"
           type="success"
           plain
+          @click="publish(false)"
         >
           保存
         </el-button>
@@ -106,7 +141,7 @@
           size="small"
           type="primary"
           plain
-          @click="publish"
+          @click="publish(true)"
         >
           发表
         </el-button>
@@ -136,7 +171,10 @@
         tagInputValue: '',
 
         selectData: [],
-        category: ''
+        category: '',
+
+        isOriginal: 'true',
+        isPublic: 'true'
       }
     },
 
@@ -176,9 +214,8 @@
         this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
       },
 
-
       /* 定义发布文章函数 */
-      publish: async function () {
+      publish: async function (isPublished) {
         // 依次检查：标题、作者、内容是否填写，并进行相应提示
         if(!this.title.trim())
           return this.showMessage('请输入文章标题', 'warning')
@@ -193,10 +230,14 @@
           this.abstract = this.content.slice(0, 54)+'...'
         let obj = {
           title: this.title,
+          author: this.author,
           content: this.content,
           abstract: this.abstract,
           tags: this.dynamicTags,
-          category: this.category
+          category: this.category,
+          isOriginal: this.isOriginal,
+          isPublic: this.isPublic,
+          isPublished
         }
         // 相对应API发送ajax请求，并接收服务器响应结果
         let {data} = await this.$axios.post('/api/article', obj)

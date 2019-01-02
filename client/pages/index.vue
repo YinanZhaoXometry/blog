@@ -13,7 +13,6 @@
 <script>
 import MainSection from '~/components/home/MainSection'
 import SideSection from '~/components/home/SideSection'
-import {serverUrl} from '../config/serverUrl'
 
 export default {
 
@@ -34,7 +33,7 @@ export default {
 
   // 向文章 api 请求数据，将获取到的数据保存至 store 中
   async fetch ({ app, store }) {
-    let getArticles = app.$axios.get(`/api/article`, { params: {pageSize:6} })
+    let getArticles = app.$axios.get(`/api/article`, { params: {pageSize:8} })
     let getPopularArticles = app.$axios.get(`/api/popularArticle`, { params: {pageSize:5} })
     let [responseA, responseB] = await Promise.all( [getArticles, getPopularArticles] )
     let {articleList, totalArticleCount} = responseA.data
