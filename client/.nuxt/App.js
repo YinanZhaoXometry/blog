@@ -3,6 +3,8 @@ import NuxtLoading from './components/nuxt-loading.vue'
 
 import '../node_modules/element-ui/lib/theme-chalk/index.css'
 
+import '../assets/fonts/iconfont/iconfont.css'
+
 import _309dff80 from '../layouts/article.vue'
 import _6f6c098b from '../layouts/default.vue'
 

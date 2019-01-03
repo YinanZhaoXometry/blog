@@ -7,7 +7,7 @@
     >
       <el-col :span="12">
         <h2>{{ article.title }}</h2>
-        <p>{{ article.author }} {{ article.time.fullDate }} {{ article.category }} {{ article.tags }}</p>
+        <p>{{ article.author }} 发表在：{{ article.category }}下 {{ article.time.fullDate }} {{ article.tags }}</p>
       </el-col>
     </el-row>
     <el-row
@@ -17,6 +17,25 @@
       <el-col :span="12">
         <p v-if="!article">努力加载中...</p>
         <p>{{ article.content }}</p>
+        <el-row>
+          <el-button
+            v-for="tag in article.tags"
+            :key="tag"
+            size="mini"
+          >
+            {{ article.tags }}
+          </el-button>
+          <el-button
+            icon="el-icon-star-off"
+            circle
+          />
+          <el-button
+            icon="el-icon-view"
+            round
+          >
+            {{ article.pv }}
+          </el-button>
+        </el-row>
       </el-col>
     </el-row>
     <el-row
@@ -34,12 +53,16 @@
         </nuxt-link>
       </el-col>
     </el-row>
+    <comment />
   </section>
 </template>
 
 <script>
-import {serverUrl} from '~/config/serverUrl'
+import Comment from '~/components/comment/Index.vue'
 export default {
+  components: {
+    Comment
+  },
   async asyncData ({app, params}) {
     let {data} = await app.$axios.get(`/api/article/${params.id}`)
     let {article} = data
