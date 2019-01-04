@@ -25,14 +25,11 @@
           >
             {{ article.tags }}
           </el-button>
-          <el-button
-            icon="el-icon-star-off"
-            circle
-          />
-          <el-button
-            icon="el-icon-view"
-            round
-          >
+          <el-button round>
+            <i class="iconfont icon-like1" />
+            {{ 10 }}
+          </el-button>
+          <el-button icon="el-icon-view" round>
             {{ article.pv }}
           </el-button>
         </el-row>

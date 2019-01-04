@@ -4,13 +4,13 @@ const comment = {
   code: 200,
   data: [
     {
-      id: 'comment0001', //主键id
-      date: '2018-07-05 08:30',  //评论时间
-      ownerId: 'talents100020', //文章的id
+      id: 'comment0001', //主键id CommentID
+      date: '2018-07-05 08:30',  //评论时间 created_at
+      ownerId: 'talents100020', //文章的id parent_id  目标类型 parent_type
       fromId: 'errhefe232213',  //评论者id
       fromName: '犀利的评论家',   //评论者昵称
       fromAvatar: 'http://ww4.sinaimg.cn/bmiddle/006DLFVFgy1ft0j2pddjuj30v90uvagf.jpg', //评论者头像
-      likeNum: 3, //点赞人数
+      likeNum: 3, //点赞人数 likes
       content: '非常靠谱的程序员',  //评论内容
       reply: [  //回复，或子评论
         {

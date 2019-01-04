@@ -1,18 +1,18 @@
 <template>
   <section>
     <transition name="fade-wrapper">
-      <div v-if="show">
+      <div v-show="isShow">
         <el-input
           v-model="inputComment"
           type="textarea"
           :rows="3"
-          placeholder="写下你的评论..."
+          placeholder="写下你的评论...（支持MarkDown，被你@的用户会收到邮件通知）"
           resize="none"
           :autosize="{minRows: 3, maxRows: 6}"
-          @focus="handleInputFocus"
+          @focus="onInputFocus"
         />
         <transition name="fade">
-          <div v-show="showButtons">
+          <div v-show="type === 'alwaysShowInput' ? isButtonsShow : true">
             <span @click="onCancel">取消</span>
             <el-button
               type="success"
@@ -30,22 +30,47 @@
 
 <script>
 export default {
+  props: {
+    type: {
+      type: String,
+      required: true
+    },
+    inputValue: {
+      type: String,
+      default: '',
+    },
+    isShow: {
+      type: Boolean,
+    }
+  },
+
   data () {
     return {
-      show: true,
-      showButtons: false,
+      isButtonsShow: false,
       inputComment: ''
+    }
+  },
+
+  watch: {
+    inputValue: function (newValue, oldValue) {
+      this.inputComment = newValue
     }
   },
 
   methods: {
     onCancel () {
-      this.showButtons = false
+      if (this.type === 'alwaysShowInput') {
+        this.isButtonsShow = false
+      } else {
+        this.$emit('cancel')
+        this.inputComment = ''
+      }
     },
 
     // 评论框获得焦点时的处理函数
-    handleInputFocus () {
-      this.showButtons = true
+    onInputFocus () {
+      if (this.type === 'alwaysShowInput')
+        this.isButtonsShow = true
     },
 
     onSubmit () {
