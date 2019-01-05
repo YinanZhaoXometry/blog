@@ -9,10 +9,25 @@ const comment = {
       ownerId: 'talents100020', //文章的id parent_id  目标类型 parent_type
       fromId: 'errhefe232213',  //评论者id
       fromName: '犀利的评论家',   //评论者昵称
+
       fromAvatar: 'http://ww4.sinaimg.cn/bmiddle/006DLFVFgy1ft0j2pddjuj30v90uvagf.jpg', //评论者头像
       likeNum: 3, //点赞人数 likes
       content: '非常靠谱的程序员',  //评论内容
       reply: [  //回复，或子评论
+        {
+          id: '3452324454512',
+          commentId: 'comment0001',
+          fromId: 'observer567422',
+          fromName: '清晨一缕阳光',
+          fromAvatar: 'http://imgsrc.baidu.com/imgad/pic/item/c2fdfc039245d688fcba1b80aec27d1ed21b245d.jpg',
+
+          toId: '',
+          toName: '',
+          toAvatar: '',
+
+          content: '测试评论！',
+          date: '2018-07-05 08:50'
+        },
         {
           id: '34523244545',  //主键id
           commentId: 'comment0001',  //父评论id，即父亲的id
@@ -31,9 +46,11 @@ const comment = {
           fromId: 'observer567422',
           fromName: '清晨一缕阳光',
           fromAvatar: 'http://imgsrc.baidu.com/imgad/pic/item/c2fdfc039245d688fcba1b80aec27d1ed21b245d.jpg',
+
           toId: 'observer223432',
           toName: '夕阳红',
           toAvatar: 'https://wx4.sinaimg.cn/mw690/69e273f8gy1ft1541dmb7j215o0qv7wh.jpg',
+
           content: '大神一个！',
           date: '2018-07-05 08:50'
         }

@@ -4,7 +4,7 @@ import { interopDefault } from './utils'
 
 const _337f1462 = () => interopDefault(import('../pages/about.vue' /* webpackChunkName: "pages/about" */))
 const _e2321852 = () => interopDefault(import('../pages/archive.vue' /* webpackChunkName: "pages/archive" */))
-const _fe141394 = () => interopDefault(import('../pages/article/_id.vue' /* webpackChunkName: "pages/article/_id" */))
+const _ffbfe3ba = () => interopDefault(import('../pages/articles/_id.vue' /* webpackChunkName: "pages/articles/_id" */))
 const _628fd536 = () => interopDefault(import('../pages/categories/_category.vue' /* webpackChunkName: "pages/categories/_category" */))
 const _5336ef27 = () => interopDefault(import('../pages/index.vue' /* webpackChunkName: "pages/index" */))
 
@@ -74,9 +74,9 @@ export function createRouter() {
       component: _e2321852,
       name: "archive"
     }, {
-      path: "/article/:id?",
-      component: _fe141394,
-      name: "article-id"
+      path: "/articles/:id?",
+      component: _ffbfe3ba,
+      name: "articles-id"
     }, {
       path: "/categories/:category?",
       component: _628fd536,

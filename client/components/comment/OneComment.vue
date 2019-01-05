@@ -28,14 +28,14 @@
       <div v-for="(item,index) in comment.reply" :key="item.content">
         <p>
           <span>{{ item.fromName }}</span><span>: </span>
-          <span>@{{ item.toName }}</span>
+          <span>{{ item.toName ? '@' + item.toName : '' }}</span>
           <span>{{ item.content }}</span>
         </p>
         <p>
           <span>{{ item.date }}</span>
           <i>icon</i>
           <span>
-            <el-button @click="toggleInputBox(index+3, comment, item.fromName)">回复</el-button>
+            <el-button @click="toggleInputBox(index+3, comment, item)">回复</el-button>
           </span>
         </p>
       </div>
@@ -82,11 +82,8 @@ export default {
 
   methods: {
     // 显示|隐藏输入框的处理函数
-    toggleInputBox (code, comment, fromName) {
-      if (fromName)
-        this.inputComment = '@' + fromName + ' '
-      else
-        this.inputComment = ''
+    toggleInputBox (code, comment, item) {
+      this.inputComment = item ? '@' + item.fromName + ' ' : ''
 
       /**
        * 判断输入框是否已显示，并执行以下逻辑：
@@ -94,7 +91,6 @@ export default {
        * 2）当 statusCode不为0(打开状态) 关闭输入框，将statusCode赋值为0
        * 3）当 statusCode为0(关闭状态) 时显示输入框，将statusCode赋值为传入的code
        * 4）当 statusCode不等于传入code(表示用户点按了不同的按钮) 时显示输入框，将statusCode赋值为传入的code
-       *
       */
       if (this.statusCode === 0 || this.statusCode !== code) {
         this.isShow = true

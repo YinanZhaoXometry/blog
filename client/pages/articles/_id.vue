@@ -7,7 +7,7 @@
     >
       <el-col :span="12">
         <h2>{{ article.title }}</h2>
-        <p>{{ article.author }} 发表在：{{ article.category }}下 {{ article.time.fullDate }} {{ article.tags }}</p>
+        <p>{{ article.author }} 发表在：{{ article.category }}下 {{ article.createTime }} {{ article.tags }}</p>
       </el-col>
     </el-row>
     <el-row
@@ -30,7 +30,7 @@
             {{ 10 }}
           </el-button>
           <el-button icon="el-icon-view" round>
-            {{ article.pv }}
+            {{ article.views }}
           </el-button>
         </el-row>
       </el-col>
@@ -61,7 +61,7 @@ export default {
     Comment
   },
   async asyncData ({app, params}) {
-    let {data} = await app.$axios.get(`/api/article/${params.id}`)
+    let {data} = await app.$axios.get(`/api/articles/${params.id}`)
     let {article} = data
     return {article}
   },

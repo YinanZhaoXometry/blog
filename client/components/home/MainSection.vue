@@ -5,7 +5,7 @@
       <nuxt-link
         v-for="item in articleList"
         :key="item._id"
-        :to="{path: `/article/${item._id}`}"
+        :to="{path: `/articles/${item._id}`}"
       >
         <el-card
           shadow="hover"
@@ -17,7 +17,7 @@
             <p>{{ item.abstract }}</p>
             <div>
               <el-tag :type="item.isOriginal ? 'success' : 'info'">{{ item.isOriginal ? '原创' : '转载' }}</el-tag>
-              <span><i class="el-icon-date" /> &nbsp; {{ item.time.year === new Date().getFullYear() ? item.time.simpleDate : item.time.fullDate }}</span>
+              <!-- <span><i class="el-icon-date" /> &nbsp; {{ item.createTime.year === new Date().getFullYear() ? item.createTime.simpleDate : item.createTime.fullDate }}</span> -->
             </div>
             <template>
               <!-- 为 “私有(isPublic: false)” 文章，显示“私有”字样 -->
@@ -99,7 +99,7 @@ export default {
       if (this.pageNum < this.totalPageCount) {
         this.pageNum++
         let {data} = await this.$axios.get(
-          `/api/article`,
+          `/api/articles`,
           { params: {pageNum: this.pageNum, pageSize: this.pageSize} }
         )
         let {articleList} = data

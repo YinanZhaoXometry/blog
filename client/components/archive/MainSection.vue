@@ -5,12 +5,12 @@
       v-for="item in articleList"
       :key="item._id"
     >
-      <h1 v-if="isDisplay(item.time.year)">
-        <nuxt-link to="/">{{ item.time.year + "年" }}</nuxt-link>
+      <h1 v-if="isDisplay(item.createTime.year)">
+        <nuxt-link to="/">{{ item.createTime.year + "年" }}</nuxt-link>
       </h1>
       <el-row>
         <nuxt-link to="/">
-          <el-col :span="3">{{ item.time.simpleDate }}</el-col>
+          <el-col :span="3">{{ item.createTime.simpleDate }}</el-col>
           <el-col :span="3">
             <el-tag :type="item.isOriginal ? 'success' : 'info'">
               {{ item.isOriginal ? '原创' : '转载' }}

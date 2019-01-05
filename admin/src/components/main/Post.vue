@@ -240,7 +240,7 @@
           isPublished
         }
         // 相对应API发送ajax请求，并接收服务器响应结果
-        let {data} = await this.$axios.post('/api/article', obj)
+        let {data} = await this.$axios.post('/api/articles', obj)
         let {success, message} = data
         // 根据响应结果进行逻辑判断，并提示
         if(success) {

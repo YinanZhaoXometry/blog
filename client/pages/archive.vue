@@ -22,7 +22,7 @@ export default {
   },
 
   async fetch ({app, store}) {
-    let {data} = await app.$axios.get('/api/article')
+    let {data} = await app.$axios.get('/api/articles')
     let {success, articleList, totalArticleCount} = data
     if (success)
       store.commit('getArticleList', {articleList, totalArticleCount})

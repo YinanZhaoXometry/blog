@@ -21,7 +21,7 @@
         <nuxt-link
           v-for="item in popularArticleList"
           :key="item._id"
-          :to="{path: `/article/${item._id}`}"
+          :to="{path: `/articles/${item._id}`}"
         >
           <i class="el-icon-edit" />&nbsp;&nbsp;{{ item.title }} <br>
         </nuxt-link>

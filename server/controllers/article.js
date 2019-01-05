@@ -1,40 +1,6 @@
 const articleModel = require('../models/article')
 const categoryController = require('./category')
-
-// 定义工具函数返回time对象，储存不同时间格式，方便后续使用（精确到毫秒、年、月、日、分钟）
-function getTimeObj () {
-  let newDate = new Date()
-  let ms = newDate.getTime()
-  let year = newDate.getFullYear()
-  let month = newDate.getMonth()+1
-  let date = newDate.getDate()
-  let hours = newDate.getHours()
-  let minutes = newDate.getMinutes()
-  let fullDate = year + "年" + month + "月" + date + "日"  
-  let simpleDate = month + "月" + date + "日" 
-  let hoursMinutes = ( hours < 10 ? ('0' + hours) : hours )   
-    + ":" + ( minutes < 10 ? ('0' + minutes) : minutes )
-  if (hours >= 0 && hours < 5) {
-    hoursMinutes = '凌晨' + hoursMinutes
-  } else if (hours >= 5 && hours < 12) {
-    hoursMinutes = '早上' + hoursMinutes
-  } else if (hours >= 12 && hours < 13) {
-    hoursMinutes = '中午' + hoursMinutes
-  } else if (hours >= 13 && hours < 18) {
-    hoursMinutes = '下午' + hoursMinutes
-  } else {
-    hoursMinutes = '晚上' + hoursMinutes
-  }
-  let time = {
-    ms,           // 1546416960905
-    year,         // 2018
-    month,        // 12
-    fullDate,     // 2018年12月5日
-    simpleDate,   // 12月5日
-    hoursMinutes, // 上午06:52
-  }
-  return time
-}
+const getTimeObj = require('../utils/getTimeObj')
 
 module.exports = {
   // 获取client文章列表
@@ -84,7 +50,7 @@ module.exports = {
         {}, 
         {}, 
         {
-          sort: {pv: -1}, 
+          sort: {views: -1}, 
           limit: pageSize
         }
       )
@@ -97,11 +63,10 @@ module.exports = {
   // 获取前台单篇文章内容
   getOneArticle: async (ctx, next) => {
     try {
-      console.log(ctx.path)
       let id = ctx.params.id
       let getOne = articleModel.findOne({_id: id}, null)
-      let addPV = articleModel.updateOne({_id: id}, {$inc: {pv: 1}})
-      let [article] = await Promise.all([getOne, addPV])
+      let addViewsNumber = articleModel.updateOne({_id: id}, {$inc: {views: 1}})
+      let [article] = await Promise.all([getOne, addViewsNumber])
       ctx.body = {
         article
       }
@@ -116,7 +81,6 @@ module.exports = {
   saveArticle: async (ctx, next) => {
     try {
       let time = getTimeObj()
-      console.log(ctx.request.body)
       let {title, author, tags, category, isOriginal, isPublic, content, abstract,isPublished} = ctx.request.body
       let newDoc = new articleModel({
         title,
@@ -126,8 +90,8 @@ module.exports = {
         time,
         tags,
         category,
-        isOriginal,
         isPublic,
+        isOriginal,
         isPublished
       })
       let articleDoc = await newDoc.save()

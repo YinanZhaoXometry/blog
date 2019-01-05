@@ -82,7 +82,7 @@ export default {
   methods: {
     // 定义加载页面(文章列表)函数
     loadPage: async function(pageNum, pageSize) {
-      let {data} =await this.$axios.get('/api/article', { params: {pageNum, pageSize} })
+      let {data} =await this.$axios.get('/api/articles', { params: {pageNum, pageSize} })
       let {articleList, totalArticleCount} = data
       this.tableData = articleList
       this.totalArticleCount = totalArticleCount
@@ -109,7 +109,7 @@ export default {
         type: 'warning',
         center: true
       }).then(async () => {
-        await this.$axios.delete(`/api/article/${row._id}`)
+        await this.$axios.delete(`/api/articles/${row._id}`)
         this.loadPage(this.currentPage, this.pageSize)
         this.$message({
           type: 'success',

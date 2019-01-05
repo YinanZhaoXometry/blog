@@ -2,20 +2,22 @@ const router = require('koa-router')()
 const userController = require('../controllers/user')
 const articleController = require('../controllers/article')
 const categoryController = require('../controllers/category')
+const commentController = require('../controllers/comment')
 
 router.prefix('/api')
 
 router
     /* 前端页面路由 */
-    .get('/article', articleController.getArticles)                 // 获取文章列表
-    .get('/popularArticle', articleController.getPopularArticles)   // 获取热门文章列表
-    .get('/article/:id', articleController.getOneArticle)           // 获取单篇文章
+    .get('/articles', articleController.getArticles)                 // 获取文章列表
+    .get('/popularArticles', articleController.getPopularArticles)   // 获取热门文章列表
+    .get('/articles/:id', articleController.getOneArticle)           // 获取单篇文章
+    .post('/comments', commentController.saveComment)  // 保存评论
 
     /* 后台管理路由 */
     .post('/login', userController.authLogin)                          // 登陆
-    .post('/article', articleController.saveArticle)                   // 保存(发布)文章
-    .patch('/article', articleController.updateArticle)                // 修改文章
-    .delete('/article/:id', articleController.deleteArticle)           // 删除文章
+    .post('/articles', articleController.saveArticle)                   // 保存(发布)文章
+    .patch('/articles', articleController.updateArticle)                // 修改文章
+    .delete('/articles/:id', articleController.deleteArticle)           // 删除文章
     .post('/categories', categoryController.saveCategory)               // 增加分类
     // .patch('/categories', articleController.updateCategory)            // 修改某分类
     // .delete('/categories/:category', articleController.deleteCategory) // 删除某分类

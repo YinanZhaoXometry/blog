@@ -7,7 +7,7 @@
       <nuxt-link
         v-for="item in cateArticleList"
         :key="item._id"
-        :to="{path: `/article/${item._id}`}"
+        :to="{path: `/articles/${item._id}`}"
       >
         <el-card
           shadow="hover"
@@ -19,7 +19,7 @@
             <p>{{ item.abstract }}</p>
             <div>
               <el-tag :type="item.isOriginal ? 'success' : 'info'">{{ item.isOriginal ? '原创' : '转载' }}</el-tag>
-              <span><i class="el-icon-date" /> &nbsp; {{ item.time.year === new Date().getFullYear() ? item.time.simpleDate : item.time.fullDate }}</span>
+              <span><i class="el-icon-date" /> &nbsp; {{ item.createTime.year === new Date().getFullYear() ? item.createTime.simpleDate : item.createTime.fullDate }}</span>
             </div>
             <template>
               <!-- 为 “私有(isPublic: false)” 文章，显示“私有”字样 -->
