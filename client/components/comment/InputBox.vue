@@ -1,9 +1,9 @@
 <template>
   <section>
     <transition name="fade-wrapper">
-      <div v-show="isShow">
+      <div v-show="status.isShow">
         <el-input
-          v-model="commentContent"
+          v-model="status.inputValue"
           type="textarea"
           :rows="3"
           placeholder="写下你的评论...（支持MarkDown，被你@的用户会收到邮件通知）"
@@ -12,7 +12,7 @@
           @focus="onInputFocus"
         />
         <transition name="fade">
-          <div v-show="type === 'alwaysShowInput' ? isButtonsShow : true">
+          <div v-show="status.isButtonsShow">
             <el-row type="flex">
               <el-col :span="6"><el-input v-model="commentName" placeholder="称呼 *" /></el-col>
               <el-col :span="6"><el-input v-model="commentEmail" placeholder="邮箱 *" /></el-col>
@@ -29,13 +29,7 @@
               </el-col>
             </el-row>
             <span @click="onCancel">取消</span>
-            <el-button
-              type="success"
-              round
-              @click="onSubmit"
-            >
-              发送
-            </el-button>
+            <el-button type="success" round @click="onSubmit">发送</el-button>
           </div>
         </transition>
       </div>
@@ -46,23 +40,14 @@
 <script>
 export default {
   props: {
-    type: {
-      type: String,
+    status: {
+      type: Object,
       required: true
-    },
-    inputValue: {
-      type: String,
-      default: '',
-    },
-    isShow: {
-      type: Boolean,
     }
   },
 
   data () {
     return {
-      isButtonsShow: false,
-      commentContent: '',
       commentSitePrefix: 'http://',
       commentSite: '',
       commentName: '',
@@ -71,39 +56,37 @@ export default {
     }
   },
 
-  watch: {
-    inputValue: function (newValue, oldValue) {
-      this.commentContent = newValue
-    }
-  },
-
   methods: {
+    // 输入框获得焦点时的处理函数
+    onInputFocus () {
+      if (this.status.type === 'mainInputBox')
+        this.status.isButtonsShow = true
+    },
+
+    // 点击输入框“取消”按钮的处理函数
     onCancel () {
-      if (this.type === 'alwaysShowInput') {
-        this.isButtonsShow = false
+      if (this.status.type === 'mainInputBox') {
+        this.status.isButtonsShow = false
       } else {
-        this.$emit('cancel')
-        this.commentContent = ''
+        this.status.isShow = false
+        this.status.inputValue = ''
       }
     },
 
-    // 评论框获得焦点时的处理函数
-    onInputFocus () {
-      if (this.type === 'alwaysShowInput')
-        this.isButtonsShow = true
-    },
-
+    // 点击输入框“发送”按钮的处理函数
     onSubmit () {
-      let list = window.location.pathname.split('/')  // 通过URL地址读取articleId
-      let articleId = list[2]
-      let dataObj = {
-        content: this.commentContent,
+      let data = {
+        site: this.commentSitePrefix + this.commentSite,
         name: this.commentName,
         email: this.commentEmail,
-        site: this.commentSitePrefix + this.commentSite,
-        articleId
+        rememberUser: this.rememberMe,
+        isMainComment: false
       }
-      this.$axios.post('/api/comments', dataObj)
+      if (this.status.type === 'mainInputBox') {
+        data.isMainComment = true
+        this.$emit('submitComment', data)
+      }
+      else this.$emit('submitSubComment', data)
     }
   }
 }

@@ -12,6 +12,7 @@ router
     .get('/popularArticles', articleController.getPopularArticles)   // 获取热门文章列表
     .get('/articles/:id', articleController.getOneArticle)           // 获取单篇文章
     .post('/comments', commentController.saveComment)  // 保存评论
+    .patch('/comments', commentController.updateComment) // 保存子评论（在评论document中增加子评论字段）
 
     /* 后台管理路由 */
     .post('/login', userController.authLogin)                          // 登陆

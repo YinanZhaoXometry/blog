@@ -1,30 +1,6 @@
 <template>
   <section>
     <article>
-      <div>
-        <img src="" alt="">
-        <div>
-          <p>{{ comment.fromName }}</p>
-          <p>{{ comment.date }}</p>
-        </div>
-      </div>
-      <p>{{ comment.content }}</p>
-      <p>
-        <span>
-          <el-button @click="onClickLike(comment)">
-            <i class="iconfont icon-like1" />
-            <span>{{ comment.likeNum === 0 ? '赞' : comment.likeNum+'人赞' }}</span>
-          </el-button>
-        </span>
-        <span>
-          <i>icon</i>
-          <span>
-            <el-button @click="toggleInputBox(1, comment)">回复</el-button>
-          </span>
-        </span>
-      </p>
-    </article>
-    <article>
       <div v-for="(item,index) in comment.reply" :key="item.content">
         <p>
           <span>{{ item.fromName }}</span><span>: </span>
