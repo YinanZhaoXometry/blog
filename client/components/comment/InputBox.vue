@@ -55,7 +55,14 @@ export default {
       rememberMe: false
     }
   },
-
+  computed: {
+    comment () {
+      return this.$store.state.comments.currentComment
+    },
+    subComment () {
+      return this.$store.state.comments.currentSubComment
+    }
+  },
   methods: {
     // 输入框获得焦点时的处理函数
     onInputFocus () {
@@ -75,19 +82,48 @@ export default {
 
     // 点击输入框“发送”按钮的处理函数
     onSubmit () {
-      let data = {
-        site: this.commentSitePrefix + this.commentSite,
+      let fromWhom = {
         name: this.commentName,
         email: this.commentEmail,
-        rememberUser: this.rememberMe,
-        isMainComment: false
+        site: this.commentSitePrefix + this.commentSite
+       }
+      let rememberUser = this.rememberMe
+      let articleId = window.location.pathname.split('/')[2]  // 通过URL地址获取对应文章id（articleId）
+      if (this.status.type === 'mainInputBox') {  // 父评论输入框逻辑
+        var dataObj = {    // 定义父评论需要保存的数据对象
+            content: this.status.inputValue,
+            articleId,
+            fromWhom
+          }
+        this.$axios.post('/api/comments', dataObj)
+      } else {  // 子评论输入框逻辑
+        let content =
+          this.status.isReplyToParent   // 将子评论内容中的”@xxx“字段去除，便于后续数据操作和页面显示。
+          ? this.status.inputValue
+          : this.status.inputValue.replace('@' + this.subComment.fromName, '').trim()
+        var toWhom =
+          this.status.isReplyToParent
+          ? {
+            name: this.comment.fromName,
+            email: this.comment.fromId,
+            site: this.comment.fromAvatar
+          }
+          : {
+            name: this.subComment.fromName,
+            email: this.subComment.fromId,
+            site: this.subComment.fromAvatar
+          }
+        var dataObj = {
+          _id: this.comment.id,
+          isReplyToParent: this.status.isReplyToParent,
+          content,
+          fromWhom,
+          toWhom
+        }
+        this.$axios.patch('/api/comments', dataObj)
       }
-      if (this.status.type === 'mainInputBox') {
-        data.isMainComment = true
-        this.$emit('submitComment', data)
-      }
-      else this.$emit('submitSubComment', data)
     }
+
   }
 }
 </script>
