@@ -1,21 +1,20 @@
 export const state = () => ({
-  currentComment: {},
-  currentSubComment: {}
+  commentList: [],
 })
 
 export const mutations = {
-  setComment (state, comment) {
-    state.currentComment = comment
-  },
-  setSubComment (state, subComment) {
-    state.currentSubComment = subComment
+  setCommentList (state, commentList) {
+    state.commentList = commentList
   }
 }
 
 export const actions = {
-  submitMainComment (context, payload) {
-  },
+  async fetchCommentList ({commit}, articleId) {
+    let {data} = await this.$axios.get('/api/comments', { params: {articleId} })
+    if (data.success) {
+      commit('setCommentList', data.comments)
+    } else {
 
-  submitSubComment (context, payload) {
+    }
   }
 }

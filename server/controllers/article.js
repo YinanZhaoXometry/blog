@@ -21,12 +21,11 @@ module.exports = {
       let articleList = await articleModel.find(
         condition, {}, 
         {
-          sort: {time: -1}, 
+          sort: {createTime: -1}, 
           skip: (pageNum - 1) * pageSize,
           limit: pageSize,
         }
       )
-      console.log(totalArticleCount)
       ctx.body = {
         success: true,
         articleList, 

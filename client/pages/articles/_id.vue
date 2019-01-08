@@ -50,7 +50,7 @@
         </nuxt-link>
       </el-col>
     </el-row>
-    <comment />
+    <comment :article-id="article._id" />
   </section>
 </template>
 
@@ -60,10 +60,14 @@ export default {
   components: {
     Comment
   },
-  async asyncData ({app, params}) {
+  async asyncData ({ app, params }) {
     let {data} = await app.$axios.get(`/api/articles/${params.id}`)
     let {article} = data
     return {article}
+  },
+
+  async fetch ({ params, store }) {
+    await store.dispatch('comments/fetchCommentList', params.id)
   },
 
   layout: 'article'

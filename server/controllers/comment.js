@@ -2,6 +2,25 @@ const commentModel = require('../models/comment')
 const getTimeObj = require('../utils/getTimeObj')
 
 module.exports = {
+  // 获取评论处理函数
+  getComments: async function (ctx, next) {
+    try {
+      let condition = ctx.request.query
+      let option = { sort: {createTime: -1} }
+      let comments = await commentModel.find(condition, {}, option)
+      ctx.response.body = {
+        success: true,
+        comments
+      }
+    } catch (err) {
+      console.log('发现错误：', err)
+      ctx.response.body = {
+        success: false,
+        err
+      }
+    }
+  },
+
   // 保存评论处理函数
   saveComment: async function (ctx, next) {
     try {
@@ -21,10 +40,17 @@ module.exports = {
         content,
         fromWhom
       })
-      let commentDoc = await newDoc.save()
-      console.log(commentDoc)
+      await newDoc.save()
+      ctx.response.body = {
+        success: true,
+        message: '回复成功'
+      }
     } catch (err) {
       console.log('发现错误：',err)
+      ctx.response.body = {
+        success: false,
+        message: '回复失败',
+      }
     }
   },
 
@@ -40,18 +66,19 @@ module.exports = {
         fromWhom,
         toWhom 
       }
-      console.log(subComment)
-      // let options = {runValidators: true}
-      // let updateResult = await commentModel.findByIdAndUpdate(
-      //   { _id }, { $push: { subComments: subComment }, options }
-      // )
-      let newDoc = await commentModel.findOne({_id})
-      let result1 = newDoc.subComments.push(subComment)
-      console.log(111111, newDoc)
-      let result = await newDoc.save()
-      // console.log(result)
+      let commentDoc = await commentModel.findOne({_id})
+      commentDoc.subComments.push(subComment)
+      await commentDoc.save()
+      ctx.response.body = {
+        success: true,
+        message: '回复成功'
+      }
     } catch (err) {
       console.log('发现错误', err)
+      ctx.response.body = {
+        success: false,
+        message: '回复失败'
+      }
     }
   }
   

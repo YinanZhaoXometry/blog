@@ -1,69 +1,109 @@
 <template>
   <section>
     <p>评论</p>
-    <!-- <input-box :status="mainInputBoxStatus" @submitComment="handleSubmit(arguments)" />   -->
-    <input-box :status="mainInputBoxStatus" />  <!-- 文章评论输入框 -->
-    <p>{{ comments.data.length }}&nbsp;条评论</p>
-    <comment v-for="item in comments.data" :key="item.id" :comment="item" />
+    <transition name="fade-wrapper">
+      <div>
+        <el-input
+          v-model="inputValue"
+          type="textarea"
+          :rows="3"
+          placeholder="写下你的评论...（支持MarkDown，被你@的用户会收到邮件通知）"
+          resize="none"
+          :autosize="{minRows: 3, maxRows: 6}"
+          @focus="onInputFocus"
+        />
+        <transition name="fade">
+          <div v-show="isButtonsShow">
+            <el-row type="flex">
+              <el-col :span="6"><el-input v-model="commentName" placeholder="称呼 *" /></el-col>
+              <el-col :span="6"><el-input v-model="commentEmail" placeholder="邮箱 *" /></el-col>
+              <el-col :span="8">
+                <el-input v-model="commentSite" placeholder="个人网址">
+                  <el-select slot="prepend" v-model="commentSitePrefix" placeholder="请选择">
+                    <el-option label="http://" value="http://" />
+                    <el-option label="https://" value="https://" />
+                  </el-select>
+                </el-input>
+              </el-col>
+              <el-col :span="4">
+                <el-checkbox v-model="rememberMe">记住我</el-checkbox>
+              </el-col>
+            </el-row>
+            <span @click="onCancel">取消</span>
+            <el-button type="success" round @click="onSubmit">发送</el-button>
+          </div>
+        </transition>
+      </div>
+    </transition>
+
+    <p>{{ comments.length }}&nbsp;条评论</p>
+    <comment v-for="item in comments" :key="item.id" :comment="item" />
   </section>
 </template>
 
 <script>
-import InputBox from './InputBox.vue'
 import Comment from './Comment.vue'
-import comments from '~/mock/CommentData'
 
 export default {
-
   components: {
-    InputBox,
     Comment
   },
+
+  props: {
+    articleId: {
+      type: String,
+      required: true
+    }
+  },
+
   data () {
     return {
-      comments,
-      mainInputBoxStatus: {
-        type: 'mainInputBox',
-        isShow: true,
-        isButtonsShow: false,
-        inputValue: ''
-      }
+      isButtonsShow: false,
+      inputValue: '',
+      commentSitePrefix: 'http://',
+      commentSite: '',
+      commentName: '',
+      commentEmail: '',
+      rememberMe: false,
+    }
+  },
+
+  computed: {
+    comments () {
+      return this.$store.state.comments.commentList
     }
   },
 
   methods: {
-     // 点击输入框“发送”按钮的处理函数
-    // handleSubmit (args, commentInfo) {
-    //   let { isMainComment, name, email, site, rememberUser } = args[0]
-    //   let articleId = window.location.pathname.split('/')[2]  // 通过URL地址获取对应文章id（articleId）
-    //   let fromWhom = { name, email, site }
-    //   if (isMainComment) {  // 文章父评论逻辑
-    //     var dataObj = {
-    //       content: this.mainInputStatus.inputValue,
-    //       articleId,
-    //       fromWhom
-    //     }
-    //     this.$axios.post('/api/comments', dataObj)
-    //   } else {  // 文章子评论逻辑
-    //     let toWhom = {
-    //         name: this.isReplyToMain ? commentInfo.fromName : this.subCommentInfo.fromName,
-    //         email: this.isReplyToMain ? commentInfo.fromId : this.subCommentInfo.fromId,
-    //         site: this.isReplyToMain ? commentInfo.fromAvatar : this.subCommentInfo.fromAvatar
-    //       }
-    //     let content = this.isReplyToMain   // 将子评论内容中的”@xxx“字段去除，便于后续数据操作和页面显示。
-    //       ? this.subInputStatus.inputValue
-    //       : this.subInputStatus.inputValue.replace('@' + this.subCommentInfo.fromName, '').trim()
-    //     var dataObj = {
-    //       _id: commentInfo.id,
-    //       isReplyToMain: this.isReplyToMain,
-    //       content,
-    //       fromWhom,
-    //       toWhom
-    //     }
-    //     this.$axios.patch('/api/comments', dataObj)
-    //   }
-    // }
+    // 输入框获得焦点时的处理函数
+    onInputFocus () {
+      this.isButtonsShow = true
+    },
 
+    // 点击输入框“取消”按钮的处理函数
+    onCancel () {
+      this.isButtonsShow = false
+    },
+
+    // 点击输入框“发送”按钮的处理函数
+    onSubmit: async function () {
+      let fromWhom = {
+        name: this.commentName,
+        email: this.commentEmail,
+        site: this.commentSitePrefix + this.commentSite
+       }
+      let rememberUser = this.rememberMe
+      let articleId = this.articleId
+      var dataObj = {    // 定义父评论需要保存的数据对象
+          content: this.inputValue,
+          articleId,
+          fromWhom
+        }
+      let {data} = await this.$axios.post('/api/comments', dataObj)
+      let {success, message} = data
+      success ? this.$message.success(message) : this.$message.error(message)
+      this.$store.dispatch('comments/fetchCommentList', articleId)  // 更新vuex中commentList的数据
+    }
   }
 }
 </script>

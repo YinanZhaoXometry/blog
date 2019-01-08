@@ -9,8 +9,9 @@ router.prefix('/api')
 router
     /* 前端页面路由 */
     .get('/articles', articleController.getArticles)                 // 获取文章列表
-    .get('/popularArticles', articleController.getPopularArticles)   // 获取热门文章列表
     .get('/articles/:id', articleController.getOneArticle)           // 获取单篇文章
+    .get('/popularArticles', articleController.getPopularArticles)   // 获取热门文章列表
+    .get('/comments', commentController.getComments)   // 获取评论
     .post('/comments', commentController.saveComment)  // 保存评论
     .patch('/comments', commentController.updateComment) // 保存子评论（在评论document中增加子评论字段）
 
