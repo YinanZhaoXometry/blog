@@ -11,12 +11,14 @@ let subCommentSchema = new mongoose.Schema({
   fromWhom: {  // 评论者信息
     name: { type: String, required: true, match: /\S+/ },  // 匹配除空格、tab、换行符以外的所有其他字符
     email: { type: String, required: true, match: /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/ },
-    site: { type: String, match: /^((https|http):\/\/)+[A-Za-z0-9]+\.[A-Za-z0-9]+[\/=\?%\-&_~`@[\]\':+!]*([^<>\"\"])*$/ }
+    sitePrefix: { type: String, match: /^((https|http):\/\/)$/},
+    site: { type: String, match: /^[A-Za-z0-9]+\.[A-Za-z0-9]+[\/=\?%\-&_~`@[\]\':+!]*([^<>\"\"])*$/ }
   },
   toWhom: {   // 被 @ 的评论者信息
     name: { type: String, required: true, match: /\S+/ },
     email: { type: String, required: true, match: /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/ },
-    site: { type: String, match: /^((https|http):\/\/)+[A-Za-z0-9]+\.[A-Za-z0-9]+[\/=\?%\-&_~`@[\]\':+!]*([^<>\"\"])*$/ }
+    sitePrefix: { type: String, match: /^((https|http):\/\/)$/},
+    site: { type: String, match: /^[A-Za-z0-9]+\.[A-Za-z0-9]+[\/=\?%\-&_~`@[\]\':+!]*([^<>\"\"])*$/ }
   }
 })
 
@@ -33,7 +35,8 @@ let commentSchema = new mongoose.Schema({
   fromWhom: {    // 评论者信息
     name: { type: String, required: true, match: /\S+/ },
     email: { type: String, required: true, match: /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/ },
-    site: { type: String, match: /^((https|http):\/\/)+[A-Za-z0-9]+\.[A-Za-z0-9]+[\/=\?%\-&_~`@[\]\':+!]*([^<>\"\"])*$/  }
+    sitePrefix: { type: String, match: /^((https|http):\/\/)$/},
+    site: { type: String, match: /^[A-Za-z0-9]+\.[A-Za-z0-9]+[\/=\?%\-&_~`@[\]\':+!]*([^<>\"\"])*$/ }
   },
   subComments: [ subCommentSchema ]  // 子评论 
 })

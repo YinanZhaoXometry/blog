@@ -1,46 +1,54 @@
 <template>
   <section>
-    <transition name="fade-wrapper">
-      <div v-show="status.isShow">
-        <!-- <el-input
-          v-model="status.inputValue"
-          type="textarea"
-          :rows="3"
-          placeholder="写下你的评论...（支持MarkDown，被你@的用户会收到邮件通知）"
-          resize="none"
-          :autosize="{minRows: 3, maxRows: 6}"
-          @focus="onInputFocus"
-        /> -->
-        <el-input
-          v-model="inputValue"
-          type="textarea"
-          :rows="3"
-          placeholder="写下你的评论...（支持MarkDown，被你@的用户会收到邮件通知）"
-          resize="none"
-          :autosize="{minRows: 3, maxRows: 6}"
-          @focus="onInputFocus"
-        />
-        <transition name="fade">
-          <div v-show="status.isButtonsShow">
-            <el-row type="flex">
-              <el-col :span="6"><el-input v-model="commentName" placeholder="称呼 *" /></el-col>
-              <el-col :span="6"><el-input v-model="commentEmail" placeholder="邮箱 *" /></el-col>
-              <el-col :span="8">
-                <el-input v-model="commentSite" placeholder="个人网址">
-                  <el-select slot="prepend" v-model="commentSitePrefix" placeholder="请选择">
-                    <el-option label="http://" value="http://" />
-                    <el-option label="https://" value="https://" />
-                  </el-select>
-                </el-input>
-              </el-col>
-              <el-col :span="4">
-                <el-checkbox v-model="rememberMe">记住我</el-checkbox>
-              </el-col>
-            </el-row>
-            <span @click="onCancel">取消</span>
-            <el-button type="success" round @click="onSubmit">发送</el-button>
-          </div>
-        </transition>
+    <el-input
+      v-model="inputValue"
+      type="textarea"
+      :rows="3"
+      placeholder="写下你的评论...（支持MarkDown，被你@的用户会收到邮件通知）"
+      resize="none"
+      :autosize="{minRows: 3, maxRows: 6}"
+      @focus="onInputFocus"
+    />
+    <transition name="fade">
+      <div v-show="isMainInputBox ? isButtonsShow : true">
+        <!-- 填写用户信息区域 -->
+        <el-row v-if="!hasUserCache || isEditUserCache" type="flex">
+          <el-col :span="6"><el-input v-model="fromWhom.name" placeholder="称呼 *" /></el-col>
+          <el-col :span="6"><el-input v-model="fromWhom.email" placeholder="邮箱 *" /></el-col>
+          <el-col :span="8">
+            <el-input v-model="fromWhom.site" placeholder="个人网址">
+              <el-select slot="prepend" v-model="fromWhom.sitePrefix" placeholder="请选择">
+                <el-option label="http://" value="http://" />
+                <el-option label="https://" value="https://" />
+              </el-select>
+            </el-input>
+          </el-col>
+          <el-col v-if="!isEditUserCache" :span="4">
+            <el-checkbox v-model="rememberMe">记住我</el-checkbox>
+          </el-col>
+          <el-col v-else :span="4">
+            <el-button type="success" plain @click="updateUserCache"><i class="el-icon-check" /></el-button>
+          </el-col>
+        </el-row>
+        <!--  -->
+        <el-button round>😊</el-button>
+        <span @click="onCancel">取消</span>
+        <el-button type="success" round @click="onSubmit">发送</el-button>
+        <!-- 修改用户信息区域 -->
+        <div v-if="hasUserCache">
+          <strong>{{ fromWhom.name }}</strong>
+          <el-dropdown>
+            <span class="el-dropdown-link">
+              <i class="el-icon-setting" />
+              账户设置
+              <i class="el-icon-arrow-down el-icon--right" />
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item @click.native="isEditUserCache = true">修改信息</el-dropdown-item>
+              <el-dropdown-item @click.native="clearUserCache">清空信息</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </div>
       </div>
     </transition>
   </section>
@@ -49,127 +57,138 @@
 <script>
 export default {
   props: {
-    status: {
-      type: Object,
-      required: true
+    isMainInputBox: {
+      type: Boolean,
+      required: true,
+    },
+    inputPrefix: {
+      type: String,
+      default:''
     }
   },
 
   data () {
     return {
-      commentSitePrefix: 'http://',
-      commentSite: '',
-      commentName: '',
-      commentEmail: '',
-      rememberMe: false,
       inputValue: '',
+      isButtonsShow: false,
 
+      // 用户相关
+      hasUserCache: false,
+      isEditUserCache: false,
+      userAvatar: null,
+      rememberMe: false,
+      fromWhom: {
+        name: '',
+        email: '',
+        sitePrefix: 'http://',
+        site: ''
+      },
+
+      // 用户信息验证
+      regExps: {
+        email: /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/,
+        site: /^[A-Za-z0-9]+\.[A-Za-z0-9]+[\/=\?%\-&_~`@[\]\':+!]*([^<>\"\"])*$/
+      }
     }
-  },
-
-  computed: {
-    comment () {
-      return this.$store.state.comments.commentList[this.status.index]
-    },
-    // subComment () {
-    //   if(this.subIndex === -1) return {}
-    //   else return this.comment.subComments[this.status.subIndex]
-    // },
-
   },
 
   watch: {
-    'status.defaultInput': function (newValue, oldValue) {
-      this.inputValue = newValue
-    },
-
-
-    'status.subIndex': function (newValue, oldValue) {
-      console.log(newValue)
-    },
-    'status.defaultInput': function (newValue, oldValue) {
-      console.log(newValue)
+    inputPrefix: function (newValue, oldValue) {
+      return this.inputValue = newValue
     }
   },
 
-  methods: {
+  mounted () {
+    this.readUserCache()
+  },
 
+
+
+  methods: {
+    // 读取保存在本地的 用户信息
+    readUserCache () {
+      if (window.localStorage) {
+        let fromWhom = window.localStorage.getItem('user_info')
+        if (fromWhom) {
+          this.fromWhom = JSON.parse(fromWhom)
+          this.hasUserCache = true
+          // this.updateUserGravatar()
+        }
+      }
+    },
+
+    updateUserCache () {
+      this.checkUserInfo()
+      window.localStorage.setItem('user_info', JSON.stringify(this.fromWhom))
+      this.isEditUserCache = false
+      this.$message.success('信息修改成功')
+    },
+    clearUserCache () {
+      window.localStorage.removeItem('user_info')
+    },
+    checkUserInfo () {
+      let warning = this.$message.warning
+      if(!this.fromWhom.name) return warning('请输入名字')
+      if(!this.fromWhom.email) return warning('请输入邮箱')
+      if(!this.regExps.email.test(this.fromWhom.email)) return warning('邮箱不合法')
+      if(this.fromWhom.site && !this.regExps.site.test(this.fromWhom.site)) return warning('网址不合法')
+    },
 
 
 
     // 输入框获得焦点时的处理函数
     onInputFocus () {
-      if (this.status.type === 'mainInputBox')
-        this.status.isButtonsShow = true
+      this.isButtonsShow = true
     },
-
     // 点击输入框“取消”按钮的处理函数
     onCancel () {
-      if (this.status.type === 'mainInputBox') {
-        this.status.isButtonsShow = false
-      } else {
-        this.status.isShow = false
-        this.status.inputValue = ''
-      }
+      this.$emit('hideSubInputBox')
+      this.isButtonsShow = false
+      this.inputValue = ''
     },
-
     // 点击输入框“发送”按钮的处理函数
     onSubmit: async function () {
-      let fromWhom = {
-        name: this.commentName,
-        email: this.commentEmail,
-        site: this.commentSitePrefix + this.commentSite
-       }
-      let rememberUser = this.rememberMe
-      let articleId = this.comment.articleId
-      // 父评论输入框逻辑
-      if (this.status.type === 'mainInputBox') {
-        var dataObj = {    // 定义父评论需要保存的数据对象
-            content: this.inputValue,
-            articleId,
-            fromWhom
-          }
-        let {data} = await this.$axios.post('/api/comments', dataObj)
-        let {success, message} = data
-        success ? this.$message.success(message) : this.$message.error(message)
-      } else {  // 子评论输入框逻辑
-        let content =
-          this.status.isReplyToParent   // 将子评论内容中的”@xxx“字段去除，便于后续数据操作和页面显示。
-          ? this.status.inputValue
-          : this.status.inputValue.replace('@' + this.subComment.fromName, '').trim()
-          // : this.status.inputValue.replace(this.status.defaultValue).trim()
-        var toWhom =
-          this.status.isReplyToParent
-          ? {
-            name: this.comment.fromWhom.name,
-            email: this.comment.fromWhom.email,
-            site: this.comment.fromWhom.site
-          }
-          : {
-            name: this.subComment.fromWhom.name,
-            email: this.subComment.fromWhom.email,
-            site: this.subComment.fromWhom.site
-          }
-        var dataObj = {
-          id: this.comment._id,
-          isReplyToParent: this.status.isReplyToParent,
-          content,
-          fromWhom,
-          toWhom
+      if(this.isMainInputBox) {
+        var articleId = window.location.pathname.split('/')[2]
+        let dataObj = {    // 定义父评论需要保存的数据对象
+          content: this.inputValue,
+          fromWhom: this.fromWhom,
+          articleId
         }
-        let {data} = await this.$axios.patch('/api/comments', dataObj)
-        let { success, message } = data
-        success ? this.$message.success(message) : this.$message.error(message)
+        var {data} = await this.$axios.post('/api/comments', dataObj)
+        this.isButtonsShow = false
+      } else {
+        let isReplyToParent = this.$parent.isReplyToParent
+        let content =
+          isReplyToParent   // 将子评论内容中的”@xxx“字段去除，便于后续数据操作和页面显示。
+          ? this.inputValue
+          : this.inputValue.replace('@' + this.$parent.currentSubComment.fromWhom.name, '').trim()
+        let toWhom =
+          isReplyToParent
+          ? this.$parent.comment.fromWhom
+          : this.$parent.currentSubComment.fromWhom
+        let dataObj = {
+          _id: this.$parent.comment._id,
+          fromWhom: this.fromWhom,
+          toWhom,
+          content,
+          isReplyToParent
+        }
+        var {data} = await this.$axios.patch('/api/comments', dataObj)
+        this.$emit('hideSubInputBox')
       }
-      this.$store.dispatch('comments/fetchCommentList', articleId)  // 更新vuex中commentList的数据
+      this.inputValue = ''
+      let {success, message} = data
+      if (success) {
+        this.$message.success(message)
+        this.$store.dispatch('comments/fetchCommentList', articleId)  // 更新vuex中commentList的数据
+        if (this.rememberMe) {
+          this.$store.dispatch('')
+          this.hasUserCache = true
+        }
+      } else this.$message.error(message)
     }
 
   }
 }
 </script>
-
-<style>
-  .el-select .el-input {
-    width: 95px;
-  }
-</style>

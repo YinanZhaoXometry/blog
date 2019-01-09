@@ -10,8 +10,9 @@
     <p>{{ comment.content }}</p>
     <p>
       <span>
-        <el-button @click="onClickLike(comment)">
-          <i class="iconfont icon-like1" />
+        <el-button @click="onLikeComment(comment)">
+          <i :class="['iconfont', checkCommentLiked(comment._id) ? 'icon-like' : 'icon-like1']" />
+          <!-- <i :class="[iconfont, checkCommentLiked() ? icon-like1 : icon-like]" /> -->
           <span>{{ comment.likes ? comment.likes+'人赞' : '赞' }}</span>
         </el-button>
       </span>
@@ -38,46 +39,24 @@
           <span>添加新评论</span>
         </el-button>
       </p>
-      <div v-show="isShow">
-        <el-input
-          ref="inputbox"
-          v-model="inputValue"
-          type="textarea"
-          :rows="3"
-          placeholder="写下你的评论...（支持MarkDown，被你@的用户会收到邮件通知）"
-          resize="none"
-          :autosize="{minRows: 3, maxRows: 6}"
-        />
-        <transition name="fade">
-          <div>
-            <el-row type="flex">
-              <el-col :span="6"><el-input v-model="commentName" placeholder="称呼 *" /></el-col>
-              <el-col :span="6"><el-input v-model="commentEmail" placeholder="邮箱 *" /></el-col>
-              <el-col :span="8">
-                <el-input v-model="commentSite" placeholder="个人网址">
-                  <el-select slot="prepend" v-model="commentSitePrefix">
-                    <el-option label="http://" value="http://" />
-                    <el-option label="https://" value="https://" />
-                  </el-select>
-                </el-input>
-              </el-col>
-              <el-col :span="4">
-                <el-checkbox v-model="rememberMe">记住我</el-checkbox>
-              </el-col>
-            </el-row>
-            <span @click="onCancel">取消</span>
-            <el-button type="success" round @click="onSubmit">发送</el-button>
-          </div>
-        </transition>
-      </div>
+      <input-box
+        v-show="isSubInputBoxShow"
+        ref="inputbox"
+        :is-main-input-box="false"
+        :input-prefix="inputPrefix"
+        @hideSubInputBox="onHide"
+      />
     </div>
     <!-- 子评论区结束 -->
   </section>
 </template>
 
 <script>
-
+import InputBox from './InputBox.vue'
 export default {
+  components: {
+    InputBox
+  },
   props: {
     comment: {
       type: Object,
@@ -87,98 +66,82 @@ export default {
 
   data () {
     return {
-      isShow: false,
+      isSubInputBoxShow: false,
       currentButton: {},
+      currentSubComment: {},
       isReplyToParent: true,   // 是否是对父评论的回复
-      inputValue: '',
-      commentName: '',
-      commentEmail: '',
-      commentSitePrefix: 'http://',
-      commentSite: '',
-      rememberMe: false,
-      currSubComment: {},
-      isLiked: false
+
+      isCommentLiked: false,
+      likedComments: [],
+
+      inputPrefix:''   //输入框前缀，如：”@某人“
     }
   },
 
+  mounted () {
+    this.readUserCache()
+  },
+
   methods: {
+    // 读取保存在本地的用户点赞信息
+    readUserCache () {
+      if (window.localStorage) {
+        let likedComments = window.localStorage.getItem('liked_comments')
+        if (likedComments)
+          this.likedComments = JSON.parse(likedComments)
+      }
+    },
+
+    // 对评论点赞处理函数
+    async onLikeComment () {
+    // 当comment上isCommentLiked属性为false时，点赞后设置该属性为true
+      if ( !this.checkCommentLiked(this.comment._id) ) {
+        console.log('is:',!this.checkCommentLiked(this.comment._id))
+        let {data} = await this.$axios.put(`/api/comments/like/${this.comment._id}`)
+        if(data.success) {
+          this.$store.commit('comments/likeComment', this.comment._id)
+          this.likedComments.push(this.comment._id)
+        }
+        else this.$message.error('评论点赞失败')
+      } else {
+        console.log('is:',!this.checkCommentLiked(this.comment._id))
+        let {data} = await this.$axios.delete(`/api/comments/like/${this.comment._id}`)
+        if(data.success) {
+          this.$store.commit('comments/dislikeComment', this.comment._id)
+          let index = this.likedComments.findIndex(element => Object.is(element,this.comment._id))
+          this.likedComments.splice(index, 1)
+        }
+      }
+      window.localStorage.setItem('liked_comments', JSON.stringify(this.likedComments))
+    },
+
+    checkCommentLiked (commentId) {
+      return this.likedComments.includes(commentId)
+    },
+
+    onHide () {
+      this.isSubInputBoxShow = false
+    },
+
     // 定义函数：当点击“回复”或“添加新评论”按钮时执行相关逻辑
     async onClickReply (event, isReplyToParent, subComment) {
       // 如再次点击的不是同一个按钮，则显示输入框
       if(this.currentButton !== event.currentTarget) {
-        this.isShow = true
+        this.isSubInputBoxShow = true
         this.currentButton = event.currentTarget
       } else {
       // 如点击的是同一个按钮，则循环 “隐藏|显示” 输入框
-        this.isShow = !this.isShow
+        this.isSubInputBoxShow = !this.isSubInputBoxShow
       }
       this.isReplyToParent = isReplyToParent
       // 如 isReplyToParent 为true，表示直接回复父级评论，设置输入框的初始值为‘’，否则表示回复子评论，设置评论输入框的初始值为“@某人”
-      this.inputValue = isReplyToParent ? '' : '@' + subComment.fromWhom.name + ' '
+      this.inputPrefix = isReplyToParent ? '' : '@' + subComment.fromWhom.name + ' '
       // 如 isReplyToParent 为false（回复子评论），设置currSubComment为当前传入的subComment
-      this.currSubComment = isReplyToParent ? '' : subComment
+      this.currentSubComment = isReplyToParent ? '' : subComment
       // 在下一个event loop，让输入框获得焦点
       await this.$nextTick()
       this.$refs.inputbox.$el.querySelector('textarea').focus()
-    },
-
-    // 点击like按钮的处理函数
-    onClickLike () {
-    // 默认comment上不存在isLike属性，当点击like按钮设置该属性为true
-      if (this.isLiked) {
-        // this.$set(comment,'isLiked', true)
-        this.isLiked = false
-        this.comment.likes--
-      } else {
-        this.isLiked = true
-        this.comment.likes++
-      }
-    },
-
-    // 点击输入框“取消”按钮的处理函数
-    onCancel () {
-      this.isShow = false
-      this.inputValue = ''
-    },
-
-    // 点击输入框“发送”按钮的处理函数
-    onSubmit: async function () {
-      let fromWhom = {
-        name: this.commentName,
-        email: this.commentEmail,
-        site: this.commentSitePrefix + this.commentSite
-       }
-      let rememberUser = this.rememberMe
-      let articleId = this.comment.articleId
-      let content =
-        this.isReplyToParent   // 将子评论内容中的”@xxx“字段去除，便于后续数据操作和页面显示。
-        ? this.inputValue
-        : this.inputValue.replace('@' + this.currSubComment.fromWhom.name, '').trim()
-      var toWhom =
-        this.isReplyToParent
-        ? {
-          name: this.comment.fromWhom.name,
-          email: this.comment.fromWhom.email,
-          site: this.comment.fromWhom.site
-        }
-        : {
-          name: this.currSubComment.fromWhom.name,
-          email: this.currSubComment.fromWhom.email,
-          site: this.currSubComment.fromWhom.site
-        }
-      var dataObj = {
-        _id: this.comment._id,
-        isReplyToParent: this.isReplyToParent,
-        content,
-        fromWhom,
-        toWhom
-      }
-      let {data} = await this.$axios.patch('/api/comments', dataObj)
-      let { success, message } = data
-      success ? this.$message.success(message) : this.$message.error(message)
-      this.$store.dispatch('comments/fetchCommentList', articleId)  // 更新vuex中commentList的数据
     }
-
 
   }
 }

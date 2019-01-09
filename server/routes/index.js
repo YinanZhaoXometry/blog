@@ -11,15 +11,19 @@ router
     .get('/articles', articleController.getArticles)                 // 获取文章列表
     .get('/articles/:id', articleController.getOneArticle)           // 获取单篇文章
     .get('/popularArticles', articleController.getPopularArticles)   // 获取热门文章列表
-    .get('/comments', commentController.getComments)   // 获取评论
+    .get('/comments/:articleId', commentController.getComments)   // 获取xx(id)文章的所有评论
     .post('/comments', commentController.saveComment)  // 保存评论
     .patch('/comments', commentController.updateComment) // 保存子评论（在评论document中增加子评论字段）
+    .put('/comments/like/:id', commentController.likeComment)         // 对xx(id)评论点赞
+    .delete('/comments/like/:id', commentController.dislikeComment)  // 取消点赞
 
     /* 后台管理路由 */
     .post('/login', userController.authLogin)                          // 登陆
     .post('/articles', articleController.saveArticle)                   // 保存(发布)文章
     .patch('/articles', articleController.updateArticle)                // 修改文章
     .delete('/articles/:id', articleController.deleteArticle)           // 删除文章
+    // .put('articles/like/:id') // 文章点赞
+    // .delete('articles/like/:id') // 取消点赞
     .post('/categories', categoryController.saveCategory)               // 增加分类
     // .patch('/categories', articleController.updateCategory)            // 修改某分类
     // .delete('/categories/:category', articleController.deleteCategory) // 删除某分类

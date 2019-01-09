@@ -38,14 +38,15 @@ module.exports = {
   */
   css: [
     'element-ui/lib/theme-chalk/index.css',
-    '~assets/fonts/iconfont/iconfont.css'
+    '~/assets/fonts/iconfont/iconfont.css'
   ],
 
   /*
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '@/plugins/element-ui'
+    '~/plugins/element-ui',
+
   ],
 
   /*

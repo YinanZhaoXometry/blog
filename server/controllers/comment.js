@@ -3,9 +3,10 @@ const getTimeObj = require('../utils/getTimeObj')
 
 module.exports = {
   // 获取评论处理函数
-  getComments: async function (ctx, next) {
+  async getComments (ctx, next) {
     try {
-      let condition = ctx.request.query
+      let condition = ctx.params
+      console.log(condition)
       let option = { sort: {createTime: -1} }
       let comments = await commentModel.find(condition, {}, option)
       ctx.response.body = {
@@ -22,7 +23,7 @@ module.exports = {
   },
 
   // 保存评论处理函数
-  saveComment: async function (ctx, next) {
+  async saveComment (ctx, next) {
     try {
       let ip = (  // 确定用户ip
         ctx.request.ip ||
@@ -55,7 +56,7 @@ module.exports = {
   },
 
   // 保存子评论处理函数（在评论document中增加子评论字段）
-  updateComment: async function (ctx, next) {
+  async updateComment (ctx, next) {
     try {
       let { _id, isReplyToParent, content, fromWhom, toWhom } = ctx.request.body
       let createTime = getTimeObj()
@@ -80,6 +81,31 @@ module.exports = {
         message: '回复失败'
       }
     }
-  }
+  },
+
+  async likeComment (ctx, next) {
+    let {id} = ctx.params
+    let result = await commentModel.updateOne({_id: id}, { $inc: {likes: 1} })
+    if (result.nModified !== 0) 
+      ctx.response.body = {
+        success: true,
+      }
+    else
+      ctx.response.body = {
+        success: false,
+      }
+  },
   
+  async dislikeComment (ctx, next) {
+    let {id} = ctx.params
+    let result = await commentModel.updateOne({_id: id}, { $inc: {likes: -1} })
+    if (result.nModified !== 0) 
+      ctx.response.body = {
+        success: true,
+      }
+    else
+      ctx.response.body = {
+        success: false,
+      }
+    }
 }
