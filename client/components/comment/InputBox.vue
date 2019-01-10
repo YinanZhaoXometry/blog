@@ -7,16 +7,16 @@
       placeholder="写下你的评论...（支持MarkDown，被你@的用户会收到邮件通知）"
       resize="none"
       :autosize="{minRows: 3, maxRows: 6}"
-      @focus="onInputFocus"
+      @focus="isButtonsShow = true"
     />
     <transition name="fade">
       <div v-show="isMainInputBox ? isButtonsShow : true">
         <!-- 填写用户信息区域 -->
         <el-row v-if="!hasUserCache || isEditUserCache" type="flex">
           <el-col :span="6"><el-input v-model="fromWhom.name" placeholder="称呼 *" /></el-col>
-          <el-col :span="6"><el-input v-model="fromWhom.email" placeholder="邮箱 *" /></el-col>
+          <el-col :span="6"><el-input v-model="fromWhom.email" placeholder="邮箱 *" @blur="getUserAvatar(); $emit('onInputBlur', fromWhom.avatar)" /></el-col>
           <el-col :span="8">
-            <el-input v-model="fromWhom.site" placeholder="个人网址">
+            <el-input v-model="fromWhom.site" placeholder="个人网址(选填)">
               <el-select slot="prepend" v-model="fromWhom.sitePrefix" placeholder="请选择">
                 <el-option label="http://" value="http://" />
                 <el-option label="https://" value="https://" />
@@ -27,7 +27,8 @@
             <el-checkbox v-model="rememberMe">记住我</el-checkbox>
           </el-col>
           <el-col v-else :span="4">
-            <el-button type="success" plain @click="updateUserCache"><i class="el-icon-check" /></el-button>
+            <el-button type="danger" plain icon="el-icon-close" @click="isEditUserCache = false; readUserCache()" />
+            <el-button type="success" plain icon="el-icon-check" @click="updateUserCache" />
           </el-col>
         </el-row>
         <!--  -->
@@ -45,7 +46,18 @@
             </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item @click.native="isEditUserCache = true">修改信息</el-dropdown-item>
-              <el-dropdown-item @click.native="clearUserCache">清空信息</el-dropdown-item>
+              <el-popover
+                v-model="isPopoverShow"
+                placement="top"
+                width="160"
+              >
+                <p>确定要清空用户信息吗？</p>
+                <div style="text-align: right; margin: 0">
+                  <el-button size="mini" type="text" @click="isPopoverShow=false">取消</el-button>
+                  <el-button type="primary" size="mini" @click="clearUserCache">确定</el-button>
+                </div>
+                <el-dropdown-item slot="reference">清空信息</el-dropdown-item>
+              </el-popover>
             </el-dropdown-menu>
           </el-dropdown>
         </div>
@@ -55,6 +67,7 @@
 </template>
 
 <script>
+import gravatar from 'gravatar'
 export default {
   props: {
     isMainInputBox: {
@@ -71,17 +84,18 @@ export default {
     return {
       inputValue: '',
       isButtonsShow: false,
+      isPopoverShow: false,
 
       // 用户相关
       hasUserCache: false,
       isEditUserCache: false,
-      userAvatar: null,
       rememberMe: false,
       fromWhom: {
         name: '',
         email: '',
         sitePrefix: 'http://',
-        site: ''
+        site: '',
+        avatar: '',
       },
 
       // 用户信息验证
@@ -103,7 +117,6 @@ export default {
   },
 
 
-
   methods: {
     // 读取保存在本地的 用户信息
     readUserCache () {
@@ -116,38 +129,62 @@ export default {
         }
       }
     },
-
     updateUserCache () {
-      this.checkUserInfo()
-      window.localStorage.setItem('user_info', JSON.stringify(this.fromWhom))
+      let msg = this.checkUserInfo()
+      if (msg) return this.$message.warning(msg)
+      this.saveUserCache()
       this.isEditUserCache = false
       this.$message.success('信息修改成功')
     },
+    saveUserCache () {
+      window.localStorage.setItem('user_info', JSON.stringify(this.fromWhom))
+      this.hasUserCache = true
+    },
     clearUserCache () {
+      this.isPopoverShow=false
       window.localStorage.removeItem('user_info')
+      this.hasUserCache = false
+      this.clearUserInput()
     },
+
     checkUserInfo () {
-      let warning = this.$message.warning
-      if(!this.fromWhom.name) return warning('请输入名字')
-      if(!this.fromWhom.email) return warning('请输入邮箱')
-      if(!this.regExps.email.test(this.fromWhom.email)) return warning('邮箱不合法')
-      if(this.fromWhom.site && !this.regExps.site.test(this.fromWhom.site)) return warning('网址不合法')
+      if(!this.fromWhom.name) return '请输入名字'
+      if(!this.fromWhom.email) return '请输入邮箱'
+      if(!this.regExps.email.test(this.fromWhom.email)) return '邮箱不合法'
+      if(this.fromWhom.site && !this.regExps.site.test(this.fromWhom.site)) return '网址不合法'
+    },
+    clearUserInput () {
+      this.inputValue = ''
+      if(!this.hasUserCache) {
+        Object.keys(this.fromWhom).forEach(key => this.fromWhom[key] = '')
+        this.fromWhom.sitePrefix = 'http://'
+      }
+      this.rememberMe = false
     },
 
-
-
-    // 输入框获得焦点时的处理函数
-    onInputFocus () {
-      this.isButtonsShow = true
+    getUserAvatar () {
+      let isEmailValid = this.regExps.email.test(this.fromWhom.email)
+      if (isEmailValid) {
+        let options= {
+          protocol: 'https',
+          size: '100',
+          default: `https://api.adorable.io/avatars/100/${this.fromWhom.email}.png`,
+        }
+        this.fromWhom.avatar = gravatar.url(this.fromWhom.email, options)
+      }
     },
+
     // 点击输入框“取消”按钮的处理函数
     onCancel () {
       this.$emit('hideSubInputBox')
       this.isButtonsShow = false
-      this.inputValue = ''
+      this.clearUserInput()
     },
     // 点击输入框“发送”按钮的处理函数
-    onSubmit: async function () {
+    async onSubmit () {
+      if(!this.inputValue) return this.$message.warning('请输入评论内容')
+      let msg = this.checkUserInfo()
+      if (msg) return this.$message.warning(msg)
       if(this.isMainInputBox) {
         var articleId = window.location.pathname.split('/')[2]
         let dataObj = {    // 定义父评论需要保存的数据对象
@@ -177,16 +214,15 @@ export default {
         var {data} = await this.$axios.patch('/api/comments', dataObj)
         this.$emit('hideSubInputBox')
       }
-      this.inputValue = ''
       let {success, message} = data
       if (success) {
         this.$message.success(message)
         this.$store.dispatch('comments/fetchCommentList', articleId)  // 更新vuex中commentList的数据
         if (this.rememberMe) {
-          this.$store.dispatch('')
-          this.hasUserCache = true
+          this.saveUserCache()
         }
       } else this.$message.error(message)
+      this.clearUserInput()
     }
 
   }

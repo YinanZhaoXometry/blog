@@ -22,11 +22,11 @@ module.exports = {
       pageNum = pageNum ? parseInt(pageNum) : 1
       pageSize = parseInt(pageSize)
       // 获取xx分类下的文章总数量
-      let result = await categoryModel.findOne({nameEN:categoryName},{})
+      let result = await categoryModel.findOne({enName:categoryName},{})
       let cateArticleCount = result.articles.length
       // 获取分类对象，其中包含当前分类下的所有文章
       let categoryObj = await categoryModel
-        .findOne({nameEN:categoryName},{})
+        .findOne({enName:categoryName},{})
         .populate({
           path: 'articles',
           options: {
@@ -51,10 +51,11 @@ module.exports = {
   // 添加新分类
   saveCategory: async function (ctx, next) {
     try {
-      let data = ctx.request.body
+      let {cnName, enName, description} = ctx.request.body
       let newDoc = new categoryModel({
-        name: data.name,
-        description: data.description,
+        cnName,
+        enName,
+        description,
         articles: []
       })
       await newDoc.save()

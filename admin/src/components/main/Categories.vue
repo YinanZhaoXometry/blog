@@ -5,11 +5,11 @@
       style="width: 100%"
     >
       <el-table-column
-        prop="nameCN"
+        prop="cnName"
         label="分类名称"
       />
       <el-table-column
-        prop="nameEN"
+        prop="enName"
         label="分类名称"
       />
       <el-table-column
@@ -58,7 +58,7 @@
           :label-width="formLabelWidth"
         >
           <el-input
-            v-model="form.nameCN"
+            v-model="form.cnName"
             autocomplete="off"
             autofocus="true"
             placeholder="请输入中文"
@@ -69,7 +69,7 @@
           :label-width="formLabelWidth"
         >
           <el-input
-            v-model="form.nameEN"
+            v-model="form.enName"
             autocomplete="off"
             placeholder="请输入英文，空格用“-”代替"
           />
@@ -111,7 +111,11 @@ export default {
 
       dialogFormVisible: false,
       formLabelWidth: '70px',
-      form: {}
+      form: {
+        enName: '',
+        cnName: '',
+        description: '',
+      }
     }
   },
   created: async function () {

@@ -49,8 +49,8 @@
         >
           <el-option
             v-for="item in selectData"
-            :key="item.nameEN"
-            :label="item.nameCN"
+            :key="item.enName"
+            :label="item.cnName"
             :value="item._id"
           />
         </el-select>
@@ -225,6 +225,8 @@
           return this.showMessage('请输入文章内容', 'warning')
         if(!this.category)
           return this.showMessage('请选择文章类别', 'warning')
+         if(this.abstract.length > 54)
+          return this.showMessage('文章摘要过长', 'warning')
         // 如摘要未填写，则从正文内容截取54个字
         if(!this.abstract.trim())
           this.abstract = this.content.slice(0, 54)+'...'

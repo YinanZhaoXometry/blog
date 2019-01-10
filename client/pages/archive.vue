@@ -12,7 +12,7 @@
 
 <script>
 import MainSection from '~/components/archive/MainSection'
-import SideSection from '~/components/archive/SideSection'
+import SideSection from '~/components/public/SideSection'
 
 export default {
 

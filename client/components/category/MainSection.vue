@@ -1,7 +1,7 @@
 <template>
   <section>
     <el-row>
-      <span>分类：{{ category.nameCN }}</span>
+      <span>分类：{{ category.cnName }}</span>
     </el-row>
     <el-row>
       <nuxt-link

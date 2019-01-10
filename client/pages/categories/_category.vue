@@ -12,7 +12,7 @@
 
 <script>
 import MainSection from '~/components/category/MainSection'
-import SideSection from '~/components/category/SideSection'
+import SideSection from '~/components/public/SideSection'
 
 export default {
 
@@ -32,8 +32,8 @@ export default {
         cateArticleCount,
         articleList: categoryObj.articles,
         category:{
-          nameCN: categoryObj.nameCN,
-          nameEN: categoryObj.nameEN,
+          cnName: categoryObj.cnName,
+          enName: categoryObj.enName,
           description: categoryObj.description
         }
       })

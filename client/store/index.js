@@ -3,6 +3,7 @@ const state = () => ({
   popularList: [],
   totalArticleCount: 0,
 
+
   cateArticleList: [],
   cateArticleCount: 0,
   category: {}
@@ -34,6 +35,18 @@ const mutations = {
 
   mergeCateArticleList (state, payload) {
     state.cateArticleList = state.cateArticleList.concat(payload.articles)
+  },
+
+  likeArticle (state, articleId) {
+    let index = state.articleList.findIndex(element => Object.is(element._id, articleId))
+    console.log(index)
+    if(index !== -1) state.articleList[index].likes++
+  },
+
+  dislikeArticle (state, articleId) {
+    let index = state.articleList.findIndex(element => Object.is(element._id, articleId))
+    console.log(index)
+    if(index !== -1) state.articleList[index].likes--
   }
 
 }

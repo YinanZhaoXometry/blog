@@ -22,8 +22,8 @@ router
     .post('/articles', articleController.saveArticle)                   // 保存(发布)文章
     .patch('/articles', articleController.updateArticle)                // 修改文章
     .delete('/articles/:id', articleController.deleteArticle)           // 删除文章
-    // .put('articles/like/:id') // 文章点赞
-    // .delete('articles/like/:id') // 取消点赞
+    .put('/articles/like/:id', articleController.likeArticle)            // 对xx(id)文章点赞
+    .delete('/articles/like/:id', articleController.dislikeArticle)      // 取消点赞
     .post('/categories', categoryController.saveCategory)               // 增加分类
     // .patch('/categories', articleController.updateCategory)            // 修改某分类
     // .delete('/categories/:category', articleController.deleteCategory) // 删除某分类
@@ -32,7 +32,7 @@ router
     .get('/categories', categoryController.getCategories)                // 获取所有分类信息
     .get('/categories/:category', categoryController.getCateArticles)    // 获取某分类下的所有文章
     // .get('/tags', articleController.getTags)                            // 获取标签
-    // .get('/tags/:tags', articleController.getTagArticles)                     // 获取某标签下的所有文章
+    .get('/tags/:tag', articleController.getTagArticles)                     // 获取某标签下的所有文章
 
 
 

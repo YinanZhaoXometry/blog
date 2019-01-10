@@ -28,7 +28,6 @@
       </el-card>
     </el-row>
 
-    <!-- 收集的一些句子 -->
   </section>
 </template>
 <script>

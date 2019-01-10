@@ -1,6 +1,5 @@
 <template>
   <section>
-    123123{{ $store.state.totalArticleCount }}
     <el-row>
       <nuxt-link
         v-for="item in articleList"

@@ -7,7 +7,7 @@
     >
       <el-col :span="12">
         <h2>{{ article.title }}</h2>
-        <p>{{ article.author }} 发表在：{{ article.category }}下 {{ article.createTime }} {{ article.tags }}</p>
+        <p>{{ article.author }} 发表在：{{ article.category.cnName }} 分类下 {{ article.createTime.fullDate }}</p>
       </el-col>
     </el-row>
     <el-row
@@ -23,11 +23,13 @@
             :key="tag"
             size="mini"
           >
-            {{ article.tags }}
+            <nuxt-link :to="`/tags/${tag}`">
+              {{ tag }}
+            </nuxt-link>
           </el-button>
-          <el-button round>
-            <i class="iconfont icon-like1" />
-            {{ 10 }}
+          <el-button round @click="likeArticle">
+            <i :class="['iconfont', isArticleLiked ? 'icon-like' : 'icon-like1']" />
+            {{ article.likes ? article.likes + '人赞' : '赞' }}
           </el-button>
           <el-button icon="el-icon-view" round>
             {{ article.views }}
@@ -60,6 +62,16 @@ export default {
   components: {
     Comment
   },
+  data () {
+    return {
+      likedArticles: []
+    }
+  },
+  computed: {
+    isArticleLiked () {
+      return this.likedArticles.includes(this.article._id)
+    }
+  },
   async asyncData ({ app, params }) {
     let {data} = await app.$axios.get(`/api/articles/${params.id}`)
     let {article} = data
@@ -70,6 +82,41 @@ export default {
     await store.dispatch('comments/fetchCommentList', params.id)
   },
 
-  layout: 'article'
+  layout: 'article',
+  mounted () {
+    this.readUserCache()
+  },
+
+  methods: {
+    readUserCache () {
+      if (window.localStorage) {
+        let likedArticles = window.localStorage.getItem('liked_articles')
+        if (likedArticles) this.likedArticles = JSON.parse(likedArticles)
+      }
+
+    },
+
+    async likeArticle () {
+      if( !this.isArticleLiked ) {
+        let {data} = await this.$axios.put(`/api/articles/like/${this.article._id}`)
+        if (data.success) {
+          // this.$store.commit('likeArticle', this.article._id)
+          this.article.likes++
+          this.likedArticles.push(this.article._id)
+        } else this.$message.error('文章点赞失败')
+      } else {
+        console.log(this.article._id)
+        let {data} = await this.$axios.delete(`/api/articles/like/${this.article._id}`)
+        if (data.success) {
+          // this.$store.commit('dislikeArticle', this.article._id)
+          this.article.likes--
+          let index = this.likedArticles.findIndex(element => Object.is(element, this.article._id))
+          this.likedArticles.splice(index, 1)
+        }
+      }
+      window.localStorage.setItem('liked_articles', JSON.stringify(this.likedArticles))
+    },
+
+  }
 }
 </script>

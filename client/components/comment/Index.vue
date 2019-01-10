@@ -6,12 +6,11 @@
         <el-row>
           <el-col :span="2">
             <div>
-              <!-- <img :src="userAvatar || 'https://api.adorable.io/avatars/80/abott@adorable.png'" alt="fromWhom.name || '匿名用户'"> -->
-              <img :src="'https://api.adorable.io/avatars/80/abott@adorable.png'" alt="fromWhom.name || '匿名用户'">
+              <img :src="avatarUrl || 'https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=100&f=y&d=mp'" :alt="avatarUrl || '匿名用户'">
             </div>
           </el-col>
           <el-col :span="22">
-            <input-box :is-main-input-box="true" />
+            <input-box :is-main-input-box="true" @onInputBlur="getAvatar" />
           </el-col>
         </el-row>
       </div>
@@ -24,7 +23,6 @@
 <script>
 import Comment from './Comment.vue'
 import InputBox from './InputBox.vue'
-import gravatar from 'gravatar'
 
 export default {
   components: {
@@ -42,11 +40,21 @@ export default {
   data () {
     return {
       likedComments: [],
+      avatarUrl: ''
     }
   },
   computed: {
     comments () {
       return this.$store.state.comments.commentList
+    },
+  },
+  mounted () {
+    let userInfo = window.localStorage.getItem('user_info')
+    if (userInfo) this.avatarUrl = JSON.parse(userInfo).avatar
+  },
+  methods: {
+    getAvatar (avatarUrl) {
+      this.avatarUrl = avatarUrl
     }
   }
 }

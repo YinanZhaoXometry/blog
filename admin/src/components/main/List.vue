@@ -8,27 +8,42 @@
         width="180"
         label="文章标题"
         prop="title"
-      />
+      >
+        <template slot-scope="scope">
+          <a
+            target="_blank"
+            :href="`http://127.0.0.1:3000/articles/${scope.row._id}`"
+          >
+            {{ scope.row.title }}
+          </a>
+        </template>
+      </el-table-column>
       <el-table-column
         width="180"
         label="发布日期"
-        prop="time.ms"
+        prop="createTime.fullDate"
       />
       <el-table-column
         width="180"
         label="分类"
-        prop="category"
+        prop="category.cnName"
       />
       <el-table-column
         width="180"
         label="是否公开"
-        prop="public"
-      />
+      >
+        <template slot-scope="scope">
+          {{ scope.row.isPublic? '是' : '否' }}
+        </template>
+      </el-table-column>
       <el-table-column
         width="180"
-        label="状态"
-        prop="status"
-      />
+        label="是否发布"
+      >
+        <template slot-scope="scope">
+          {{ scope.row.isPublished? '是' : '否' }}
+        </template>
+      </el-table-column>
       <el-table-column
         width="180"
         label="操作"
@@ -82,10 +97,12 @@ export default {
   methods: {
     // 定义加载页面(文章列表)函数
     loadPage: async function(pageNum, pageSize) {
-      let {data} =await this.$axios.get('/api/articles', { params: {pageNum, pageSize} })
+      let {data} =await this.$axios.get('/api/articles', { params: {pageNum, pageSize, isAdmin: true} })
       let {articleList, totalArticleCount} = data
       this.tableData = articleList
       this.totalArticleCount = totalArticleCount
+    console.log(this.tableData)
+
     },
 
     handlePageSizeChange (pageSize) {

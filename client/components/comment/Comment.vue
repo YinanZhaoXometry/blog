@@ -1,18 +1,23 @@
 <template>
   <section>
     <div>
-      <img src="" alt="">
-      <div>
-        <p>{{ comment.fromWhom.name }}</p>
-        <p>{{ comment.createTime.fullDate }}</p>
-      </div>
+      <el-row>
+        <el-col :span="2">
+          <img :src="getUserAvatar(comment.fromWhom.email)" alt="">
+        </el-col>
+        <el-col :span="4">
+          <div>
+            <p>{{ comment.fromWhom.name }}</p>
+            <p>{{ comment.createTime.fullDate }}</p>
+          </div>
+        </el-col>
+      </el-row>
     </div>
     <p>{{ comment.content }}</p>
     <p>
       <span>
-        <el-button @click="onLikeComment(comment)">
+        <el-button @click="likeComment(comment)">
           <i :class="['iconfont', checkCommentLiked(comment._id) ? 'icon-like' : 'icon-like1']" />
-          <!-- <i :class="[iconfont, checkCommentLiked() ? icon-like1 : icon-like]" /> -->
           <span>{{ comment.likes ? comment.likes+'人赞' : '赞' }}</span>
         </el-button>
       </span>
@@ -53,6 +58,7 @@
 
 <script>
 import InputBox from './InputBox.vue'
+import gravatar from 'gravatar'
 export default {
   components: {
     InputBox
@@ -70,11 +76,9 @@ export default {
       currentButton: {},
       currentSubComment: {},
       isReplyToParent: true,   // 是否是对父评论的回复
-
       isCommentLiked: false,
       likedComments: [],
-
-      inputPrefix:''   //输入框前缀，如：”@某人“
+      inputPrefix: '',   //输入框前缀，如：”@某人“
     }
   },
 
@@ -87,28 +91,33 @@ export default {
     readUserCache () {
       if (window.localStorage) {
         let likedComments = window.localStorage.getItem('liked_comments')
-        if (likedComments)
-          this.likedComments = JSON.parse(likedComments)
+        if (likedComments) this.likedComments = JSON.parse(likedComments)
       }
     },
 
+    getUserAvatar (email) {
+      let options= {
+        protocol: 'https',
+        size: '100',
+        default: `https://api.adorable.io/avatars/100/${email}.png`,
+      }
+      return gravatar.url(email, options)
+    },
+
     // 对评论点赞处理函数
-    async onLikeComment () {
+    async likeComment () {
     // 当comment上isCommentLiked属性为false时，点赞后设置该属性为true
       if ( !this.checkCommentLiked(this.comment._id) ) {
-        console.log('is:',!this.checkCommentLiked(this.comment._id))
         let {data} = await this.$axios.put(`/api/comments/like/${this.comment._id}`)
-        if(data.success) {
+        if (data.success) {
           this.$store.commit('comments/likeComment', this.comment._id)
           this.likedComments.push(this.comment._id)
-        }
-        else this.$message.error('评论点赞失败')
+        } else this.$message.error('评论点赞失败')
       } else {
-        console.log('is:',!this.checkCommentLiked(this.comment._id))
         let {data} = await this.$axios.delete(`/api/comments/like/${this.comment._id}`)
-        if(data.success) {
+        if (data.success) {
           this.$store.commit('comments/dislikeComment', this.comment._id)
-          let index = this.likedComments.findIndex(element => Object.is(element,this.comment._id))
+          let index = this.likedComments.findIndex(element => Object.is(element, this.comment._id))
           this.likedComments.splice(index, 1)
         }
       }
