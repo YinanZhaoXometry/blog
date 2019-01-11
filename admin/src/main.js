@@ -4,19 +4,16 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import store from './store'
-import axios from 'axios'
 import './plugins/element.js'
+import axios from './plugins/axios.js'
+
+// 为Vue实例添加 $axios 属性对象
+Vue.prototype.$axios = axios
 
 Vue.config.productionTip = false
 
-// 为Vue实例添加 $axios 属性对象
-axios.defaults.baseURL = 'http://localhost:3030'
-axios.defaults.withCredentials = true
-
-Vue.prototype.$axios = axios
-
 /* eslint-disable no-new */
-new Vue({
+export default new Vue({
   el: '#app',
   router,
   components: { App },

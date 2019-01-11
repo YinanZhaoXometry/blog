@@ -3,6 +3,7 @@ const userController = require('../controllers/user')
 const articleController = require('../controllers/article')
 const categoryController = require('../controllers/category')
 const commentController = require('../controllers/comment')
+const checkLogin = require('../middlewares/checkLogin').checkLogin
 
 router.prefix('/api')
 
@@ -16,15 +17,16 @@ router
     .patch('/comments', commentController.updateComment) // 保存子评论（在评论document中增加子评论字段）
     .put('/comments/like/:id', commentController.likeComment)         // 对xx(id)评论点赞
     .delete('/comments/like/:id', commentController.dislikeComment)  // 取消点赞
-
-    /* 后台管理路由 */
-    .post('/login', userController.authLogin)                          // 登陆
-    .post('/articles', articleController.saveArticle)                   // 保存(发布)文章
-    .patch('/articles', articleController.updateArticle)                // 修改文章
-    .delete('/articles/:id', articleController.deleteArticle)           // 删除文章
     .put('/articles/like/:id', articleController.likeArticle)            // 对xx(id)文章点赞
     .delete('/articles/like/:id', articleController.dislikeArticle)      // 取消点赞
-    .post('/categories', categoryController.saveCategory)               // 增加分类
+
+    /* 后台管理路由 */
+    .post('/login', userController.login)                               // 登陆
+    .get('/logout', checkLogin, userController.logout)                              // 退出登录 
+    .post('/articles', checkLogin, articleController.saveArticle)                   // 保存(发布)文章
+    .patch('/articles', checkLogin, articleController.updateArticle)                // 修改文章
+    .delete('/articles/:id', checkLogin, articleController.deleteArticle)           // 删除文章
+    .post('/categories', checkLogin, categoryController.saveCategory)               // 增加分类
     // .patch('/categories', articleController.updateCategory)            // 修改某分类
     // .delete('/categories/:category', articleController.deleteCategory) // 删除某分类
     

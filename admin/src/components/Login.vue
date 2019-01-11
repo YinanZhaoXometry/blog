@@ -58,19 +58,18 @@ export default {
 
   methods: {
     login: async function (name, pwd) {
-      let dataSend = { name, pwd }
-      let {data} = await this.$axios.post('/api/login', dataSend)
-      let {msg, code} = data
-      switch (code) {
-        case 0:
-        case -1:
-        case -2:
-          this.showMessage(msg, 'error')
-          break
-        case 1:
-          this.showMessage(msg, 'success')
-          this.$router.push({name: 'Main'})
-          break
+      try {
+        let dataSend = { name, pwd }
+        let {data} = await this.$axios.post('/api/login', dataSend)
+        let {success, message} = data
+        if(!success) this.showMessage(message, 'error')
+        else {
+          window.localStorage.setItem("isUserLogin", "true")
+          this.showMessage(message, 'success')
+          this.$router.push('/')
+        }
+      } catch (err) {
+        this.showMessage(err, 'error')
       }
     },
 

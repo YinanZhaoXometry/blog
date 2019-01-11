@@ -19,5 +19,6 @@ module.exports = {
     'vue/component-name-in-template-casing': ["error", "kebab-case"],
     "vue/singleline-html-element-content-newline": "off",
     'vue/no-unused-vars' : 'off',
+    "vue/max-attributes-per-line": "off"
   }
 }

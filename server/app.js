@@ -81,7 +81,11 @@ mongoose.connect(config.dbURI, {useNewUrlParser:true}, function(err) {
 app.keys = ['nuxt koa blog']   // 设置cookie签名秘钥
 
 app.use(session({
-  store: new MongoStore()
+  store: new MongoStore({
+    db: config.dbName,
+    ttl: 1000 * 60 * 60* 24 * 7,   // Session timeouts (time-to-live), defaults to cookie maxAge
+  }),
+  cookie: { maxAge: 1000 * 20 }  // 7days
 }))
 
 // routes

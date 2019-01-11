@@ -96,12 +96,15 @@ export default {
 
   methods: {
     // 定义加载页面(文章列表)函数
-    loadPage: async function(pageNum, pageSize) {
-      let {data} =await this.$axios.get('/api/articles', { params: {pageNum, pageSize, isAdmin: true} })
-      let {articleList, totalArticleCount} = data
-      this.tableData = articleList
-      this.totalArticleCount = totalArticleCount
-    console.log(this.tableData)
+    async loadPage (pageNum, pageSize) {
+      try {
+        let {data} =await this.$axios.get('/api/articles', { params: {pageNum, pageSize, isAdmin: true} })
+        let {articleList, totalArticleCount} = data
+        this.tableData = articleList
+        this.totalArticleCount = totalArticleCount
+      } catch (err) {
+        this.$message.error('加载文章列表失败：',err)
+      }
 
     },
 
