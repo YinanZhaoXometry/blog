@@ -3,7 +3,7 @@ const userController = require('../controllers/user')
 const articleController = require('../controllers/article')
 const categoryController = require('../controllers/category')
 const commentController = require('../controllers/comment')
-const checkLogin = require('../middlewares/checkLogin').checkLogin
+const checkLogin = require('../middlewares/auth').checkLogin
 
 router.prefix('/api')
 
@@ -37,10 +37,4 @@ router
     .get('/tags/:tag', articleController.getTagArticles)                     // 获取某标签下的所有文章
 
 
-
-
-
-
-
 module.exports = router
-

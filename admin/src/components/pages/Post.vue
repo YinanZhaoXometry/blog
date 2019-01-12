@@ -179,8 +179,12 @@
     },
 
     created: async function () {
-      let {data} = await this.$axios.get('/api/categories')
-      this.selectData = data.result
+      try {
+        let {data} = await this.$axios.get('/api/categories')
+        this.selectData = data.result
+      } catch (err) {
+        this.$message.error(err)
+      }
     },
 
     methods: {
@@ -242,18 +246,16 @@
           isPublished
         }
         // 相对应API发送ajax请求，并接收服务器响应结果
-        let {data} = await this.$axios.post('/api/articles', obj)
-        let {success, message} = data
-        // 根据响应结果进行逻辑判断，并提示
-        if(success) {
+        try {
+          let {data} = await this.$axios.post('/api/articles', obj)
+          let {message} = data
+          // 根据响应结果进行逻辑判断，并提示
           this.showMessage(message, 'success')
           this.$router.push({name: 'Main'})
-        } else {
-          this.showMessage(message, 'error')
+        } catch (err) {
+          this.showMessage(err)
         }
       },
-
-
 
     }
   }

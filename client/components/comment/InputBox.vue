@@ -185,43 +185,44 @@ export default {
       if(!this.inputValue) return this.$message.warning('请输入评论内容')
       let msg = this.checkUserInfo()
       if (msg) return this.$message.warning(msg)
-      if(this.isMainInputBox) {
-        var articleId = window.location.pathname.split('/')[2]
-        let dataObj = {    // 定义父评论需要保存的数据对象
-          content: this.inputValue,
-          fromWhom: this.fromWhom,
-          articleId
+      try {
+        if(this.isMainInputBox) {
+          var articleId = window.location.pathname.split('/')[2]
+          let dataObj = {    // 定义父评论需要保存的数据对象
+            content: this.inputValue,
+            fromWhom: this.fromWhom,
+            articleId
+          }
+          var {data} = await this.$axios.post('/api/comments', dataObj)
+          this.isButtonsShow = false
+        } else {
+          let isReplyToParent = this.$parent.isReplyToParent
+          let content =
+            isReplyToParent   // 将子评论内容中的”@xxx“字段去除，便于后续数据操作和页面显示。
+            ? this.inputValue
+            : this.inputValue.replace('@' + this.$parent.currentSubComment.fromWhom.name, '').trim()
+          let toWhom =
+            isReplyToParent
+            ? this.$parent.comment.fromWhom
+            : this.$parent.currentSubComment.fromWhom
+          let dataObj = {
+            _id: this.$parent.comment._id,
+            fromWhom: this.fromWhom,
+            toWhom,
+            content,
+            isReplyToParent
+          }
+          var {data} = await this.$axios.patch('/api/comments', dataObj)
+          this.$emit('hideSubInputBox')
+          this.$message.error(err)
         }
-        var {data} = await this.$axios.post('/api/comments', dataObj)
-        this.isButtonsShow = false
-      } else {
-        let isReplyToParent = this.$parent.isReplyToParent
-        let content =
-          isReplyToParent   // 将子评论内容中的”@xxx“字段去除，便于后续数据操作和页面显示。
-          ? this.inputValue
-          : this.inputValue.replace('@' + this.$parent.currentSubComment.fromWhom.name, '').trim()
-        let toWhom =
-          isReplyToParent
-          ? this.$parent.comment.fromWhom
-          : this.$parent.currentSubComment.fromWhom
-        let dataObj = {
-          _id: this.$parent.comment._id,
-          fromWhom: this.fromWhom,
-          toWhom,
-          content,
-          isReplyToParent
-        }
-        var {data} = await this.$axios.patch('/api/comments', dataObj)
-        this.$emit('hideSubInputBox')
-      }
-      let {success, message} = data
-      if (success) {
+        let {message} = data
         this.$message.success(message)
         this.$store.dispatch('comments/fetchCommentList', articleId)  // 更新vuex中commentList的数据
-        if (this.rememberMe) {
-          this.saveUserCache()
-        }
-      } else this.$message.error(message)
+        if (this.rememberMe) { this.saveUserCache() }
+      } catch (err) {
+        this.$message.error(err)
+      }
       this.clearUserInput()
     }
 

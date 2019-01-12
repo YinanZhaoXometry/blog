@@ -66,10 +66,14 @@ export default {
   },
 
   async asyncData ({ app, route }) {
-    let {data} = await app.$axios.get(`/api/tags/${encodeURI(route.params.tag)}`)
-    let { success, list } = data
-    if ( success) return {list}
-    else app.$message.error('获取文章失败')
+    try {
+      let {data} = await app.$axios.get(`/api/tags/${encodeURI(route.params.tag)}`)
+      let {list} = data
+      return {list}
+    } catch (err) {
+      app.$message.error('获取文章失败，' + err)
+    }
+
   }
 
 }

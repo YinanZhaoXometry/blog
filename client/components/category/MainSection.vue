@@ -104,14 +104,16 @@ export default {
       this.isLoading = true
       if (this.pageNum < this.totalPageCount) {
         this.pageNum++
-        let {data} = await this.$axios.get(
-          `/api/categories/${this.category.nameEN}`,
-          { params: {pageNum: this.pageNum, pageSize: this.pageSize} }
-        )
-        let {success, categoryObj} = data
-        if (success) {
+        try {
+          let {data} = await this.$axios.get(
+            `/api/categories/${this.category.nameEN}`,
+            { params: {pageNum: this.pageNum, pageSize: this.pageSize} }
+          )
+          let {categoryObj} = data
           this.$store.commit('mergeCateArticleList', categoryObj)
           this.isLoading = false
+        } catch (err) {
+          this.$message.error(err)
         }
       }
     },

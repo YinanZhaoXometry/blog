@@ -23,7 +23,7 @@ const routes = [
     path: '/',
     component: Index,
     redirect: '/overview',
-    meta: { requireAuth: true },
+    // meta: { requireAuth: true },
     children: [
       {
         path: 'overview',
@@ -35,7 +35,7 @@ const routes = [
         path: 'list',
         name: 'List',
         component: List,
-        meta: { requireAuth: true }
+        // meta: { requireAuth: true }
       },
       {
         path: 'edit/:id',

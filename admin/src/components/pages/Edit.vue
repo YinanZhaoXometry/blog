@@ -101,13 +101,17 @@
 
     // 在created生命周期获取文章数据
     created: async function () {
-      let id = this.$route.params.id
-      let getArticleData = this.$axios.get(`/api/articles/${id}`)
-      let getCategoryData = this.$axios.get('/api/categories')
-      let [articleResponse, categoryResponse] = await Promise.all([getArticleData, getCategoryData])
-      this.article = articleResponse.data.article
-      this.category = this.article.category
-      this.selectData = categoryResponse.data.result
+      try {
+        let id = this.$route.params.id
+        let getArticleData = this.$axios.get(`/api/articles/${id}`)
+        let getCategoryData = this.$axios.get('/api/categories')
+        let [articleResponse, categoryResponse] = await Promise.all([getArticleData, getCategoryData])
+        this.article = articleResponse.data.article
+        this.category = this.article.category
+        this.selectData = categoryResponse.data.result
+      } catch (err) {
+        this.$message.error(err)
+      }
     },
 
     methods: {
@@ -122,14 +126,14 @@
           category: this.category
         }
         // 相对应API发送ajax请求，并接收服务器响应结果
-        let {data} = await this.$axios.patch('/api/articles', articleObj)
-        let {message, success} = data
-        // 根据响应结果进行逻辑判断，并提示
-        if(success) {
+        try {
+          let {data} = await this.$axios.patch('/api/articles', articleObj)
+          let {message} = data
+          // 根据响应结果进行逻辑判断，并提示
           this.showMessage(message, 'success')
           this.$router.back()
-        } else {
-          this.showMessage(message, 'error')
+        } catch (err) {
+          this.showMessage(err)
         }
       },
 

@@ -39,13 +39,11 @@ const mutations = {
 
   likeArticle (state, articleId) {
     let index = state.articleList.findIndex(element => Object.is(element._id, articleId))
-    console.log(index)
     if(index !== -1) state.articleList[index].likes++
   },
 
   dislikeArticle (state, articleId) {
     let index = state.articleList.findIndex(element => Object.is(element._id, articleId))
-    console.log(index)
     if(index !== -1) state.articleList[index].likes--
   }
 

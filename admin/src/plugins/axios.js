@@ -6,16 +6,19 @@ axios.defaults.withCredentials = true
 
 axios.interceptors.response.use(
   response => {
-    if (response.data.status && response.data.status === 401) {
-      return app.$router.replace({
-        path: '/login',
-        query: { redirect: app.$router.currentRoute.fullPath }
-      })
-    }
     return response
   },
   error => {
-    return Promise.reject(error)
+    if (error.response) {
+      console.log(error.response.status)
+      if (error.response.status === 401) {
+        app.$router.replace({
+          path: '/login',
+          query: { redirect: app.$router.currentRoute.fullPath }
+        })
+      }
+    }
+    return Promise.reject(error.response.data.error)
   }
 )
 

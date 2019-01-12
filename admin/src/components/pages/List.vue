@@ -98,14 +98,13 @@ export default {
     // 定义加载页面(文章列表)函数
     async loadPage (pageNum, pageSize) {
       try {
-        let {data} =await this.$axios.get('/api/articles', { params: {pageNum, pageSize, isAdmin: true} })
-        let {articleList, totalArticleCount} = data
+        let response = await this.$axios.get('/api/articles', { params: {pageNum, pageSize, isAdmin: true} })
+        let {articleList, totalArticleCount} = response.data
         this.tableData = articleList
         this.totalArticleCount = totalArticleCount
       } catch (err) {
-        this.$message.error('加载文章列表失败：',err)
+        this.$message.error('加载页面失败，'+err)
       }
-
     },
 
     handlePageSizeChange (pageSize) {
@@ -128,14 +127,16 @@ export default {
         cancelButtonText: '取消',
         type: 'warning',
         center: true
-      }).then(async () => {
-        await this.$axios.delete(`/api/articles/${row._id}`)
-        this.loadPage(this.currentPage, this.pageSize)
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        })
-      }).catch(() => {
+      }).then(
+        async () => {
+          await this.$axios.delete(`/api/articles/${row._id}`)
+          this.loadPage(this.currentPage, this.pageSize)
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+        }
+      ).catch(() => {
         this.$message({
           type: 'info',
           message: '已取消删除'

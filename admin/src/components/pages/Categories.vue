@@ -118,24 +118,30 @@ export default {
       }
     }
   },
-  created: async function () {
-    let {data} = await this.$axios.get('/api/categories')
-    this.tableData = data.result
+  async created () {
+    try {
+      let {data} = await this.$axios.get('/api/categories')
+      this.tableData = data.result
+    } catch (err) {
+      this.$message.error(err)
+    }
   },
 
   methods: {
-    //在弹出的添加文章分类对话框，点击确定后的处理函数
+    // 在弹出对话框中，点击确定后的处理函数
     addCategory: async function () {
-      let {data} = await this.$axios.post('/api/categories', this.form)
-      let {success, message} = data
-      if (success)
+      try {
+        let {data} = await this.$axios.post('/api/categories', this.form)
+        let {message} = data
         var msgType = 'success'
-      else
+      } catch (err) {
         var msgType = 'error'
+        let message = err
+      }
       this.$message({
           type: msgType,
           message: message
-        })
+      })
       this.form = {}
       this.dialogFormVisible = false
     },

@@ -22,14 +22,13 @@ export default {
   },
 
   async fetch ({app, store}) {
-    let {data} = await app.$axios.get('/api/articles')
-    let {success, articleList, totalArticleCount} = data
-    if (success)
+    try {
+      let {data} = await app.$axios.get('/api/articles')
+      let {articleList, totalArticleCount} = data
       store.commit('getArticleList', {articleList, totalArticleCount})
-  },
-
-  methods:{
-
+    } catch (err) {
+      this.$message.error(err)
+    }
   },
 
 }

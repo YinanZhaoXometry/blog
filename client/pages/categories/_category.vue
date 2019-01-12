@@ -22,12 +22,12 @@ export default {
   },
 
   async fetch ({app, params, store}) {
-    let {data} = await app.$axios.get(
-      `/api/categories/${params.category}`,
-      {params: {pageSize: 3}}
-    )
-    let {success, categoryObj, cateArticleCount} = data
-    if (success) {
+    try {
+      let {data} = await app.$axios.get(
+        `/api/categories/${params.category}`,
+        {params: {pageSize: 3}}
+      )
+      let {categoryObj, cateArticleCount} = data
       store.commit('getCateArticleList',{
         cateArticleCount,
         articleList: categoryObj.articles,
@@ -37,7 +37,10 @@ export default {
           description: categoryObj.description
         }
       })
+    } catch (err) {
+      this.$message.error(err)
     }
+
   },
 
 

@@ -61,13 +61,10 @@ export default {
       try {
         let dataSend = { name, pwd }
         let {data} = await this.$axios.post('/api/login', dataSend)
-        let {success, message} = data
-        if(!success) this.showMessage(message, 'error')
-        else {
-          window.localStorage.setItem("isUserLogin", "true")
-          this.showMessage(message, 'success')
-          this.$router.push('/')
-        }
+        let {message} = data
+        window.localStorage.setItem("isUserLogin", "true")
+        this.showMessage(message, 'success')
+        this.$router.push('/')
       } catch (err) {
         this.showMessage(err, 'error')
       }

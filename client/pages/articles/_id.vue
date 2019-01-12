@@ -73,9 +73,13 @@ export default {
     }
   },
   async asyncData ({ app, params }) {
-    let {data} = await app.$axios.get(`/api/articles/${params.id}`)
-    let {article} = data
-    return {article}
+    try {
+      let {data} = await app.$axios.get(`/api/articles/${params.id}`)
+      let {article} = data
+      return {article}
+    } catch (err) {
+      this.$message.error(err)
+    }
   },
 
   async fetch ({ params, store }) {
@@ -98,20 +102,21 @@ export default {
 
     async likeArticle () {
       if( !this.isArticleLiked ) {
-        let {data} = await this.$axios.put(`/api/articles/like/${this.article._id}`)
-        if (data.success) {
-          // this.$store.commit('likeArticle', this.article._id)
+        try {
+          let {data} = await this.$axios.put(`/api/articles/like/${this.article._id}`)
           this.article.likes++
           this.likedArticles.push(this.article._id)
-        } else this.$message.error('文章点赞失败')
+        } catch (err) {
+          this.$message.error('文章点赞失败，' + err)
+        }
       } else {
-        console.log(this.article._id)
-        let {data} = await this.$axios.delete(`/api/articles/like/${this.article._id}`)
-        if (data.success) {
-          // this.$store.commit('dislikeArticle', this.article._id)
+        try {
+          let {data} = await this.$axios.delete(`/api/articles/like/${this.article._id}`)
           this.article.likes--
           let index = this.likedArticles.findIndex(element => Object.is(element, this.article._id))
           this.likedArticles.splice(index, 1)
+        } catch (err) {
+          this.$message.error(err)
         }
       }
       window.localStorage.setItem('liked_articles', JSON.stringify(this.likedArticles))

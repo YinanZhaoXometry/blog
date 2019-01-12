@@ -27,7 +27,6 @@
         </nuxt-link>
       </el-card>
     </el-row>
-
   </section>
 </template>
 <script>

@@ -108,17 +108,21 @@ export default {
     async likeComment () {
     // 当comment上isCommentLiked属性为false时，点赞后设置该属性为true
       if ( !this.checkCommentLiked(this.comment._id) ) {
-        let {data} = await this.$axios.put(`/api/comments/like/${this.comment._id}`)
-        if (data.success) {
+        try {
+          await this.$axios.put(`/api/comments/like/${this.comment._id}`)
           this.$store.commit('comments/likeComment', this.comment._id)
           this.likedComments.push(this.comment._id)
-        } else this.$message.error('评论点赞失败')
+        } catch (err) {
+          this.$message.error('评论点赞失败，' + err)
+        }
       } else {
-        let {data} = await this.$axios.delete(`/api/comments/like/${this.comment._id}`)
-        if (data.success) {
+        try {
+          await this.$axios.delete(`/api/comments/like/${this.comment._id}`)
           this.$store.commit('comments/dislikeComment', this.comment._id)
           let index = this.likedComments.findIndex(element => Object.is(element, this.comment._id))
           this.likedComments.splice(index, 1)
+        } catch (err) {
+          this.$message.error(err)
         }
       }
       window.localStorage.setItem('liked_comments', JSON.stringify(this.likedComments))
