@@ -23,7 +23,7 @@ const routes = [
     path: '/',
     component: Index,
     redirect: '/overview',
-    // meta: { requireAuth: true },
+    meta: { requireAuth: true },
     children: [
       {
         path: 'overview',
@@ -35,7 +35,7 @@ const routes = [
         path: 'list',
         name: 'List',
         component: List,
-        // meta: { requireAuth: true }
+        meta: { requireAuth: true }
       },
       {
         path: 'edit/:id',
@@ -73,20 +73,21 @@ const routes = [
 
 const router = new Router({
   mode: 'history',
-  routes,
+  routes
 })
 
 router.beforeEach(
-  (to, from, next) => {
+  async (to, from, next) => {
     if (to.matched.some(record => record.meta.requireAuth)) {
-      if (!auth.checkLogin()) {
-        next({
-          path: '/login',
-          query: { redirect: to.fullPath }
-        })
-      } else next()
-    } else next()
-  }
-)
+      let isLoggedIn = await auth.checkLogin()
+      if (!isLoggedIn) {
+        next({ path: '/login' })
+      } else {
+        next()
+      }
+    }
+    next()
+
+})
 
 export default router

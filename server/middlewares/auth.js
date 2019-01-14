@@ -1,9 +1,26 @@
+const config = require('../config')
+const jwt = require('jwt-simple')
+
 module.exports = {
-  // 定义函数，检查用户是否已登录，如未登录，则执行相关逻辑逻辑
-  async checkLogin (ctx, next) {
-    if (!ctx.session.user) {
-      ctx.throw(401, '请登录')
+  async authUser (ctx, next) {
+    // 定义身份验证函数，在每次请求时验证用户身份：读取cookie中保存的token、解密，并将解密信息保存在ctx.request对象中
+    const token = ctx.cookies.get(config.cookieName, {signed: true})
+    if(token) {
+      const decoded = jwt.decode(token, config.jwtSecret,)
+      if (decoded.expires <= Date.now()) {
+        ctx.throw(400, '您的登陆已过期，请重新登陆')
+      }
+      ctx.request.user = decoded   // 将token信息保存至ctx.request对象的user属性中
+    }
+    await next()
+  },
+
+  // 定义函数，只允许已登录用户执行后续业务逻辑
+  async allowIfLoggedin (ctx, next) {
+    if (!ctx.request.user) {
+      ctx.throw(403, '请先登录')
     }
     await next()
   }
+
 }

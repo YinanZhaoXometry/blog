@@ -7,7 +7,7 @@ module.exports = {
   async getArticles (ctx) {
     // 判断管理员是否登录，如已登陆则返回所有文章，否则仅返回公开文章
     condition = 
-      ctx.session.user 
+      ctx.request.user 
       ? {} 
       : {
         isPublic: true,

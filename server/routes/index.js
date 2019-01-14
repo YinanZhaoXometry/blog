@@ -3,12 +3,12 @@ const userController = require('../controllers/user')
 const articleController = require('../controllers/article')
 const categoryController = require('../controllers/category')
 const commentController = require('../controllers/comment')
-const checkLogin = require('../middlewares/auth').checkLogin
+const allowIfLoggedin = require('../middlewares/auth').allowIfLoggedin
 
 router.prefix('/api')
 
 router
-    /* 前端页面路由 */
+    /* 前端页面相关api */
     .get('/articles', articleController.getArticles)                 // 获取文章列表
     .get('/articles/:id', articleController.getOneArticle)           // 获取单篇文章
     .get('/popularArticles', articleController.getPopularArticles)   // 获取热门文章列表
@@ -20,17 +20,18 @@ router
     .put('/articles/like/:id', articleController.likeArticle)            // 对xx(id)文章点赞
     .delete('/articles/like/:id', articleController.dislikeArticle)      // 取消点赞
 
-    /* 后台管理路由 */
+    /* 后台管理相关api */
+    .get('/login', allowIfLoggedin, async ctx => {ctx.body="已登录"})  // 用于检查用户是否登录的api
     .post('/login', userController.login)                               // 登陆
-    .get('/logout', checkLogin, userController.logout)                              // 退出登录 
-    .post('/articles', checkLogin, articleController.saveArticle)                   // 保存(发布)文章
-    .patch('/articles', checkLogin, articleController.updateArticle)                // 修改文章
-    .delete('/articles/:id', checkLogin, articleController.deleteArticle)           // 删除文章
-    .post('/categories', checkLogin, categoryController.saveCategory)               // 增加分类
+    .get('/logout', allowIfLoggedin, userController.logout)                              // 退出登录 
+    .post('/articles', allowIfLoggedin, articleController.saveArticle)                   // 保存(发布)文章
+    .patch('/articles', allowIfLoggedin, articleController.updateArticle)                // 修改文章
+    .delete('/articles/:id', allowIfLoggedin, articleController.deleteArticle)           // 删除文章
+    .post('/categories', allowIfLoggedin, categoryController.saveCategory)               // 增加分类
     // .patch('/categories', articleController.updateCategory)            // 修改某分类
     // .delete('/categories/:category', articleController.deleteCategory) // 删除某分类
     
-    /* 前端 后台 公用路由 */
+    /* 前端/后台页面共用api */
     .get('/categories', categoryController.getCategories)                // 获取所有分类信息
     .get('/categories/:category', categoryController.getCateArticles)    // 获取某分类下的所有文章
     // .get('/tags', articleController.getTags)                            // 获取标签

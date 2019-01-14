@@ -58,11 +58,11 @@ export default {
 
   methods: {
     login: async function (name, pwd) {
+      console.log(document.cookie)
       try {
         let dataSend = { name, pwd }
         let {data} = await this.$axios.post('/api/login', dataSend)
         let {message} = data
-        window.localStorage.setItem("isUserLogin", "true")
         this.showMessage(message, 'success')
         this.$router.push('/')
       } catch (err) {
