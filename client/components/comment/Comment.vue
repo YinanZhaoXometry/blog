@@ -1,5 +1,6 @@
 <template>
   <section>
+    <!-- 父级评论区 -->
     <div>
       <el-row>
         <el-col :span="2">
@@ -25,7 +26,7 @@
         <el-button @click="onClickReply($event, true)"><i>icon</i>回复</el-button>
       </span>
     </p>
-    <!-- 子评论区开始 -->
+    <!-- 子评论区 -->
     <div>
       <article v-for="subComment in comment.subComments" :key="subComment._id">
         <p>
@@ -44,15 +45,16 @@
           <span>添加新评论</span>
         </el-button>
       </p>
-      <input-box
-        v-show="isSubInputBoxShow"
-        ref="inputbox"
-        :is-main-input-box="false"
-        :input-prefix="inputPrefix"
-        @hideSubInputBox="onHide"
-      />
+      <transition name="el-fade-in-linear">
+        <input-box
+          v-show="isSubInputBoxShow"
+          ref="inputbox"
+          :is-main-input-box="false"
+          :input-prefix="inputPrefix"
+          @hideSubInputBox="onHide"
+        />
+      </transition>
     </div>
-    <!-- 子评论区结束 -->
   </section>
 </template>
 

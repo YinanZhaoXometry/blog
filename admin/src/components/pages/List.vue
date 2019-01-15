@@ -1,5 +1,21 @@
 <template>
   <section>
+    <el-row>
+      <el-col :span="10">
+        <el-input
+          v-model="searchKeyword"
+          placeholder="搜索酷核"
+          @keyup.native.enter="searchForKW"
+        />
+      </el-col>
+      <el-col :span="2">
+        <el-button
+          type="primary"
+          icon="el-icon-search"
+          @click="searchForKW"
+        />
+      </el-col>
+    </el-row>
     <el-table
       style="width: 100%"
       :data="tableData"
@@ -86,7 +102,8 @@ export default {
       tableData: [],
       totalArticleCount: 0,
       currentPage: 1,
-      pageSize: 10
+      pageSize: 10,
+      searchKeyword: ''
     }
   },
   created () {
@@ -103,7 +120,20 @@ export default {
         this.tableData = articleList
         this.totalArticleCount = totalArticleCount
       } catch (err) {
-        this.$message.error('加载页面失败，'+err)
+        this.$message.error(err)
+      }
+    },
+
+    async searchForKW () {
+      try {
+        let {data} = await this.$axios.get(
+          '/api/search',
+          {params: {keyword: this.searchKeyword}}
+        )
+        let {articles} = data
+        this.tableData = articles
+      } catch (err) {
+        this.$message.error(err)
       }
     },
 

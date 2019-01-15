@@ -5,7 +5,6 @@ module.exports = {
   // 获取评论处理函数
   async getComments (ctx, next) {
     let condition = ctx.params
-    console.log(condition)
     let option = { sort: {createTime: -1} }
     let comments = await commentModel.find(condition, {}, option)
     ctx.response.body = {
@@ -23,15 +22,16 @@ module.exports = {
       ctx.request.headers['x-forwarded-for'] 
     ).replace('::ffff:', '')
     let { content, articleId, fromWhom } = ctx.request.body
-    let time = getTimeObj()
+    let createTime = getTimeObj()
     let newDoc = new commentModel({
-      createTime: time,
+      createTime,
       ip,
       articleId,
       content,
       fromWhom
     })
-    await newDoc.save()
+    let result = await newDoc.save()
+    console.log(result)
     ctx.response.body = {
       message: '回复成功'
     }

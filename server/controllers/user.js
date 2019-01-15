@@ -3,23 +3,24 @@ const crypto = require('crypto')
 const jwt = require('jwt-simple')
 const config = require('../config')
 const moment = require('moment');
+const bcrypt = require('bcrypt')
 
 module.exports = {
   // 定义登陆验证方法
   async login (ctx, next) {
-    let md5 = crypto.createHash('md5')  // 使用 crypto 模块将输入的登陆密码转换为 MD5 加密格式
-    var pwdMd5 = md5.update(ctx.request.body.pwd).digest('hex')
-    let userDoc = await userModel.findOne({name: ctx.request.body.name}, null)   // 在数据库中按照输入的登录名查找
+    let {name, pwd} = ctx.request.body
+    let userDoc = await userModel.findOne({name}, null)   // 在数据库中按照输入的登录名查找
+    let isPwdValid = await bcrypt.compare(pwd, userDoc.password)
     if(!userDoc) {
       ctx.throw(401, '用户不存在！')
     } else {
-      if(pwdMd5 !== userDoc.password) {
+      if(!isPwdValid) {
         ctx.throw(401, '用户名或密码错误！')
       } else {
         let payload = {
           id: userDoc._id,
           name: userDoc.name,
-          expires: moment().add(7, 'days').valueOf()  // 指定token过期时间（毫秒数）
+          exp: moment().add(7, 'days').valueOf()  // 指定token过期时间（毫秒数）
         }
         const token = jwt.encode(payload, config.jwtSecret)
         let opts = {

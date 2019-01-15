@@ -64,10 +64,27 @@ module.exports = {
 
   async getTagArticles (ctx, next) {
     let tag = ctx.params.tag
+    console.log(ctx.params)
     let list = await articleModel.find({tags:tag}, '-content -comments', {sort: {createTime: -1}})
     ctx.body = {
       list
     }
+  },
+
+  async getSearchArticles (ctx, next) {
+    let {keyword} = ctx.request.query
+    let regExp = new RegExp(keyword, 'i')
+    let conditions = {
+      $or: [
+        {title: regExp},
+        {content: regExp},
+      ]
+    }
+    let options = {
+      sort: {createTime: -1}
+    }
+    let articles = await articleModel.find(conditions, "-content", options)
+    ctx.body = { articles }
   },
 
   // 发布文章（保存至数据库）
@@ -98,8 +115,12 @@ module.exports = {
 
   // 修改文章方法
   async updateArticle (ctx, next) {
-    let {id, content, category} = ctx.request.body
-    let getUpdateResult = articleModel.updateOne({_id: id}, {$set: {content:content, category:category}})
+    console.log(ctx.request.body)
+    let {id, content, category, tags, isPublic} = ctx.request.body
+    let getUpdateResult = articleModel.updateOne(
+      {_id: id}, 
+      { $set: { content, category, tags, isPublic } }
+    )
     let getSaveCateResult = categoryController.saveToCategory(category, id)
     let [updateResult, saveCateResult] = await Promise.all([getUpdateResult, getSaveCateResult])
     if(!updateResult.nModified)

@@ -21,22 +21,61 @@
         <el-tag
           v-for="tag in article.tags"
           :key="tag"
+          closable
+          :disable-transitions="true"
+          @close="handleClose(tag)"
         >
           {{ tag }}
         </el-tag>
+        <el-input
+          v-if="tagInputVisible"
+          ref="saveTagInput"
+          v-model="tagInputValue"
+          size="small"
+          @keyup.enter.native="handleInputConfirm"
+          @blur="handleInputConfirm"
+        />
+        <el-button
+          v-else
+          class="button-new-tag"
+          size="small"
+          @click="showInput"
+        >
+          + New Tag
+        </el-button>
       </el-col>
       <el-col :span="12">
         <span>分类：</span>
         <el-select
-          v-model="category"
+          v-model="categoryId"
           placeholder="请选择文章类别"
         >
           <el-option
             v-for="item in selectData"
-            :key="item.nameEN"
-            :label="item.nameCN"
+            :key="item.enName"
+            :label="item.cnName"
             :value="item._id"
           />
+        </el-select>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="12">
+        <span>原创声明：</span>
+        <el-select
+          v-model="article.isOriginal"
+          placeholder="请声明原创"
+          disabled
+        >
+          <el-option label="原创" :value="true" />
+          <el-option label="转载" :value="false" />
+        </el-select>
+      </el-col>
+      <el-col :span="12">
+        <span>是否公开：</span>
+        <el-select v-model="article.isPublic" placeholder="请设置">
+          <el-option label="公开" :value="true" />
+          <el-option label="私有" :value="false" />
         </el-select>
       </el-col>
     </el-row>
@@ -73,7 +112,7 @@
         <el-button
           size="small"
           type="primary"
-          @click="saveArticle"
+          @click="saveUpdate"
         >
           保存
         </el-button>
@@ -93,9 +132,16 @@
     data () {
       return {
         article: {},
-
+        categoryId: '',
         selectData: [],
-        category: ''
+        // category: '',
+        // dynamicTags: [],
+        tagInputVisible: false,
+        tagInputValue: '',
+        // isOriginal: null,
+        // isPublic: null,
+        // content: ''
+
       }
     },
 
@@ -107,7 +153,7 @@
         let getCategoryData = this.$axios.get('/api/categories')
         let [articleResponse, categoryResponse] = await Promise.all([getArticleData, getCategoryData])
         this.article = articleResponse.data.article
-        this.category = this.article.category
+        this.categoryId = this.article.category._id
         this.selectData = categoryResponse.data.result
       } catch (err) {
         this.$message.error(err)
@@ -116,14 +162,17 @@
 
     methods: {
       /* 定义保存文章函数 */
-      saveArticle: async function () {
+      async saveUpdate () {
         if(!this.article.content.trim())
           return this.showMessage('请输入文章内容', 'warning')
-        // 如摘要未填写，则从正文内容截取54个字
+        if(!this.article.category)
+          return this.showMessage('请选择文章类别', 'warning')
         let articleObj = {
           id: this.article._id,
           content: this.article.content,
-          category: this.category
+          category: this.categoryId,
+          tags: this.article.tags,
+          isPublic: this.article.isPublic,
         }
         // 相对应API发送ajax请求，并接收服务器响应结果
         try {
@@ -152,10 +201,29 @@
         })
       },
 
-      // 定义后退方法
+      /* 定义后退方法 */
       navBack () {
         this.$router.back()
-      }
+      },
+
+      /* 定义标签添加、删除方法 */
+      showInput () {
+        this.tagInputVisible = true;
+        this.$nextTick(_ => {
+          this.$refs.saveTagInput.$refs.input.focus();
+        });
+      },
+      handleInputConfirm () {
+        let tagInputValue = this.tagInputValue;
+        if (tagInputValue) {
+          this.article.tags.push(tagInputValue);
+        }
+        this.tagInputVisible = false;
+        this.tagInputValue = '';
+      },
+      handleClose (tag) {
+        this.article.tags.splice(this.article.tags.indexOf(tag), 1);
+      },
 
     }
   }

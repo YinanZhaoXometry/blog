@@ -113,3 +113,4 @@ function appendModule(module, filename, name) {
   module.appends.push(name)
   module[name] = file.default || file
 }
+

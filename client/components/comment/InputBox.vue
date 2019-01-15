@@ -9,7 +9,7 @@
       :autosize="{minRows: 3, maxRows: 6}"
       @focus="isButtonsShow = true"
     />
-    <transition name="fade">
+    <transition name="el-fade-in-linear">
       <div v-show="isMainInputBox ? isButtonsShow : true">
         <!-- 填写用户信息区域 -->
         <el-row v-if="!hasUserCache || isEditUserCache" type="flex">
@@ -31,10 +31,16 @@
             <el-button type="success" plain icon="el-icon-check" @click="updateUserCache" />
           </el-col>
         </el-row>
-        <!--  -->
+        <!-- 按钮区域 -->
         <el-button round>😊</el-button>
         <span @click="onCancel">取消</span>
-        <el-button type="success" round @click="onSubmit">发送</el-button>
+        <el-button
+          type="success"
+          round
+          @click="isMainInputBox ? submitMainComment() : submitChildComment()"
+        >
+          发送
+        </el-button>
         <!-- 修改用户信息区域 -->
         <div v-if="hasUserCache">
           <strong>{{ fromWhom.name }}</strong>
@@ -174,48 +180,62 @@ export default {
       }
     },
 
-    // 点击输入框“取消”按钮的处理函数
+    // 定义点击取消评论处理函数
     onCancel () {
       this.$emit('hideSubInputBox')
       this.isButtonsShow = false
       this.clearUserInput()
     },
-    // 点击输入框“发送”按钮的处理函数
-    async onSubmit () {
+
+    // 定义提交父级评论处理函数
+    async submitMainComment () {
+      console.log('main')
       if(!this.inputValue) return this.$message.warning('请输入评论内容')
       let msg = this.checkUserInfo()
       if (msg) return this.$message.warning(msg)
       try {
-        if(this.isMainInputBox) {
-          var articleId = window.location.pathname.split('/')[2]
-          let dataObj = {    // 定义父评论需要保存的数据对象
-            content: this.inputValue,
-            fromWhom: this.fromWhom,
-            articleId
-          }
-          var {data} = await this.$axios.post('/api/comments', dataObj)
-          this.isButtonsShow = false
-        } else {
-          let isReplyToParent = this.$parent.isReplyToParent
-          let content =
-            isReplyToParent   // 将子评论内容中的”@xxx“字段去除，便于后续数据操作和页面显示。
-            ? this.inputValue
-            : this.inputValue.replace('@' + this.$parent.currentSubComment.fromWhom.name, '').trim()
-          let toWhom =
-            isReplyToParent
-            ? this.$parent.comment.fromWhom
-            : this.$parent.currentSubComment.fromWhom
-          let dataObj = {
-            _id: this.$parent.comment._id,
-            fromWhom: this.fromWhom,
-            toWhom,
-            content,
-            isReplyToParent
-          }
-          var {data} = await this.$axios.patch('/api/comments', dataObj)
-          this.$emit('hideSubInputBox')
-          this.$message.error(err)
+        var articleId = window.location.pathname.split('/')[2]
+        let dataObj = {    // 定义父评论需要保存的数据对象
+          content: this.inputValue,
+          fromWhom: this.fromWhom,
+          articleId
         }
+        var {data} = await this.$axios.post('/api/comments', dataObj)
+        this.isButtonsShow = false
+        let {message} = data
+        this.$message.success(message)
+        this.$store.dispatch('comments/fetchCommentList', articleId)  // 更新vuex中commentList的数据
+        if (this.rememberMe) { this.saveUserCache() }
+      } catch (err) {
+        this.$message.error(err)
+      }
+      this.clearUserInput()
+    },
+
+    // 定义提交子评论处理函数
+    async submitChildComment () {
+      if(!this.inputValue) return this.$message.warning('请输入评论内容')
+      let msg = this.checkUserInfo()
+      if (msg) return this.$message.warning(msg)
+      try {
+        let isReplyToParent = this.$parent.isReplyToParent
+        let content =
+          isReplyToParent   // 将子评论内容中的”@xxx“字段去除，便于后续数据操作和页面显示。
+          ? this.inputValue
+          : this.inputValue.replace('@' + this.$parent.currentSubComment.fromWhom.name, '').trim()
+        let toWhom =
+          isReplyToParent
+          ? this.$parent.comment.fromWhom
+          : this.$parent.currentSubComment.fromWhom
+        let dataObj = {
+          _id: this.$parent.comment._id,
+          fromWhom: this.fromWhom,
+          toWhom,
+          content,
+          isReplyToParent
+        }
+        var {data} = await this.$axios.patch('/api/comments', dataObj)
+        this.$emit('hideSubInputBox')
         let {message} = data
         this.$message.success(message)
         this.$store.dispatch('comments/fetchCommentList', articleId)  // 更新vuex中commentList的数据

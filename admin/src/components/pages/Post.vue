@@ -65,11 +65,11 @@
         >
           <el-option
             label="原创"
-            value="true"
+            :value="true"
           />
           <el-option
             label="转载"
-            value="false"
+            :value="false"
           />
         </el-select>
       </el-col>
@@ -81,11 +81,11 @@
         >
           <el-option
             label="公开"
-            value="true"
+            :value="true"
           />
           <el-option
             label="私有"
-            value="false"
+            :value="false"
           />
         </el-select>
       </el-col>
@@ -165,16 +165,13 @@
         content: '',
         abstract: '',
         fileList2: [{name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}, {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}],
-
         dynamicTags: [],
         tagInputVisible: false,
         tagInputValue: '',
-
         selectData: [],
         category: '',
-
-        isOriginal: 'true',
-        isPublic: 'true'
+        isOriginal: true,
+        isPublic: true
       }
     },
 

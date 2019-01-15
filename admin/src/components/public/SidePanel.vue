@@ -1,7 +1,7 @@
 <template>
   <section>
     <el-menu
-      default-active="overview"
+      :default-active="$route.name.toLowerCase()"
       background-color="#545c64"
       text-color="#fff"
       active-text-color="#ffd04b"
@@ -41,7 +41,6 @@ export default {
     async handleLogout (index) {
       if (index === 'logout') {
         let {data} = await this.$axios.get('/api/logout')
-        window.localStorage.removeItem('isUserLogin')
         this.$message.success(data.message)
         this.$router.push('/login')
       }

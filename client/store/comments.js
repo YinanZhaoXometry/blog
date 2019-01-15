@@ -17,12 +17,15 @@ export const mutations = {
 }
 
 export const actions = {
-  async fetchCommentList ({commit}, articleId) {
-    let {data} = await this.$axios.get(`/api/comments/${articleId}`)
-    if (data.success) {
+    async fetchCommentList ({app, commit}, articleId) {
+    try {
+      let {data} = await this.$axios.get(`/api/comments/${articleId}`)
       commit('setCommentList', data.comments)
+    } catch (err) {
+      app.$message.error(err)
     }
-  },
+  }
+
 
 
 }

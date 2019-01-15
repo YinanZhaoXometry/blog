@@ -6,6 +6,7 @@ const _337f1462 = () => interopDefault(import('../pages/about.vue' /* webpackChu
 const _e2321852 = () => interopDefault(import('../pages/archive.vue' /* webpackChunkName: "pages/archive" */))
 const _ffbfe3ba = () => interopDefault(import('../pages/articles/_id.vue' /* webpackChunkName: "pages/articles/_id" */))
 const _628fd536 = () => interopDefault(import('../pages/categories/_category.vue' /* webpackChunkName: "pages/categories/_category" */))
+const _0d5413c6 = () => interopDefault(import('../pages/search/_keyword.vue' /* webpackChunkName: "pages/search/_keyword" */))
 const _1112c934 = () => interopDefault(import('../pages/tags/_tag.vue' /* webpackChunkName: "pages/tags/_tag" */))
 const _5336ef27 = () => interopDefault(import('../pages/index.vue' /* webpackChunkName: "pages/index" */))
 
@@ -82,6 +83,10 @@ export function createRouter() {
       path: "/categories/:category?",
       component: _628fd536,
       name: "categories-category"
+    }, {
+      path: "/search/:keyword?",
+      component: _0d5413c6,
+      name: "search-keyword"
     }, {
       path: "/tags/:tag?",
       component: _1112c934,

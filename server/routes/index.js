@@ -36,6 +36,6 @@ router
     .get('/categories/:category', categoryController.getCateArticles)    // 获取某分类下的所有文章
     // .get('/tags', articleController.getTags)                            // 获取标签
     .get('/tags/:tag', articleController.getTagArticles)                     // 获取某标签下的所有文章
-
+    .get('/search', articleController.getSearchArticles)
 
 module.exports = router

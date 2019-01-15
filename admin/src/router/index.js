@@ -82,12 +82,10 @@ router.beforeEach(
       let isLoggedIn = await auth.checkLogin()
       if (!isLoggedIn) {
         next({ path: '/login' })
-      } else {
-        next()
       }
+      next()
     }
     next()
-
 })
 
 export default router

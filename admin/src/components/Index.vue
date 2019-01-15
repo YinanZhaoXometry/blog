@@ -6,7 +6,9 @@
         <side-panel />
       </el-aside>
       <el-main>
-        <router-view>1</router-view>
+        <transition name="fade" mode="out-in">
+          <router-view />
+        </transition>
       </el-main>
     </el-container>
     <el-footer><my-footer /></el-footer>
@@ -23,8 +25,14 @@ export default {
     MyFooter,
     SidePanel
   },
-  created () {
-
-  }
 }
 </script>
+
+<style>
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .3s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+</style>

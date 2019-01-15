@@ -1,7 +1,9 @@
 <template>
   <section>
     <my-header />
-    <nuxt />
+    <transition name="fade" mode="out-in">
+      <nuxt />
+    </transition>
     <my-footer />
   </section>
 </template>
@@ -20,7 +22,12 @@ export default {
 
 <style>
 
-
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.6s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
 
 
 

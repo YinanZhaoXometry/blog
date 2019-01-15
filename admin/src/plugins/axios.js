@@ -10,8 +10,7 @@ axios.interceptors.response.use(
   },
   error => {
     if (error.response) {
-      if (error.response.status === 403) {
-        console.log(app.$route)
+      if (error.response.status === 403 || error.response.status === 400 ) {
         app.$router.replace({ path: '/login' })
       }
     }
