@@ -63,6 +63,16 @@ export default {
 
   },
 
+  head () {
+    return {
+      title: `${this.$store.state.category.cnName} | 酷核`,
+      meta: [
+        { name: 'description', content: '30岁辞职学习编程，只想说决定要做一件事情以后，多晚开始都不算晚。我将在这里分享编程学习中的一些思考和心路历程' },
+        { name: 'author', content: '赵一楠' },
+        { name: 'keywords', content: '编程, 自学, 转行, 学习'}
+      ],
+    }
+  }
 }
 
 

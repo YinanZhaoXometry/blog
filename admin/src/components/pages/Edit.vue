@@ -83,14 +83,14 @@
       ref="markdownEditor"
       v-model="article.content"
     />
-    <h4>题图和摘要</h4>
+    <h4>封面和摘要</h4>
     <el-row>
       <el-col :span="12">
         <img src="https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/300x300/format/webp/quality/100">
       </el-col>
       <el-col :span="12">
         <el-input
-          :value="article.abstract"
+          :value="article.description"
           type="textarea"
           :rows="3"
           placeholder="选填，如果不填写会默认抓取正文前的54个字"

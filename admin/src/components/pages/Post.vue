@@ -94,31 +94,52 @@
       ref="markdownEditor"
       v-model="content"
     />
-    <h4>题图和摘要</h4>
+    <h4>封面和摘要</h4>
     <el-row>
+      <!-- 上传封面区域 -->
       <el-col :span="12">
+        <el-button type="text" @click="dialogVisible=true">
+          <img v-if="imageUrl" :src="imageUrl" alt="titleImage">
+          <i v-else class="el-icon-plus" />
+          <p>选择封面</p>
+        </el-button>
         <el-upload
           action="/"
-          :file-list="fileList2"
-          list-type="picture"
+          :show-file-list="false"
+          :on-success="handleSuccessUpload"
+          :before-upload="beforeUpload"
         >
-          <el-button
-            size="small"
-            type="primary"
-          >
-            上传图片
-          </el-button>
-          <div
-            slot="tip"
-            class="el-upload__tip"
-          >
-            只能上传jpg/png文件，且不超过500kb
-          </div>
+          123
         </el-upload>
       </el-col>
+      <!-- 选择图片对话框 -->
+      <el-dialog
+        :visible.sync="dialogVisible"
+        :before-close="handleDialogClose"
+        width="30%"
+      >
+        <div slot="title">
+          <h4>选择图片</h4>
+          <el-steps :active="activeStep" align-center process-status="finish" finish-status="wait">
+            <el-step title="从素材库选择封面" />
+            <el-step title="剪切封面" />
+          </el-steps>
+        </div>
+        <div slot>
+          123
+        </div>
+        <div slot="footer" style="text-align:center">
+          <el-button v-if="activeStep < 1" type="primary" @click="nextStep">下一步</el-button>
+          <div v-else>
+            <el-button @click="lastStep">上一步</el-button>
+            <el-button type="primary" @click="nextStep">完成</el-button>
+          </div>
+        </div>
+      </el-dialog>
+      <!-- 摘要区域 -->
       <el-col :span="12">
         <el-input
-          v-model="abstract"
+          v-model="description"
           type="textarea"
           :rows="3"
           placeholder="选填，如果不填写会默认抓取正文前的54个字"
@@ -163,15 +184,19 @@
         title: '',
         author: '',
         content: '',
-        abstract: '',
-        fileList2: [{name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}, {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}],
+        description: '',
         dynamicTags: [],
         tagInputVisible: false,
         tagInputValue: '',
         selectData: [],
         category: '',
         isOriginal: true,
-        isPublic: true
+        isPublic: true,
+
+        // 对话框相关
+        imageUrl:'',
+        dialogVisible: false,
+        activeStep: 0,
       }
     },
 
@@ -215,6 +240,25 @@
         this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
       },
 
+      /* 图片上传、剪裁相关方法 */
+      handleSuccessUpload () {
+
+      },
+      beforeUpload () {
+
+      },
+      handleDialogClose (done) {
+        done()
+        this.activeStep = 0
+      },
+      nextStep () {
+        if (this.activeStep >= 1) return
+        this.activeStep++
+      },
+      lastStep () {
+        this.activeStep=0
+      },
+
       /* 定义发布文章函数 */
       publish: async function (isPublished) {
         // 依次检查：标题、作者、内容是否填写，并进行相应提示
@@ -226,16 +270,16 @@
           return this.showMessage('请输入文章内容', 'warning')
         if(!this.category)
           return this.showMessage('请选择文章类别', 'warning')
-         if(this.abstract.length > 54)
+         if(this.description.length > 54)
           return this.showMessage('文章摘要过长', 'warning')
         // 如摘要未填写，则从正文内容截取54个字
-        if(!this.abstract.trim())
-          this.abstract = this.content.slice(0, 54)+'...'
+        if(!this.description.trim())
+          this.description = this.content.slice(0, 54)+'...'
         let obj = {
           title: this.title,
           author: this.author,
           content: this.content,
-          abstract: this.abstract,
+          description: this.description,
           tags: this.dynamicTags,
           category: this.category,
           isOriginal: this.isOriginal,

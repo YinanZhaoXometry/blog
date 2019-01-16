@@ -77,9 +77,19 @@ export default {
     //   } while (elem)
     //   return totalTop
     // }
-
-
   },
+
+  // SEO优化，见 https://nuxtjs.org/api/pages-head#the-head-method
+  head () {
+    return {
+      title: '酷核 KuHe.io',
+      meta: [
+        { name: 'description', content: '30岁辞职学习编程，才发现只要人决定做一件事以后，多晚开始都不算晚。我将在这里分享编程学习中的一些思考和心路历程' },
+        { name: 'author', content: '赵一楠' },
+        { name: 'keywords', content: '编程, 自学, 转行, 学习'}
+      ],
+    }
+  }
 
 }
 

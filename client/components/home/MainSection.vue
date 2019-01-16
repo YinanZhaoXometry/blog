@@ -13,7 +13,7 @@
           <el-col :span="10">
             <span>分类1</span>
             <h2>{{ item.title }}</h2>
-            <p>{{ item.abstract }}</p>
+            <p>{{ item.description }}</p>
             <div>
               <el-tag :type="item.isOriginal ? 'success' : 'info'">{{ item.isOriginal ? '原创' : '转载' }}</el-tag>
               <!-- <span><i class="el-icon-date" /> &nbsp; {{ item.createTime.year === new Date().getFullYear() ? item.createTime.simpleDate : item.createTime.fullDate }}</span> -->

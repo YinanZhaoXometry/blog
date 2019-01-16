@@ -120,8 +120,20 @@ export default {
         }
       }
       window.localStorage.setItem('liked_articles', JSON.stringify(this.likedArticles))
-    },
+    }
+  },
 
-  }
+    // SEO优化，见 https://nuxtjs.org/api/pages-head#the-head-method
+  head () {
+      let keywordsStr = `${this.article.category.cnName}, ${this.article.tags.join(', ')})`
+      return {
+        title: this.article.title,
+        meta: [
+          { name: 'description', content: this.article.description },
+          { name: 'author', content: this.article.author },
+          { name: 'keywords', content: keywordsStr }
+        ]
+      }
+    }
 }
 </script>

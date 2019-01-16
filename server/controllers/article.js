@@ -6,9 +6,9 @@ module.exports = {
   // 获取client文章列表
   async getArticles (ctx) {
     // 判断管理员是否登录，如已登陆则返回所有文章，否则仅返回公开文章
-    condition = 
-      ctx.request.user 
-      ? {} 
+    condition =
+      ctx.request.user
+      ? {}
       : {
         isPublic: true,
         isPublished: true,
@@ -18,20 +18,20 @@ module.exports = {
     pageSize = parseInt(pageSize)
     let totalArticleCount = await articleModel.countDocuments(condition)
     let getArticleList = articleModel.find(
-      condition, {}, 
+      condition, {},
       {
-        sort: {createTime: -1}, 
+        sort: {createTime: -1},
         skip: (pageNum - 1) * pageSize,
         limit: pageSize,
       }
     )
-    let articleList = 
+    let articleList =
       isAdmin
       ? await getArticleList.populate('category')
       : await getArticleList
     ctx.response.body = {
-      articleList, 
-      totalArticleCount 
+      articleList,
+      totalArticleCount
     }
   },
 
@@ -41,10 +41,10 @@ module.exports = {
     pageNum = pageNum ? parseInt(pageNum) : 1
     pageSize = parseInt(pageSize)
     let popularList = await articleModel.find(
-      {}, 
-      {}, 
+      {},
+      {},
       {
-        sort: {views: -1}, 
+        sort: {views: -1},
         limit: pageSize
       }
     )
@@ -90,12 +90,12 @@ module.exports = {
   // 发布文章（保存至数据库）
   async saveArticle (ctx, next) {
     let createTime = getTimeObj()
-    let {title, author, tags, category, isOriginal, isPublic, content, abstract,isPublished} = ctx.request.body
+    let {title, author, tags, category, isOriginal, isPublic, content, description,isPublished} = ctx.request.body
     let newDoc = new articleModel({
       title,
       author,
       content,
-      abstract,
+      description,
       createTime,
       updateTime: {},
       tags,
@@ -118,7 +118,7 @@ module.exports = {
     console.log(ctx.request.body)
     let {id, content, category, tags, isPublic} = ctx.request.body
     let getUpdateResult = articleModel.updateOne(
-      {_id: id}, 
+      {_id: id},
       { $set: { content, category, tags, isPublic } }
     )
     let getSaveCateResult = categoryController.saveToCategory(category, id)
@@ -144,7 +144,7 @@ module.exports = {
   async likeArticle (ctx, next) {
     let {id} = ctx.params
     let result = await articleModel.updateOne({_id: id}, { $inc: {likes: 1} })
-    if (result.nModified !== 0) 
+    if (result.nModified !== 0)
       ctx.response.body = {
         success: true,
       }
@@ -153,11 +153,11 @@ module.exports = {
         success: false,
       }
   },
-  
+
   async dislikeArticle (ctx, next) {
     let {id} = ctx.params
     let result = await articleModel.updateOne({_id: id}, { $inc: {likes: -1} })
-    if (result.nModified !== 0) 
+    if (result.nModified !== 0)
       ctx.response.body = {
         success: true,
       }

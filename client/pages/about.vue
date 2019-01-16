@@ -22,5 +22,10 @@
 
 <script>
 export default {
+  head () {
+    return {
+      title: '关于 | 酷核',
+    }
+  }
 }
 </script>

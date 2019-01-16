@@ -7,12 +7,12 @@ const articleSchema = new mongoose.Schema({
   author: { type: String, required: true },   // 作者
   createTime: {},     // 文章创建时间
   updateTime: {},     // 文章最后编辑时间
-  abstract: { type: String, required: true },  // 文章简介
+  description: { type: String, required: true },  // 文章简介
   content: { type: String, required: true },   // 文章内容
   category: { type: ObjectId, ref: 'categoryModel' },  // 文章分类
   tags: [], // 标签
   comments: [{ type: ObjectId, ref: 'commentModel' }],   // 评论
-  titleImg: { type: String },   // 题图URL
+  coverImage: { type: String },   // 封面图片URL
   isPublic: { type: Boolean, default: true },     // 是否公开
   isPublished: { type: Boolean },  // 是否发表
   isOriginal: { type: Boolean, default: true },   // 是否原创
