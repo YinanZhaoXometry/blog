@@ -19,6 +19,7 @@ module.exports = {
       }
     }
     await next()
+
   },
 
   // 定义函数，只允许已登录用户执行后续业务逻辑
@@ -28,5 +29,4 @@ module.exports = {
     }
     await next()
   }
-
 }

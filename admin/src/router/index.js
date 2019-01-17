@@ -5,7 +5,7 @@ import Index from '@/components/Index.vue'
 import Overview from '@/components/pages/Overview.vue'
 import List from '@/components/pages/List.vue'
 import Edit from '@/components/pages/Edit.vue'
-import Post from '@/components/pages/Post.vue'
+import Write from '@/components/pages/Write'
 import Categories from '@/components/pages/Categories.vue'
 import Google from '@/components/pages/Google.vue'
 import Settings from '@/components/pages/Settings.vue'
@@ -44,9 +44,9 @@ const routes = [
         meta: { requireAuth: true }
       },
       {
-        path: 'post',
-        name: 'Post',
-        component: Post,
+        path: 'write',
+        name: 'Write',
+        component: Write,
         meta: { requireAuth: true }
       },
       {

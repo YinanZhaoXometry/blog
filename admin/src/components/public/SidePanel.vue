@@ -16,7 +16,7 @@
         <span>文章管理</span>
       </el-menu-item>
       <el-menu-item
-        index="post"
+        index="write"
       >
         <i class="el-icon-edit" />
         <span>写文章</span>

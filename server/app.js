@@ -1,19 +1,18 @@
 // 用到的elemmentUI组件：el-alert
-
 const Koa = require('koa')
 const views = require('koa-views')
 const json = require('koa-json')
-const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
 const mongoose = require('mongoose')
 const chalk = require('chalk')
 const cors = require('koa2-cors');
+const path = require('path')
+const koaStatic = require('koa-static')
 
 const router = require('./routes')
 const config = require('./config')
 const auth  = require('./middlewares/auth') 
-
 const app = new Koa()
 
 // 美化控制台输出
@@ -27,9 +26,6 @@ mongoose.connect(config.dbUrl, {useNewUrlParser:true}, function(err) {
   else 
     console.log(success('数据库连接成功！'))
 })
-
-// error handler
-onerror(app)
 
 // app.use(async (ctx, next) => {
 //   ctx.set('Access-Control-Allow-Origin', 'http://127.0.0.1:8080')
@@ -48,6 +44,22 @@ app.use(cors({
     allowMethods: ['GET', 'POST', 'DELETE', 'PATCH'],
     allowHeaders: ['Content-Type', 'Authorization', 'Accept'],
   }
+))
+
+// error handler
+app.use(async (ctx, next) => {
+  try {
+    await next()
+  } catch (err) {
+    ctx.status = err.status || 500
+    ctx.body = err.message
+    ctx.app.emit('error', err, ctx)
+  }
+})
+
+app.use(koaStatic(
+  path.join(__dirname, 'public'),
+  { maxage: 365 * 12 * 30 * 24 * 60 * 60 * 1000 }  // 缓存时间1年
 ))
 
 app.use(bodyparser({
@@ -76,8 +88,8 @@ app.use(auth.authUser)
 // routes
 app.use(router.routes(), router.allowedMethods())
 
-// error-handling
-app.on('error', (err, ctx) => {
+// Centralized error handling
+app.on('error', async (err, ctx) => {
   console.error('server error', err, ctx)
 });
 

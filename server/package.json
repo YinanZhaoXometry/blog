@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "bcrypt": "^3.0.3",
+    "busboy": "^0.3.0",
     "chalk": "^2.4.1",
     "debug": "^2.6.3",
     "ejs": "^2.6.1",
