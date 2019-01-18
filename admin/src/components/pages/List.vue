@@ -16,10 +16,7 @@
         />
       </el-col>
     </el-row>
-    <el-table
-      style="width: 100%"
-      :data="tableData"
-    >
+    <el-table style="width: 100%" :data="tableData">
       <el-table-column
         width="180"
         label="文章标题"

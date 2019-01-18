@@ -3,7 +3,7 @@ const userController = require('../controllers/user')
 const articleController = require('../controllers/article')
 const categoryController = require('../controllers/category')
 const commentController = require('../controllers/comment')
-const uploadController = require('../controllers/upload')
+const imageController = require('../controllers/image')
 const allowIfLoggedin = require('../middlewares/auth').allowIfLoggedin
 
 router.prefix('/api')
@@ -29,7 +29,8 @@ router
     .patch('/articles', allowIfLoggedin, articleController.updateArticle)                // 修改文章
     .delete('/articles/:id', allowIfLoggedin, articleController.deleteArticle)           // 删除文章
     .post('/categories', allowIfLoggedin, categoryController.saveCategory)               // 增加分类
-    .post('/upload/images', allowIfLoggedin, uploadController.handleImageUpload)               // 上传图片
+    .post('/upload/images', allowIfLoggedin, imageController.uploadNewImage)               // 上传图片
+    .patch('/upload/images', allowIfLoggedin, imageController.uploadCroppedImage)               // 上传图片
 
     // .patch('/categories', articleController.updateCategory)            // 修改某分类
     // .delete('/categories/:category', articleController.deleteCategory) // 删除某分类

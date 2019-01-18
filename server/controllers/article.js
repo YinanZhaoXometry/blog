@@ -1,6 +1,7 @@
 const articleModel = require('../models/article')
 const categoryController = require('./category')
 const getTimeObj = require('../utils/getTimeObj')
+const config = require('../config')
 
 module.exports = {
   // 获取client文章列表
@@ -13,10 +14,10 @@ module.exports = {
         isPublic: true,
         isPublished: true,
       }
+    let totalArticleCount = await articleModel.countDocuments(condition)
     let {pageNum, pageSize, isAdmin} = ctx.query
     pageNum = pageNum ? parseInt(pageNum) : 1
     pageSize = parseInt(pageSize)
-    let totalArticleCount = await articleModel.countDocuments(condition)
     let getArticleList = articleModel.find(
       condition, {},
       {

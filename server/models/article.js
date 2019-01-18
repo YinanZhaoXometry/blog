@@ -12,7 +12,7 @@ const articleSchema = new mongoose.Schema({
   category: { type: ObjectId, ref: 'categoryModel' },  // 文章分类
   tags: [], // 标签
   comments: [{ type: ObjectId, ref: 'commentModel' }],   // 评论
-  coverImage: { type: String },   // 封面图片URL
+  coverImage: { type: ObjectId, ref: 'imageModel' },   // 封面图片
   isPublic: { type: Boolean, default: true },     // 是否公开
   isPublished: { type: Boolean },  // 是否发表
   isOriginal: { type: Boolean, default: true },   // 是否原创

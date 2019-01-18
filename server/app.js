@@ -58,7 +58,7 @@ app.use(async (ctx, next) => {
 })
 
 app.use(koaStatic(
-  path.join(__dirname, 'public'),
+  path.join(__dirname, config.servePath),
   { maxage: 365 * 12 * 30 * 24 * 60 * 60 * 1000 }  // 缓存时间1年
 ))
 
@@ -69,9 +69,7 @@ app.use(json())
 app.use(logger())
 app.use(require('koa-static')(__dirname + '/public'))
 
-app.use(views(__dirname + '/views', {
-  extension: 'ejs'
-}))
+app.use(views(__dirname + '/views', { extension: 'ejs' }))
 
 // logger
 app.use(async (ctx, next) => {

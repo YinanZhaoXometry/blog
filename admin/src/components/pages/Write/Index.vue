@@ -1,16 +1,10 @@
 <template>
   <section>
     <el-row>
-      <el-input
-        v-model="title"
-        placeholder="请在这里输入标题"
-      />
+      <el-input v-model="title" placeholder="请在这里输入标题" />
     </el-row>
     <el-row>
-      <el-input
-        v-model="author"
-        placeholder="请输入作者"
-      />
+      <el-input v-model="author" placeholder="请输入作者" />
     </el-row>
     <el-row>
       <el-col :span="12">
@@ -20,7 +14,7 @@
           :key="tag"
           closable
           :disable-transitions="true"
-          @close="handleClose(tag)"
+          @close="handleTagDelete(tag)"
         >
           {{ tag }}
         </el-tag>
@@ -43,10 +37,7 @@
       </el-col>
       <el-col :span="12">
         <span>分类：</span>
-        <el-select
-          v-model="category"
-          placeholder="请选择文章类别"
-        >
+        <el-select v-model="category" placeholder="请选择文章类别">
           <el-option
             v-for="item in selectData"
             :key="item.enName"
@@ -59,49 +50,29 @@
     <el-row>
       <el-col :span="12">
         <span>原创声明：</span>
-        <el-select
-          v-model="isOriginal"
-          placeholder="请声明原创"
-        >
-          <el-option
-            label="原创"
-            :value="true"
-          />
-          <el-option
-            label="转载"
-            :value="false"
-          />
+        <el-select v-model="isOriginal" placeholder="请声明原创">
+          <el-option label="原创" :value="true" />
+          <el-option label="转载" :value="false" />
         </el-select>
       </el-col>
       <el-col :span="12">
         <span>是否公开：</span>
-        <el-select
-          v-model="isPublic"
-          placeholder="请设置"
-        >
-          <el-option
-            label="公开"
-            :value="true"
-          />
-          <el-option
-            label="私有"
-            :value="false"
-          />
+        <el-select v-model="isPublic" placeholder="请设置">
+          <el-option label="公开" :value="true" />
+          <el-option label="私有" :value="false" />
         </el-select>
       </el-col>
     </el-row>
-    <markdown-editor
-      ref="markdownEditor"
-      v-model="content"
-    />
+    <markdown-editor ref="markdownEditor" v-model="content" />
     <h4>封面和摘要</h4>
     <el-row>
       <!-- 上传封面区域 -->
       <el-col :span="12">
         <el-button type="text" @click="isDialogShow=true">
           <img v-if="imageUrl" :src="imageUrl" alt="titleImage">
-          <i v-else class="el-icon-plus" />
-          <p>选择封面</p>
+          <i v-else class="el-icon-plus">
+            <p>选择封面</p>
+          </i>
         </el-button>
         <!-- <el-upload
           action="/"
@@ -113,7 +84,11 @@
         </el-upload> -->
       </el-col>
       <!-- 封面选择对话框 -->
-      <my-dialog :is-dialog-show="isDialogShow" @dialogFinish="handleDialogFinish" />
+      <my-dialog
+        :is-dialog-show="isDialogShow"
+        @close="isDialogShow = false"
+        @success="handleDialogSuccess"
+      />
       <!-- 摘要区域 -->
       <el-col :span="12">
         <el-input
@@ -172,9 +147,10 @@ export default {
       isOriginal: true,
       isPublic: true,
 
+      // 对话框相关参数
       imageUrl:'',
+      imageId: '',
       isDialogShow: false,
-
     }
   },
 
@@ -214,13 +190,14 @@ export default {
       this.tagInputVisible = false;
       this.tagInputValue = '';
     },
-    handleClose (tag) {
+    handleTagDelete (tag) {
       this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
     },
 
     /* 定义选择封面对话框完成时的处理函数 */
-    handleDialogFinish (hideDialog) {
-      this.isDialogShow = false
+    handleDialogSuccess (imageData) {
+      this.imageUrl = imageData.imagePathPrefix + imageData.imageDoc.webName
+      this.imageId = imageData.imageDoc._id
     },
 
     /* 定义发布文章函数 */

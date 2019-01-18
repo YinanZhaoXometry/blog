@@ -26,9 +26,9 @@
           <el-col :span="18">
             <el-row>
               <el-upload
-                action="http://localhost:3030/api/upload/images"
+                action="http://localhost:3030/api/upload/images/"
                 :with-credentials="true"
-                :on-change="uploadStatusChange"
+                :on-success="handleSuccessUpload"
               >
                 <el-button type="primary" size="small">本地上传</el-button>
               </el-upload>
@@ -44,12 +44,13 @@
               <div style="width:300px;height:300px;border:1px solid gray;display:inline-block">
                 <vue-cropper
                   ref="cropper"
-                  :src="imgUrl"
+                  :src="urlSourceImg"
                   alt="Image to be cropped"
                   drag-mode="crop"
                   :auto-crop-area="0.5"
                   :min-container-width="200"
                   :min-container-height="180"
+                  :aspect-ratio="1"
                   :movable="false"
                   :zoomable="false"
                   :background="true"
@@ -65,7 +66,7 @@
               <p><b>预览封面</b></p>
               <el-row>
                 <el-col :span="6">
-                  <img :src="croppedUrlWeb" style="width:130px;height:130px;border:1px solid gray" alt="Cropped Image">
+                  <img :src="urlCroppedImgWeb" style="width:130px;height:130px;border:1px solid gray" alt="Cropped Image">
                 </el-col>
                 <el-col :span="18">
                   <p><b>web端封面 (1:1)</b></p>
@@ -74,7 +75,7 @@
               </el-row>
               <el-row>
                 <el-col :span="6">
-                  <img :src="croppedUrlMobile" style="width:130px;height:56px;border:1px solid gray" alt="Cropped Image">
+                  <img :src="urlCroppedImgMobile" style="width:130px;height:56px;border:1px solid gray" alt="Cropped Image">
                 </el-col>
                 <el-col :span="18">
                   <span><b>移动端封面 (2.35:1)</b></span>
@@ -117,15 +118,26 @@ export default {
       dialogVisible: false,
 
       // 图片剪裁相关
-      imgUrl: '../../../static/upload/500.jpg',
-      croppedUrlWeb: '',
-      croppedUrlMobile: '',
+      urlSourceImg: '../../../static/upload/500.jpg',
+      canvasCroppedImgWeb: null,
+      canvasCroppedImgMobile: null,
       isCropForWeb: true,
       webRatio: 1,
       mobileRatio: 2.35,
+
+      // 选中作为封面的图片名称
+      selectedFileName: ''
+
     }
   },
-
+  computed: {
+    urlCroppedImgWeb () {
+      return this.canvasCroppedImgWeb ? this.canvasCroppedImgWeb.toDataURL() : ""
+    },
+    urlCroppedImgMobile () {
+      return this.canvasCroppedImgMobile ? this.canvasCroppedImgMobile.toDataURL() : ""
+    }
+  },
   watch: {
     isDialogShow (newValue, oldValue) {
       this.dialogVisible = newValue
@@ -133,23 +145,29 @@ export default {
   },
 
   methods: {
-    /* 封面图片选择、剪裁相关方法 */
-    handleSuccessUpload () {
-
+    // 上传成功后调用的处理函数
+    async handleSuccessUpload (response, file, fileList) {
+      this.selectedFileName = response.fileName
+      let res = await this.$axios.get(response.url, {responseType:'blob'})
+      let blob = res.data
+      const reader = new FileReader();
+      let fileUrl = reader.readAsDataURL(blob)
+      let component = this
+      reader.onload=function(){
+        component.urlSourceImg = this.result;
+      }
     },
-    beforeUpload () {
 
-    },
-    uploadStatusChange (file, fileList) {
-      console.log('file:',file)
-      console.log('filelist:',fileList)
-    },
-
+    // 关闭对话框时调用的处理函数
     handleDialogClose () {
       this.dialogVisible = false
-      this.$emit('dialogFinish', this.dialogVisible)
+      this.$emit('close', this.dialogVisible)
       this.activeStep = 0
+      this.urlSourceImg = ''
+      this.canvasCroppedImgWeb = null
+      this.canvasCroppedImgMobile = null
     },
+
     nextStep () {
       if (this.activeStep >= 1) return
       this.activeStep++
@@ -157,10 +175,45 @@ export default {
     lastStep () {
       this.activeStep=0
     },
-    finishCoverSetting () {
-      this.handleDialogClose()
+
+    // 定义工具函数用于获取blob对象
+    getBlob (canvasElem) {
+      return new Promise((resolve, reject) => {
+        canvasElem.toBlob( blob => resolve(blob) )
+      })
     },
 
+
+    // 完成封面设置（这也是整个对话框的目的），即点击‘完成’按钮后的处理函数
+    async finishCoverSetting () {
+      var blobWeb = await this.getBlob(this.canvasCroppedImgWeb)
+      var blobMobile = await this.getBlob(this.canvasCroppedImgMobile)
+      var formData = new FormData()
+      await formData.append(
+        'web',
+        blobWeb,
+        this.selectedFileName
+      )
+      formData.append(
+        'mobile',
+        blobMobile,
+        this.selectedFileName
+      )
+      let config = {
+        header: { "Content-Type": "multipart/form-data" },
+        timeout: 30000
+      }
+      let {data} = await this.$axios.patch(
+        '/api/upload/images',
+        formData,
+        config
+      )
+      this.$emit('success', data)
+      this.handleDialogClose()
+      this.$message.success('封面设置成功')
+    },
+
+    /* 封面图片选择、剪裁相关方法 */
     setCropperAspectRatio (ratio) {
       this.isCropForWeb =
         ratio === this.webRatio
@@ -169,13 +222,20 @@ export default {
       this.$refs.cropper.setAspectRatio(ratio)
     },
     handleCrop () {
-      let opts = {
-        imageSmoothingEnabled: false,
+      let optsWeb = {
+        width: 260,
+        height: 260,
+        imageSmoothingEnabled: true
       }
-      let getCroppedCanvas = this.$refs.cropper.getCroppedCanvas(opts).toDataURL()
+      let optsMobile = {
+        width: 900,
+        height: 383,
+        imageSmoothingEnabled: true,
+        imageSmoothingQuality: 'high',
+      }
       this.isCropForWeb
-        ? this.croppedUrlWeb = getCroppedCanvas
-        : this.croppedUrlMobile = getCroppedCanvas
+        ? this.canvasCroppedImgWeb = this.$refs.cropper.getCroppedCanvas(optsWeb)
+        : this.canvasCroppedImgMobile = this.$refs.cropper.getCroppedCanvas(optsMobile)
     },
 
   }
