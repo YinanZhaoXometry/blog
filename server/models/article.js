@@ -8,7 +8,8 @@ const articleSchema = new mongoose.Schema({
   createTime: {},     // 文章创建时间
   updateTime: {},     // 文章最后编辑时间
   description: { type: String, required: true },  // 文章简介
-  content: { type: String, required: true },   // 文章内容
+  htmlContent: { type: String, required: true },   // html格式文章内容
+  rawContent: { type: String, required: true },    // 原始格式文章内容
   category: { type: ObjectId, ref: 'categoryModel' },  // 文章分类
   tags: [], // 标签
   comments: [{ type: ObjectId, ref: 'commentModel' }],   // 评论

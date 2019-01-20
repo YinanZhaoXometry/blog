@@ -19,14 +19,14 @@
           <el-col :span="10">{{ item.title }}</el-col>
         </nuxt-link>
         <template>
-          <!-- 为 “私有(isPublic: false)” 文章，显示“私有”字样 -->
+          <!-- 如 isPublic=false，则显示“私有”字样 -->
           <el-tag
             v-if="!item.isPublic"
             type="warning"
           >
             {{ '私有' }}
           </el-tag>
-          <!-- 为 “草稿(isPublished: false)” 文章，显示“草稿”字样 -->
+          <!-- 如 isPublished: false，则显示“草稿”字样 -->
           <el-tag
             v-if="!item.isPublished"
             type="warning"

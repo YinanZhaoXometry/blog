@@ -112,7 +112,7 @@ export default {
     // 定义加载页面(文章列表)函数
     async loadPage (pageNum, pageSize) {
       try {
-        let response = await this.$axios.get('/api/articles', { params: {pageNum, pageSize, isAdmin: true} })
+        let response = await this.$axios.get('/api/articles', { params: {pageNum, pageSize, isFromAdmin: true} })
         let {articleList, totalArticleCount} = response.data
         this.tableData = articleList
         this.totalArticleCount = totalArticleCount

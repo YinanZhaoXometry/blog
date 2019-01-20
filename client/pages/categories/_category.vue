@@ -25,9 +25,9 @@ export default {
     try {
       let {data} = await app.$axios.get(
         `/api/categories/${params.category}`,
-        {params: {pageSize: 3}}
+        { params: {pageSize: 3} }
       )
-      let {categoryObj, cateArticleCount} = data
+      let { categoryObj, cateArticleCount } = data
       store.commit('getCateArticleList',{
         cateArticleCount,
         articleList: categoryObj.articles,

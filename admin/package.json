@@ -13,6 +13,8 @@
   "dependencies": {
     "axios": "^0.18.0",
     "element-ui": "^2.4.5",
+    "github-markdown-css": "^2.10.0",
+    "highlight.js": "^9.13.1",
     "jwt-simple": "^0.5.5",
     "moment": "^2.23.0",
     "vue": "^2.5.2",

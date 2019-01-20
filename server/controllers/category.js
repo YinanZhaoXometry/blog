@@ -1,7 +1,7 @@
 const categoryModel = require('../models/category')
 
 module.exports = {
-  // 获取所有分类方法
+  // 获得所有分类
   async getCategories (ctx, next) {
     let result = await categoryModel.find({}, {})
     ctx.body = {
@@ -50,8 +50,8 @@ module.exports = {
     }
   },
 
-  // 定义方法，用于将文章ID保存至分类表
-  saveToCategory (categoryId, articleId) {
+  // 定义方法，用于在”category“document中加入相关“article”的_id
+  saveArticleToCategory (categoryId, articleId) {
     let queryObj = categoryModel.updateOne({_id: categoryId}, { $push: {articles: articleId} })
     return queryObj
   }

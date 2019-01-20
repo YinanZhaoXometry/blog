@@ -25,8 +25,10 @@
     "koa-static": "^3.0.0",
     "koa-views": "^5.2.1",
     "koa2-cors": "^2.0.6",
+    "marked": "^0.6.0",
     "moment": "^2.23.0",
-    "mongoose": "^5.4.0"
+    "mongoose": "^5.4.0",
+    "sanitize-html": "^1.20.0"
   },
   "devDependencies": {
     "nodemon": "^1.8.1"

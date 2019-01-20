@@ -14,8 +14,8 @@
         </el-col>
       </el-row>
     </div>
-    <p>{{ comment.content }}</p>
-    <p>
+    <div v-html="comment.content" />
+    <div>
       <span>
         <el-button @click="likeComment(comment)">
           <i :class="['iconfont', checkCommentLiked(comment._id) ? 'icon-like' : 'icon-like1']" />
@@ -25,26 +25,26 @@
       <span>
         <el-button @click="onClickReply($event, true)"><i>icon</i>回复</el-button>
       </span>
-    </p>
+    </div>
     <!-- 子评论区 -->
     <div>
       <article v-for="subComment in comment.subComments" :key="subComment._id">
-        <p>
+        <div>
           <span>{{ subComment.fromWhom.name }}</span><span>: </span>
           <span>{{ subComment.isReplyToParent ? '' : '@' + subComment.toWhom.name }}</span>
-          <span>{{ subComment.content }}</span>
-        </p>
-        <p>
+          <span style="display:inline-block" v-html="subComment.content" />
+        </div>
+        <div>
           <span>{{ subComment.createTime.fullDate }}</span>
           <el-button @click="onClickReply($event, false, subComment)"><i>icon</i>回复</el-button>
-        </p>
+        </div>
       </article>
-      <p>
+      <div>
         <el-button @click="onClickReply($event, true)">
           <i class="el-icon-edit" />
           <span>添加新评论</span>
         </el-button>
-      </p>
+      </div>
       <transition name="el-fade-in-linear">
         <input-box
           v-show="isSubInputBoxShow"
@@ -161,8 +161,6 @@ export default {
   }
 }
 </script>
-
-
 
 <style>
   .el-select .el-input {

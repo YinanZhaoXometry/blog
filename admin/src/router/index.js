@@ -21,6 +21,7 @@ const routes = [
   },
   {
     path: '/',
+    name: 'Index',
     component: Index,
     redirect: '/overview',
     meta: { requireAuth: true },

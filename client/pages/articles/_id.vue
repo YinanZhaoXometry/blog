@@ -1,22 +1,16 @@
 
 <template>
   <section>
-    <el-row
-      type="flex"
-      justify="center"
-    >
+    <el-row type="flex" justify="center">
       <el-col :span="12">
         <h2>{{ article.title }}</h2>
         <p>{{ article.author }} 发表在：{{ article.category.cnName }} 分类下 {{ article.createTime.fullDate }}</p>
       </el-col>
     </el-row>
-    <el-row
-      type="flex"
-      justify="center"
-    >
+    <el-row type="flex" justify="center">
       <el-col :span="12">
         <p v-if="!article">努力加载中...</p>
-        <p>{{ article.content }}</p>
+        <div v-html="article.htmlContent" />
         <el-row>
           <el-button
             v-for="tag in article.tags"
@@ -37,10 +31,7 @@
         </el-row>
       </el-col>
     </el-row>
-    <el-row
-      type="flex"
-      justify="space-around"
-    >
+    <el-row type="flex" justify="space-around">
       <el-col :span="2">
         <nuxt-link to="/">
           <i class="el-icon-arrow-left" />上一篇文章
@@ -72,6 +63,7 @@ export default {
       return this.likedArticles.includes(this.article._id)
     }
   },
+
   async asyncData ({ app, params }) {
     try {
       let {data} = await app.$axios.get(`/api/articles/${params.id}`)
@@ -87,6 +79,7 @@ export default {
   },
 
   layout: 'article',
+
   mounted () {
     this.readUserCache()
   },
@@ -123,9 +116,11 @@ export default {
     }
   },
 
-    // SEO优化，见 https://nuxtjs.org/api/pages-head#the-head-method
+  // SEO优化，见 https://nuxtjs.org/api/pages-head#the-head-method
   head () {
-      let keywordsStr = `${this.article.category.cnName}, ${this.article.tags.join(', ')})`
+      let keywordsStr = `${this.article.category.cnName}`
+      if(!this.article.tags)
+        keywordsStr = keywordsStr + this.article.tags.join(', ')
       return {
         title: this.article.title,
         meta: [

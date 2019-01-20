@@ -74,6 +74,7 @@
 
 <script>
 import gravatar from 'gravatar'
+
 export default {
   props: {
     isMainInputBox: {
@@ -109,6 +110,12 @@ export default {
         email: /\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/,
         site: /^[A-Za-z0-9]+\.[A-Za-z0-9]+[\/=\?%\-&_~`@[\]\':+!]*([^<>\"\"])*$/
       }
+    }
+  },
+
+  computed: {
+    articleId () {  // 获取文章id
+      return window.location.pathname.split('/')[2]
     }
   },
 
@@ -189,39 +196,40 @@ export default {
 
     // 定义提交父级评论处理函数
     async submitMainComment () {
-      console.log('main')
-      if(!this.inputValue) return this.$message.warning('请输入评论内容')
-      let msg = this.checkUserInfo()
-      if (msg) return this.$message.warning(msg)
       try {
-        var articleId = window.location.pathname.split('/')[2]
+        if(!this.inputValue.trim()) return this.$message.warning('评论内容不能为空')
+        let msg = this.checkUserInfo()
+        if (msg) return this.$message.warning(msg)
+
         let dataObj = {    // 定义父评论需要保存的数据对象
-          content: this.inputValue,
+          content: this.inputValue.trim(),
           fromWhom: this.fromWhom,
-          articleId
+          articleId: this.articleId
         }
         var {data} = await this.$axios.post('/api/comments', dataObj)
-        this.isButtonsShow = false
         let {message} = data
         this.$message.success(message)
-        this.$store.dispatch('comments/fetchCommentList', articleId)  // 更新vuex中commentList的数据
+        this.$store.dispatch('comments/fetchCommentList', this.articleId)  // 更新vuex中commentList的数据
+        this.isButtonsShow = false
         if (this.rememberMe) { this.saveUserCache() }
       } catch (err) {
-        this.$message.error(err)
+        let message = err.response.data ? err.response.data : err.toString()
+        this.$message.error(message)
       }
       this.clearUserInput()
     },
 
     // 定义提交子评论处理函数
     async submitChildComment () {
-      if(!this.inputValue) return this.$message.warning('请输入评论内容')
-      let msg = this.checkUserInfo()
-      if (msg) return this.$message.warning(msg)
       try {
+        if(!this.inputValue.trim()) return this.$message.warning('评论内容不能为空')
+        let msg = this.checkUserInfo()
+        if (msg) return this.$message.warning(msg)
+
         let isReplyToParent = this.$parent.isReplyToParent
         let content =
           isReplyToParent   // 将子评论内容中的”@xxx“字段去除，便于后续数据操作和页面显示。
-          ? this.inputValue
+          ? this.inputValue.trim()
           : this.inputValue.replace('@' + this.$parent.currentSubComment.fromWhom.name, '').trim()
         let toWhom =
           isReplyToParent
@@ -238,10 +246,11 @@ export default {
         this.$emit('hideSubInputBox')
         let {message} = data
         this.$message.success(message)
-        this.$store.dispatch('comments/fetchCommentList', articleId)  // 更新vuex中commentList的数据
+        this.$store.dispatch('comments/fetchCommentList', this.articleId)  // 更新vuex中commentList的数据
         if (this.rememberMe) { this.saveUserCache() }
       } catch (err) {
-        this.$message.error(err)
+        let message = err.response.data ? err.response.data : err.toString()
+        this.$message.error(message)
       }
       this.clearUserInput()
     }

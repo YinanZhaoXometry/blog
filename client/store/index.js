@@ -2,21 +2,18 @@ const state = () => ({
   articleList: [],
   popularList: [],
   totalArticleCount: 0,
-
+  imagePathPrefix:'',
 
   cateArticleList: [],
   cateArticleCount: 0,
   category: {}
 })
 
-const getters = {
-
-}
-
 const mutations = {
-  getArticleList (state, {articleList, totalArticleCount}) {
+  getArticleList (state, {articleList, totalArticleCount, imagePathPrefix}) {
     state.articleList = articleList
     state.totalArticleCount = totalArticleCount
+    state.imagePathPrefix = imagePathPrefix
   },
 
   getPopularList (state, popularList) {
