@@ -1,24 +1,24 @@
 
 <template>
-  <section>
+  <section class="markdown-body">
     <el-row type="flex" justify="center">
-      <el-col :span="12">
-        <h2>{{ article.title }}</h2>
+      <el-col :span="24">
+        <h1>{{ article.title }}</h1>
         <p>{{ article.author }} 发表在：{{ article.category.cnName }} 分类下 {{ article.createTime.fullDate }}</p>
       </el-col>
     </el-row>
     <el-row type="flex" justify="center">
-      <el-col :span="12">
+      <el-col :span="24">
         <p v-if="!article">努力加载中...</p>
         <div v-html="article.htmlContent" />
         <el-row>
           <el-button
             v-for="tag in article.tags"
-            :key="tag"
+            :key="tag._id"
             size="mini"
           >
-            <nuxt-link :to="`/tags/${tag}`">
-              {{ tag }}
+            <nuxt-link :to="`/tags/${tag._id}`">
+              {{ tag.name }}
             </nuxt-link>
           </el-button>
           <el-button round @click="likeArticle">
@@ -49,6 +49,9 @@
 
 <script>
 import Comment from '~/components/comment/Index.vue'
+import hljs from 'highlight.js/lib/highlight'
+import javascript from 'highlight.js/lib/languages/javascript'
+
 export default {
   components: {
     Comment
@@ -82,6 +85,13 @@ export default {
 
   mounted () {
     this.readUserCache()
+    // 选择性加载 highlight 样式
+    hljs.registerLanguage( 'javascript', require('highlight.js/lib/languages/javascript') )
+    hljs.registerLanguage( 'typescript', require('highlight.js/lib/languages/typescript') )
+    hljs.registerLanguage( 'json', require('highlight.js/lib/languages/json') )
+    hljs.registerLanguage( 'css', require('highlight.js/lib/languages/css') )
+    hljs.registerLanguage( 'html', require('highlight.js/lib/languages/xml') )
+    hljs.registerLanguage( 'bash', require('highlight.js/lib/languages/bash') )
   },
 
   methods: {
@@ -132,3 +142,22 @@ export default {
     }
 }
 </script>
+
+<style>
+  @import 'github-markdown-css';
+  @import 'highlight.js/styles/atom-one-light.css';
+
+  .markdown-body {
+    box-sizing: border-box;
+    min-width: 200px;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 45px;
+  }
+
+  @media (max-width: 767px) {
+    .markdown-body {
+      padding: 15px;
+    }
+  }
+</style>

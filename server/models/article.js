@@ -11,7 +11,7 @@ const articleSchema = new mongoose.Schema({
   htmlContent: { type: String, required: true },   // html格式文章内容
   rawContent: { type: String, required: true },    // 原始格式文章内容
   category: { type: ObjectId, ref: 'categoryModel' },  // 文章分类
-  tags: [], // 标签
+  tags: [{ type: ObjectId, ref: 'tagModel' }], // 标签
   comments: [{ type: ObjectId, ref: 'commentModel' }],   // 评论
   coverImage: { type: ObjectId, ref: 'imageModel' },   // 封面图片
   isPublic: { type: Boolean, default: true },     // 是否公开

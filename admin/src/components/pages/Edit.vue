@@ -16,39 +16,32 @@
       />
     </el-row>
     <el-row>
+      <!-- 添加标签 -->
       <el-col :span="12">
         <span>标签：</span>
-        <el-tag
-          v-for="tag in article.tags"
-          :key="tag"
-          closable
-          :disable-transitions="true"
-          @close="handleClose(tag)"
+        <el-select
+          ref="myselect"
+          v-model="selectedTags"
+          multiple
+          filterable
+          allow-create
+          default-first-option
+          placeholder="请选择文章标签"
+          :multiple-limit="3"
         >
-          {{ tag }}
-        </el-tag>
-        <el-input
-          v-if="tagInputVisible"
-          ref="saveTagInput"
-          v-model="tagInputValue"
-          size="small"
-          @keyup.enter.native="handleInputConfirm"
-          @blur="handleInputConfirm"
-        />
-        <el-button
-          v-else
-          class="button-new-tag"
-          size="small"
-          @click="showInput"
-        >
-          + New Tag
-        </el-button>
+          <el-option
+            v-for="item in totalTagList"
+            :key="item._id"
+            :value="item.name"
+          />
+        </el-select>
       </el-col>
+      <!-- 选择分类 -->
       <el-col :span="12">
         <span>分类：</span>
         <el-select v-model="categoryId" placeholder="请选择文章类别">
           <el-option
-            v-for="item in selectData"
+            v-for="item in categoryList"
             :key="item.enName"
             :label="item.cnName"
             :value="item._id"
@@ -89,7 +82,7 @@
     <h4>封面和摘要</h4>
     <el-row>
       <el-col :span="12">
-        <img :src="imagePathPrefix + article.coverImage.webName">
+        <img :src="coverImageSrc" alt="封面图片">
       </el-col>
       <el-col :span="12">
         <el-input
@@ -136,20 +129,24 @@ export default {
 
   data () {
     return {
-      article: {},
+      article: {
+        coverImage: {}
+      },
       categoryId: '',
-      selectData: [],
-      tagInputVisible: false,
-      tagInputValue: '',
+      categoryList: [],
       imagePathPrefix: '',
+
+      // 标签相关
+      totalTagList: [],
+      selectedTags: [],
 
       // Markdown编辑器设置选项
       mdeConfigs: {
         spellChecker: false,
-        autosave: {
-          enabled: true,
-          uniqueId: 'mde-for-edit-blog-content',
-        },
+        // autosave: {
+        //   enabled: false,
+        //   uniqueId: 'mde-for-edit-blog-content',
+        // },
         renderingConfig: {
           codeSyntaxHighlighting: true
         }
@@ -157,52 +154,36 @@ export default {
     }
   },
 
+  computed: {
+    coverImageSrc () {
+      return this.imagePathPrefix + this.article.coverImage.webName
+    }
+  },
+
   // 在created生命周期获取文章数据
-  created: async function () {
+  async created () {
     try {
       let id = this.$route.params.id
       let getArticleData = this.$axios.get(`/api/articles/${id}`)
       let getCategoryData = this.$axios.get('/api/categories')
-      let [articleResponse, categoryResponse] = await Promise.all([getArticleData, getCategoryData])
+      let getTagData = this.$axios.get('/api/tags')
+      let [articleResponse, categoryResponse, tagResponse] = await Promise.all(
+        [getArticleData, getCategoryData, getTagData]
+      )
       this.article = articleResponse.data.article
       this.imagePathPrefix = articleResponse.data.imagePathPrefix
+
       this.categoryId = this.article.category._id
-      this.selectData = categoryResponse.data.result
+      this.categoryList = categoryResponse.data.result
+
+      this.totalTagList = tagResponse.data.totalTagList
+      this.selectedTags = this.article.tags.map(item => item.name)
     } catch (err) {
       this.$message.error(err)
     }
   },
 
   methods: {
-    /* 定义保存文章函数 */
-    async saveUpdate () {
-      if(!this.article.rawContent.trim())
-        return this.showMessage('请输入文章内容', 'warning')
-      if(!this.article.category)
-        return this.showMessage('请选择文章类别', 'warning')
-      let simplemde = this.$refs.markdownEditor.simplemde
-      let htmlContent = simplemde.markdown(this.article.rawContent)
-      let articleObj = {
-        id: this.article._id,
-        rawContent: this.article.rawContent,
-        htmlContent,
-        category: this.categoryId,
-        tags: this.article.tags,
-        isPublic: this.article.isPublic,
-      }
-
-      // 相对应API发送ajax请求，并接收服务器响应结果
-      try {
-        let {data} = await this.$axios.patch('/api/articles', articleObj)
-        let {message} = data
-        // 根据响应结果进行逻辑判断，并提示
-        this.showMessage(message, 'success')
-        this.$router.back()
-      } catch (err) {
-        this.showMessage(err)
-      }
-    },
-
     cancelEdit () {
       this.$router.back()
     },
@@ -241,6 +222,55 @@ export default {
     handleClose (tag) {
       this.article.tags.splice(this.article.tags.indexOf(tag), 1);
     },
+
+    /* 定义保存文章函数 */
+    async saveUpdate () {
+      if(!this.article.rawContent.trim())
+        return this.showMessage('请输入文章内容', 'warning')
+      if(!this.article.category)
+        return this.showMessage('请选择文章类别', 'warning')
+      //将新标签保存至数据库，然后获取所有标签的id
+      var totalTagNameList = this.totalTagList.map(
+        item => item = item.name
+       )
+      var newTagNameList = this.selectedTags.filter(
+        item => !totalTagNameList.includes(item)
+      )
+      if (newTagNameList.length === 0) {
+        var tagIdList = this.totalTagList
+          .filter( item => this.selectedTags.includes(item.name) )
+          .map( item => item._id )
+      } else {
+        await this.$axios.post( '/api/tags', {newTagNameList} )
+        let {data} = await this.$axios.get( 'api/tags' )
+        let {totalTagList} = data
+        var tagIdList = totalTagList
+          .filter( item => this.selectedTags.includes(item.name) )
+          .map( item => item._id )
+      }
+      // 将文章内容转换成html格式
+      let simplemde = this.$refs.markdownEditor.simplemde
+      let htmlContent = simplemde.markdown(this.article.rawContent)
+      let articleObj = {
+        id: this.article._id,
+        rawContent: this.article.rawContent,
+        htmlContent,
+        category: this.categoryId,
+        tags: tagIdList,
+        isPublic: this.article.isPublic,
+      }
+
+      // 相对应API发送ajax请求，并接收服务器响应结果
+      try {
+        let {data} = await this.$axios.patch('/api/articles', articleObj)
+        let {message} = data
+        // 根据响应结果进行逻辑判断，并提示
+        this.showMessage(message, 'success')
+        this.$router.back()
+      } catch (err) {
+        this.showMessage(err)
+      }
+    }
 
   }
 }

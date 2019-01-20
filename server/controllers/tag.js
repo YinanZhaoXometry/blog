@@ -1,4 +1,5 @@
 const tagModel = require('../models/tag')
+const articleModel = require('../models/article')
 
 module.exports = {
   // 获取所有标签
@@ -9,8 +10,14 @@ module.exports = {
 
 
   // 获取xx标签下的所有文章
-  async getTagArticles () {
-
+  async getTagArticles (ctx, next) {
+    let tagId = ctx.params.id
+    let tagInfo = await tagModel.findOne({_id:tagId}, {})
+    let articleList = await articleModel.find({tags:tagId}, '-content -comments', {sort: {createTime: -1}})
+    ctx.body = {
+      articleList,
+      tagInfo
+    }
   },
 
   // 添加新分类

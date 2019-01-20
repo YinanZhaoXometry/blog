@@ -61,14 +61,6 @@ module.exports = {
     }
   },
 
-  async getTagArticles (ctx, next) {
-    let tag = ctx.params.tag
-    let list = await articleModel.find({tags:tag}, '-content -comments', {sort: {createTime: -1}})
-    ctx.body = {
-      list
-    }
-  },
-
   async getSearchArticles (ctx, next) {
     let {keyword} = ctx.request.query
     let regExp = new RegExp(keyword, 'i')
@@ -109,10 +101,8 @@ module.exports = {
     )
     let getSaveCateResult = saveArticleToCategory(category, id)
     let [updateResult, saveCateResult] = await Promise.all([getUpdateResult, getSaveCateResult])
-    if(!updateResult.nModified)
-      throw new Error('文章修改未成功保存至数据库')
-    if(!saveCateResult.nModified)
-      throw new Error('文章类型未成功保存至数据库')
+    if(!updateResult.nModified) console.log('文章内容无修改')
+    if(!saveCateResult.nModified) console.log('文章类型无修改')
     ctx.body = {
       message:'修改成功！'
     }

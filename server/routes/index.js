@@ -42,7 +42,7 @@ router
     .get('/categories', categoryController.getCategories)                // 获取所有分类信息
     .get('/categories/:category', categoryController.getCateArticles)    // 获取某分类下的所有文章
     .get('/tags', tagController.getTags)                                 // 获取所有标签信息
-    .get('/tags/:tag', tagController.getTagArticles)                     // 获取某标签下的所有文章
+    .get('/tags/:id', tagController.getTagArticles)                     // 获取某标签下的所有文章
     .get('/search', articleController.getSearchArticles)                 // 获取包含搜索关键字的文章
 
 module.exports = router

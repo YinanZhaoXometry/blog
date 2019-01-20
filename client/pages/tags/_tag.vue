@@ -2,11 +2,11 @@
   <section style="display:flex">
     <div style="flex:1">
       <el-row>
-        <i>icon</i> <span>标签：</span><span>{{ $route.params.tag }}</span>
+        <i>icon</i> <span>标签：</span><span>{{ tagInfo.name }}</span>
       </el-row>
       <el-row>
         <nuxt-link
-          v-for="item in list"
+          v-for="item in articleList"
           :key="item._id"
           :to="{path: `/articles/${item._id}`}"
         >
@@ -68,8 +68,8 @@ export default {
   async asyncData ({ app, route }) {
     try {
       let {data} = await app.$axios.get(`/api/tags/${encodeURI(route.params.tag)}`)
-      let {list} = data
-      return {list}
+      let { articleList, tagInfo } = data
+      return { articleList, tagInfo }
     } catch (err) {
       app.$message.error('获取文章失败，' + err)
     }

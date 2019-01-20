@@ -153,10 +153,10 @@ export default {
       // Markdown编辑器设置选项
       mdeConfigs: {
         spellChecker: false,
-        autosave: {
-          enabled: true,
-          uniqueId: 'mde-for-new-blog-content',
-        },
+        // autosave: {
+        //   enabled: true,
+        //   uniqueId: 'mde-for-new-blog-content',
+        // },
         placeholder: '从这里开始写正文',
         renderingConfig: {
           codeSyntaxHighlighting: true
@@ -222,13 +222,18 @@ export default {
       var newTagNameList = this.selectedTags.filter(
         item => !totalTagNameList.includes(item)
       )
-      await this.$axios.post( '/api/tags', {newTagNameList} )
-      let {data} = await this.$axios.get( 'api/tags' )
-      let {totalTagList} = data
-      let tagIdList = totalTagList
-        .filter( item => this.selectedTags.includes(item.name) )
-        .map( item => item._id )
-
+      if (newTagNameList.length === 0) {
+        var tagIdList = this.totalTagList
+          .filter( item => this.selectedTags.includes(item.name) )
+          .map( item => item._id )
+      } else {
+        await this.$axios.post( '/api/tags', {newTagNameList} )
+        let {data} = await this.$axios.get( 'api/tags' )
+        let {totalTagList} = data
+        var tagIdList = totalTagList
+          .filter( item => this.selectedTags.includes(item.name) )
+          .map( item => item._id )
+      }
       // 将文章内容转换成html格式
       let simplemde = this.$refs.markdownEditor.simplemde
       let htmlContent = simplemde.markdown(this.rawContent)
@@ -271,8 +276,8 @@ export default {
   @import 'highlight.js/styles/atom-one-dark.css';
 
   /*修改代码块背景色及字体颜色*/
-  .theme .editor-preview-side pre, .theme .editor-preview pre{
+  /* .theme .editor-preview-side pre, .theme .editor-preview pre{
     color: #abb2bf !important;
     background: #282c34 !important;
-  }
+  } */
 </style>
