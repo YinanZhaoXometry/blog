@@ -197,7 +197,10 @@ export default {
     // 定义提交父级评论处理函数
     async submitMainComment () {
       try {
-        if(!this.inputValue.trim()) return this.$message.warning('评论内容不能为空')
+        if(!this.inputValue.trim())
+          return this.$message.warning('评论内容不能为空')
+        if(!this.inputValue.trim().length>140)
+          return this.$message.warning('评论内容不能超过140个字')
         let msg = this.checkUserInfo()
         if (msg) return this.$message.warning(msg)
 
@@ -222,7 +225,10 @@ export default {
     // 定义提交子评论处理函数
     async submitChildComment () {
       try {
-        if(!this.inputValue.trim()) return this.$message.warning('评论内容不能为空')
+        if(!this.inputValue.trim())
+          return this.$message.warning('评论内容不能为空')
+        if(!this.inputValue.trim().length>140)
+          return this.$message.warning('评论内容不能超过140个字')
         let msg = this.checkUserInfo()
         if (msg) return this.$message.warning(msg)
 

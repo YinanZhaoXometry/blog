@@ -1,21 +1,46 @@
 <template>
   <section>
-    <my-header />
+    <banner class="banner" />
+    <navbar id="navbar" :class="{sticky: isSticky}" />
     <transition name="fade" mode="out-in">
-      <nuxt />
+      <nuxt class="content" />
     </transition>
     <my-footer />
   </section>
 </template>
 
 <script>
-import MyHeader from '~/components/public/Header.vue'
+import Banner from '~/components/public/Banner.vue'
+import Navbar from '~/components/public/Navbar.vue'
 import MyFooter from '~/components/public/Footer.vue'
 
 export default {
   components: {
-    MyHeader,
+    Banner,
+    Navbar,
     MyFooter
+  },
+  data () {
+    return {
+      isSticky: false
+    }
+  },
+
+  computed: {
+    sticky () {
+      let navbar = document.getElementById('navbar')
+      return navbar.offsetTop
+    }
+  },
+
+  mounted () {
+    window.addEventListener('scroll', () => this.handleScroll())
+  },
+
+  methods: {
+    handleScroll () {
+      this.isSticky = window.pageYOffset >= this.sticky ? true : false
+    }
   }
 }
 </script>
@@ -29,56 +54,28 @@ export default {
   opacity: 0;
 }
 
-
-
-
-
-
-html {
-  font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI',
-    Roboto, 'Helvetica Neue', Arial, sans-serif;
-  font-size: 16px;
-  word-spacing: 1px;
-  -ms-text-size-adjust: 100%;
-  -webkit-text-size-adjust: 100%;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  box-sizing: border-box;
+.content {
+  padding: 16px;
 }
 
-*,
-*:before,
-*:after {
-  box-sizing: border-box;
-  margin: 0;
+.banner {
+  padding: 15px;
+  display: block;
+  overflow: hidden;
 }
 
-.button--green {
-  display: inline-block;
-  border-radius: 4px;
-  border: 1px solid #3b8070;
-  color: #3b8070;
-  text-decoration: none;
-  padding: 10px 30px;
+.sticky {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index:3000;
 }
 
-.button--green:hover {
-  color: #fff;
-  background-color: #3b8070;
+.sticky + .content {
+  padding-top: 70px;
 }
 
-.button--grey {
-  display: inline-block;
-  border-radius: 4px;
-  border: 1px solid #35495e;
-  color: #35495e;
-  text-decoration: none;
-  padding: 10px 30px;
-  margin-left: 15px;
-}
 
-.button--grey:hover {
-  color: #fff;
-  background-color: #35495e;
-}
 </style>
+
+

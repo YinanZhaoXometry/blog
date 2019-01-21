@@ -1,4 +1,3 @@
-
 <template>
   <section class="markdown-body">
     <el-row type="flex" justify="center">
@@ -48,9 +47,10 @@
 </template>
 
 <script>
-import Comment from '~/components/comment/Index.vue'
+import Comment from '~/components/comment'
 import hljs from 'highlight.js/lib/highlight'
 import javascript from 'highlight.js/lib/languages/javascript'
+
 
 export default {
   components: {
@@ -67,23 +67,22 @@ export default {
     }
   },
 
-  async asyncData ({ app, params }) {
+  async asyncData ({app, params, store}) {
     try {
-      let {data} = await app.$axios.get(`/api/articles/${params.id}`)
-      let {article} = data
+      let articleRes = await app.$axios.get(`/api/articles/${params.id}`)
+      let article = articleRes.data.article
+      let commentRes = await app.$axios.get(`/api/comments/${params.id}`)
+      let commentList = commentRes.data.comments
+      store.commit('comments/setCommentList', commentList)
       return {article}
     } catch (err) {
-      this.$message.error(err)
     }
-  },
-
-  async fetch ({ params, store }) {
-    await store.dispatch('comments/fetchCommentList', params.id)
   },
 
   layout: 'article',
 
   mounted () {
+
     this.readUserCache()
     // 选择性加载 highlight 样式
     hljs.registerLanguage( 'javascript', require('highlight.js/lib/languages/javascript') )

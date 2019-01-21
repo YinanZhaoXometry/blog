@@ -28,6 +28,8 @@
     "@babel/preset-env": "^7.2.0",
     "acorn": "^6.0.4",
     "babel-eslint": "^8.2.1",
+    "element-theme": "^2.0.1",
+    "element-theme-chalk": "git+https://github.com/ElementUI/theme-chalk.git",
     "eslint": "^5.0.1",
     "eslint-loader": "^2.0.0",
     "eslint-plugin-vue": "^5.0.0",

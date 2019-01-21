@@ -1,8 +1,58 @@
 <template>
   <section style="display:flex">
-    <main-section
-      style="flex:1"
-    />
+    <div>
+      <el-row>
+        <nuxt-link
+          v-for="item in articleList"
+          :key="item._id"
+          :to="'/articles/' + item._id"
+        >
+          <el-card shadow="hover" style="height:200px">
+            <el-col :span="10">
+              <span>分类1</span>
+              <h2>{{ item.title }}</h2>
+              <p>{{ item.description }}</p>
+              <div>
+                <el-tag :type="item.isOriginal ? 'success' : 'info'">{{ item.isOriginal ? '原创' : '转载' }}</el-tag>
+              </div>
+              <template>
+                <el-tag v-if="!item.isPublic" type="warning">
+                  {{ '私有' }}
+                </el-tag>
+                <el-tag v-if="!item.isPublished" type="warning">
+                  {{ '草稿' }}
+                </el-tag>
+              </template>
+            </el-col>
+            <el-col :span="10">
+              <img
+                :src="imagePathPrefix + item.coverImage.webName"
+                alt="Cover image"
+                style="display:block;height:200px"
+              >
+            </el-col>
+          </el-card>
+        </nuxt-link>
+      </el-row>
+      <el-button
+        v-if="isLoading"
+        size="small"
+        :loading="true"
+      >
+        加载中
+      </el-button>
+      <el-button
+        v-else
+        v-show="!isLastPage"
+        type="primary"
+        plain
+        size="small"
+        @click="loadMore"
+      >
+        加载更多
+      </el-button>
+      <p v-show="isLastPage">---没有更多文章了---</p>
+    </div>
     <side-section
       id="sideSection"
       style="flex:1; margin-top:20px"
@@ -11,34 +61,45 @@
 </template>
 
 <script>
-import MainSection from '~/components/home/MainSection'
 import SideSection from '~/components/public/SideSection'
 
 export default {
 
   components: {
-    MainSection,
     SideSection
   },
 
   data () {
     return {
-      pageNum: 1
+      pageNum: 1,
+      isLoading: false,
+      pageSize: 8
     }
+  },
+  computed: {
+    // 计算总页数
+    totalPageCount () {
+      let totalArticleCount = this.totalArticleCount
+      return totalArticleCount % this.pageSize === 0
+              ? totalArticleCount / this.pageSize
+              : parseInt(totalArticleCount / this.pageSize + 1)
+    },
+    // 判断是否为最后一页
+    isLastPage () {
+      return this.pageNum === this.totalPageCount
+    }
+    // 计算发表日期显示格式，如文章发表年份为今年，则不显示年份
   },
 
   // 向文章 api 请求数据，将获取到的数据保存至 store 中
-  async fetch ({ app, store }) {
+  async asyncData ({ app, store }) {
     try {
       let getArticles = app.$axios.get(`/api/articles`, { params: {pageSize:8} })
       let getPopularArticles = app.$axios.get(`/api/popularArticles`, { params: {pageSize:5} })
       let [responseA, responseB] = await Promise.all( [getArticles, getPopularArticles] )
       let { articleList, totalArticleCount, imagePathPrefix } = responseA.data
       let {popularList} = responseB.data
-      store.commit(
-        "getArticleList",
-        {articleList, totalArticleCount, imagePathPrefix}
-      )
+      return {articleList, totalArticleCount, imagePathPrefix}
       store.commit("getPopularList", popularList)
     } catch (err) {
       console.log(err)
@@ -52,6 +113,22 @@ export default {
   },
 
   methods:{
+
+    loadMore: async function () {
+      this.isLoading = true
+      if (this.pageNum < this.totalPageCount) {
+        this.pageNum++
+        let {data} = await this.$axios.get(
+          `/api/articles`,
+          { params: {pageNum: this.pageNum, pageSize: this.pageSize} }
+        )
+        let {articleList} = data
+        this.$store.commit('mergeList', articleList)
+      }
+      this.isLoading = false
+    },
+
+
     // handleScrollFixed (elem) {
     //   var originTop = this.getTotalTop(elem)
     //   window.addEventListener('scroll', function(){
@@ -77,6 +154,8 @@ export default {
     //   return totalTop
     // }
   },
+
+
 
   // SEO优化，见 https://nuxtjs.org/api/pages-head#the-head-method
   head () {

@@ -40,11 +40,11 @@
               </template>
             </el-col>
             <el-col :span="10">
-              <img
+              <!-- <img
                 src="~/assets/1540478160349.png"
-                alt=""
+                alt="Cover image"
                 style="display:block;height:200px"
-              >
+              > -->
             </el-col>
           </el-card>
         </nuxt-link>

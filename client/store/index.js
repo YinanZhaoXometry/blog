@@ -42,11 +42,9 @@ const mutations = {
   dislikeArticle (state, articleId) {
     let index = state.articleList.findIndex(element => Object.is(element._id, articleId))
     if(index !== -1) state.articleList[index].likes--
-  }
+  },
 
 }
 
-const actions = {
 
-}
 export {state, mutations}
