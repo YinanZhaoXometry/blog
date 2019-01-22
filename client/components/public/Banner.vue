@@ -1,7 +1,6 @@
 <template>
-  <div>
-    <nuxt-link to="/"><b>KuHe 酷核</b></nuxt-link>
-    <span>学习编程永远都不晚</span>
+  <div class="banner">
+
   </div>
 </template>
 
@@ -17,3 +16,15 @@ export default {
   }
 }
 </script>
+
+<style>
+  .banner {
+    /* background-color: #B9C8E0; */
+    width:100%;
+    color: #172B4A;
+    text-align: center;
+  }
+  .banner a {
+    color: #172B4A;
+  }
+</style>

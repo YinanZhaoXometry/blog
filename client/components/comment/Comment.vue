@@ -23,7 +23,7 @@
         </el-button>
       </span>
       <span>
-        <el-button @click="onClickReply($event, true)"><i>icon</i>回复</el-button>
+        <el-button @click="onClickReply($event, true)"><i class="iconfont icon-_ico_reply" /> <span>回复</span></el-button>
       </span>
     </div>
     <!-- 子评论区 -->

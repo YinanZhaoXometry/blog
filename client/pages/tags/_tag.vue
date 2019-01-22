@@ -41,21 +41,11 @@
         </nuxt-link>
       </el-row>
     </div>
-    <side-section
-      id="sideSection"
-      style="flex:1; margin-top:20px"
-    />
   </section>
 </template>
 
 <script>
-import SideSection from '~/components/public/SideSection'
-
 export default {
-  components: {
-    SideSection
-  },
-
   async asyncData ({ app, route }) {
     try {
       let {data} = await app.$axios.get(`/api/tags/${encodeURI(route.params.tag)}`)

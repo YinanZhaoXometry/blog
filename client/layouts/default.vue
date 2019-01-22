@@ -1,47 +1,26 @@
 <template>
   <section>
-    <banner class="banner" />
-    <navbar id="navbar" :class="{sticky: isSticky}" />
+    <navbar class="sticky" />
     <transition name="fade" mode="out-in">
       <nuxt class="content" />
     </transition>
+    <side-bar class="side-bar" />
     <my-footer />
   </section>
 </template>
 
 <script>
-import Banner from '~/components/public/Banner.vue'
 import Navbar from '~/components/public/Navbar.vue'
 import MyFooter from '~/components/public/Footer.vue'
+import SideBar from '~/components/public/SideBar.vue'
 
 export default {
   components: {
-    Banner,
     Navbar,
+    SideBar,
     MyFooter
   },
-  data () {
-    return {
-      isSticky: false
-    }
-  },
 
-  computed: {
-    sticky () {
-      let navbar = document.getElementById('navbar')
-      return navbar.offsetTop
-    }
-  },
-
-  mounted () {
-    window.addEventListener('scroll', () => this.handleScroll())
-  },
-
-  methods: {
-    handleScroll () {
-      this.isSticky = window.pageYOffset >= this.sticky ? true : false
-    }
-  }
 }
 </script>
 
@@ -54,14 +33,9 @@ export default {
   opacity: 0;
 }
 
-.content {
-  padding: 16px;
-}
-
-.banner {
-  padding: 15px;
-  display: block;
-  overflow: hidden;
+.content, .side-bar {
+  margin-top: 130px;
+  /* padding: 130px 0 30px 0; */
 }
 
 .sticky {
@@ -71,9 +45,6 @@ export default {
   z-index:3000;
 }
 
-.sticky + .content {
-  padding-top: 70px;
-}
 
 
 </style>

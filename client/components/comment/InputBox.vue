@@ -32,7 +32,8 @@
           </el-col>
         </el-row>
         <!-- 按钮区域 -->
-        <el-button round>😊</el-button>
+        <el-button round><i class="iconfont icon-biaoqing-xue" /></el-button>
+        <el-button round><i class="iconfont icon-tupian" /></el-button>
         <span @click="onCancel">取消</span>
         <el-button
           type="success"

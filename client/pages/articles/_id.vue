@@ -11,37 +11,37 @@
         <p v-if="!article">努力加载中...</p>
         <div v-html="article.htmlContent" />
         <el-row>
-          <el-button
-            v-for="tag in article.tags"
-            :key="tag._id"
-            size="mini"
-          >
-            <nuxt-link :to="`/tags/${tag._id}`">
-              {{ tag.name }}
-            </nuxt-link>
-          </el-button>
-          <el-button round @click="likeArticle">
-            <i :class="['iconfont', isArticleLiked ? 'icon-like' : 'icon-like1']" />
-            {{ article.likes ? article.likes + '人赞' : '赞' }}
-          </el-button>
-          <el-button icon="el-icon-view" round>
-            {{ article.views }}
-          </el-button>
+          <el-col :span="10">
+            <el-button round @click="likeArticle">
+              <i :class="['iconfont', isArticleLiked ? 'icon-like' : 'icon-like1']" />
+              {{ article.likes ? article.likes + '人赞' : '赞' }}
+            </el-button>
+            <el-button icon="el-icon-view" round>
+              {{ article.views }}
+            </el-button>
+          </el-col>
+          <el-col :span="10" class="article-tags">
+            <el-button
+              v-for="tag in article.tags"
+              :key="tag._id"
+              size="mini"
+            >
+              <nuxt-link :to="`/tags/${tag._id}`">
+                {{ tag.name }}
+              </nuxt-link>
+            </el-button>
+          </el-col>
         </el-row>
       </el-col>
     </el-row>
-    <el-row type="flex" justify="space-around">
-      <el-col :span="2">
-        <nuxt-link to="/">
-          <i class="el-icon-arrow-left" />上一篇文章
-        </nuxt-link>
-      </el-col>
-      <el-col :span="2">
-        <nuxt-link to="/">
-          下一篇文章<i class="el-icon-arrow-right" />
-        </nuxt-link>
-      </el-col>
-    </el-row>
+    <div class="clearfix">
+      <nuxt-link to="/" class="article-last">
+        <i class="el-icon-arrow-left" />上一篇
+      </nuxt-link>
+      <nuxt-link to="/" class="article-next">
+        下一篇<i class="el-icon-arrow-right" />
+      </nuxt-link>
+    </div>
     <comment :article-id="article._id" />
   </section>
 </template>
@@ -49,7 +49,6 @@
 <script>
 import Comment from '~/components/comment'
 import hljs from 'highlight.js/lib/highlight'
-import javascript from 'highlight.js/lib/languages/javascript'
 
 
 export default {
@@ -158,5 +157,15 @@ export default {
     .markdown-body {
       padding: 15px;
     }
+  }
+
+  .article-tags {
+    margin-top: 10px;
+  }
+  .article-last {
+    float: left;
+  }
+  .article-next {
+    float: right;
   }
 </style>

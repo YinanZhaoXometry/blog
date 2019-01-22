@@ -14,7 +14,7 @@ module.exports = {
     pageNum = pageNum ? parseInt(pageNum) : 1
     pageSize = parseInt(pageSize)
     let getArticleList = articleModel.find(
-      condition, {},
+      condition, '-content',
       {
         sort: {createTime: -1},
         skip: (pageNum - 1) * pageSize,
@@ -25,7 +25,7 @@ module.exports = {
     let articleList =
     isFromAdmin
       ? await getArticleList.populate('category')
-      : await getArticleList.populate('coverImage')
+      : await getArticleList.populate('coverImage').populate('category')
     ctx.response.body = {
       articleList,
       totalArticleCount,

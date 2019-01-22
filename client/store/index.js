@@ -44,6 +44,9 @@ const mutations = {
     if(index !== -1) state.articleList[index].likes--
   },
 
+  setImagePrefix (state, imagePathPrefix) {
+    state.imagePathPrefix = imagePathPrefix
+  }
 }
 
 

@@ -1,4 +1,5 @@
 const categoryModel = require('../models/category')
+const config = require('../config')
 
 module.exports = {
   // 获得所有分类
@@ -9,29 +10,31 @@ module.exports = {
     }
   },
 
-  // 获取xx分类下的所有文章
+  // 获取xx分类下的文章
   async getCateArticles (ctx, next) {
     let categoryName = ctx.params.category
-    let {pageNum, pageSize} = ctx.query
+    let { pageNum, pageSize } = ctx.query
     pageNum = pageNum ? parseInt(pageNum) : 1
     pageSize = parseInt(pageSize)
     // 获取xx分类下的文章总数量
-    let result = await categoryModel.findOne({enName:categoryName},{})
+    let result = await categoryModel.findOne({ enName: categoryName },{})
     let cateArticleCount = result.articles.length
     // 获取分类对象，其中包含当前分类下的所有文章
     let categoryObj = await categoryModel
-      .findOne({enName:categoryName},{})
+      .findOne({ enName:categoryName },{})
       .populate({
         path: 'articles',
         options: {
-          sort: {time: -1}, 
+          sort: { time: -1 }, 
           skip: (pageNum -1) * pageSize,
           limit: pageSize,
-        }
+        },
+        populate: { path: 'coverImage' }
       })
     ctx.body = {
       categoryObj,
-      cateArticleCount
+      cateArticleCount,
+      imagePathPrefix: config.imagePathPrefix
     }
   },
 
