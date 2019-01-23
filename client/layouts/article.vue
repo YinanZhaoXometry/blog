@@ -1,8 +1,6 @@
 <template>
   <section class="top-section">
-    <header id="navbar">
-      <navbar />
-    </header>
+    <my-header id="navbar" />
     <div>
       <nuxt class="content" />
     </div>
@@ -11,12 +9,12 @@
 </template>
 
 <script>
-import Navbar from '~/components/public/Navbar.vue'
+import MyHeader from '~/components/public/Header.vue'
 import MyFooter from '~/components/public/Footer.vue'
 
 export default {
   components: {
-    Navbar,
+    MyHeader,
     MyFooter
   },
 
@@ -27,7 +25,14 @@ export default {
   },
 
   mounted () {
-    window.addEventListener('scroll', () => {
+    window.addEventListener('scroll', this.handleScroll)
+  },
+
+  destroyed () {
+    window.removeEventListener('scroll', this.handleScroll)
+  },
+  methods: {
+    handleScroll () {
       let currentScrollPos = window.pageYOffset
       let navbar = document.getElementById('navbar')
       if (this.prevScrollPos > currentScrollPos) {
@@ -36,13 +41,11 @@ export default {
         navbar.style.top = "-200px"
       }
       this.prevScrollPos = currentScrollPos
-    })
-  },
-
+    }
+  }
 
 }
 </script>
-
 
 <style scoped>
 
@@ -53,12 +56,7 @@ top-section {
 }
 
 #navbar {
-  position: fixed;
-  width: 100%;
-  top: 0;
-  transition: top 0.3s;
-  z-index: 4000;
-  display: block
+  transition: top 0.5s;
 }
 
 .content {

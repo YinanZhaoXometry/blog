@@ -1,67 +1,33 @@
 <template>
-  <section class="top-section">
-    <header id="navbar">
-      <navbar />
-    </header>
-    <div>
+  <section>
+    <my-header />
+    <div class="container-content">
       <nuxt class="content" />
     </div>
-    <my-footer />
+    <my-footer class="footer" />
   </section>
 </template>
 
 <script>
-import Navbar from '~/components/public/Navbar.vue'
+import MyHeader from '~/components/public/Header.vue'
 import MyFooter from '~/components/public/Footer.vue'
 
 export default {
   components: {
-    Navbar,
+    MyHeader,
     MyFooter
-  },
-
-  data () {
-    return {
-      prevScrollPos: ''
-    }
-  },
-
-  mounted () {
-    window.addEventListener('scroll', () => {
-      let currentScrollPos = window.pageYOffset
-      let navbar = document.getElementById('navbar')
-      if (this.prevScrollPos > currentScrollPos) {
-        navbar.style.top = "0"
-      } else {
-        navbar.style.top = "-200px"
-      }
-      this.prevScrollPos = currentScrollPos
-    })
-  },
-
-
+  }
 }
 </script>
 
-
 <style scoped>
-
-top-section {
-  margin: 0;
-  padding: 0;
-  width:100%;
-}
-
-#navbar {
-  position: fixed;
+.container-content {
+  position: relative;
+  top: 60px;
   width: 100%;
-  top: 0;
-  transition: top 0.3s;
-  z-index: 4000;
-  display: block
+}
+.footer {
+  margin-top: 60px;
 }
 
-.content {
-  margin-top: 100px !important;
-}
 </style>

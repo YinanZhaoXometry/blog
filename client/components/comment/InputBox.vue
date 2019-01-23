@@ -12,25 +12,23 @@
     <transition name="el-fade-in-linear">
       <div v-show="isMainInputBox ? isButtonsShow : true">
         <!-- 填写用户信息区域 -->
-        <el-row v-if="!hasUserCache || isEditUserCache" type="flex">
-          <el-col :span="6"><el-input v-model="fromWhom.name" placeholder="称呼 *" /></el-col>
-          <el-col :span="6"><el-input v-model="fromWhom.email" placeholder="邮箱 *" @blur="getUserAvatar(); $emit('onInputBlur', fromWhom.avatar)" /></el-col>
-          <el-col :span="8">
-            <el-input v-model="fromWhom.site" placeholder="个人网址(选填)">
-              <el-select slot="prepend" v-model="fromWhom.sitePrefix" placeholder="请选择">
-                <el-option label="http://" value="http://" />
-                <el-option label="https://" value="https://" />
-              </el-select>
-            </el-input>
-          </el-col>
-          <el-col v-if="!isEditUserCache" :span="4">
+        <div v-if="!hasUserCache || isEditUserCache" type="flex">
+          <el-input v-model="fromWhom.name" placeholder="称呼 *" />
+          <el-input v-model="fromWhom.email" placeholder="邮箱 *" @blur="getUserAvatar(); $emit('onInputBlur', fromWhom.avatar)" />
+          <el-input v-model="fromWhom.site" placeholder="个人网址(选填)">
+            <el-select slot="prepend" v-model="fromWhom.sitePrefix" placeholder="请选择">
+              <el-option label="http://" value="http://" />
+              <el-option label="https://" value="https://" />
+            </el-select>
+          </el-input>
+          <div v-if="!isEditUserCache">
             <el-checkbox v-model="rememberMe">记住我</el-checkbox>
-          </el-col>
-          <el-col v-else :span="4">
+          </div>
+          <div v-else>
             <el-button type="danger" plain icon="el-icon-close" @click="isEditUserCache = false; readUserCache()" />
             <el-button type="success" plain icon="el-icon-check" @click="updateUserCache" />
-          </el-col>
-        </el-row>
+          </div>
+        </div>
         <!-- 按钮区域 -->
         <el-button round><i class="iconfont icon-biaoqing-xue" /></el-button>
         <el-button round><i class="iconfont icon-tupian" /></el-button>

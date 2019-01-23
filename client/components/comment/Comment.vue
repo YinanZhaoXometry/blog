@@ -2,17 +2,11 @@
   <section>
     <!-- 父级评论区 -->
     <div>
-      <el-row>
-        <el-col :span="2">
-          <img :src="getUserAvatar(comment.fromWhom.email)" alt="">
-        </el-col>
-        <el-col :span="4">
-          <div>
-            <p>{{ comment.fromWhom.name }}</p>
-            <p>{{ comment.createTime.fullDate }}</p>
-          </div>
-        </el-col>
-      </el-row>
+      <img :src="getUserAvatar(comment.fromWhom.email)" alt="">
+      <div>
+        <p>{{ comment.fromWhom.name }}</p>
+        <p>{{ comment.createTime.fullDate }}</p>
+      </div>
     </div>
     <div v-html="comment.content" />
     <div>
