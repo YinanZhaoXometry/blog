@@ -17,11 +17,11 @@ module.exports = {
   ** Headers of the page
   */
   head: {
-    title: pkg.name,
+    // title: pkg.name,
     meta: [
       { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: pkg.description }
+      { name: 'viewport', content: 'width=device-width, initial-scale=1, user-scalable=no' },
+      // { hid: 'description', name: 'description', content: pkg.description }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
@@ -37,7 +37,9 @@ module.exports = {
   ** Global CSS
   */
   css: [
-    'element-ui/lib/theme-chalk/index.css',
+    '~/assets/theme/index.css',
+    '~/assets/styles/main.css',
+    // 'element-ui/lib/theme-chalk/index.css',
     '~/assets/fonts/iconfont/iconfont.css'
   ],
 
@@ -45,9 +47,19 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '~/plugins/element-ui',
-
+    '~/plugins/element-ui'
   ],
+
+  /*
+  ** Loaders
+  */
+  loader: [
+    {
+      test: /\.less$/,
+      loaders: 'style-loader!css-loader!less-loader'
+    }
+  ],
+
 
   /*
   ** Nuxt.js modules

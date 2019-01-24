@@ -2,20 +2,18 @@ const state = () => ({
   articleList: [],
   popularList: [],
   totalArticleCount: 0,
+  imagePathPrefix:'',
 
   cateArticleList: [],
   cateArticleCount: 0,
   category: {}
 })
 
-const getters = {
-
-}
-
 const mutations = {
-  getArticleList (state, {articleList, totalArticleCount}) {
+  getArticleList (state, {articleList, totalArticleCount, imagePathPrefix}) {
     state.articleList = articleList
     state.totalArticleCount = totalArticleCount
+    state.imagePathPrefix = imagePathPrefix
   },
 
   getPopularList (state, popularList) {
@@ -34,11 +32,22 @@ const mutations = {
 
   mergeCateArticleList (state, payload) {
     state.cateArticleList = state.cateArticleList.concat(payload.articles)
+  },
+
+  likeArticle (state, articleId) {
+    let index = state.articleList.findIndex(element => Object.is(element._id, articleId))
+    if(index !== -1) state.articleList[index].likes++
+  },
+
+  dislikeArticle (state, articleId) {
+    let index = state.articleList.findIndex(element => Object.is(element._id, articleId))
+    if(index !== -1) state.articleList[index].likes--
+  },
+
+  setImagePrefix (state, imagePathPrefix) {
+    state.imagePathPrefix = imagePathPrefix
   }
-
 }
 
-const actions = {
 
-}
 export {state, mutations}

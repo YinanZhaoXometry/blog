@@ -1,17 +1,20 @@
 import Vue from 'vue'
 import NuxtLoading from './components/nuxt-loading.vue'
 
-import '../node_modules/element-ui/lib/theme-chalk/index.css'
+import '../assets/theme/index.css'
+
+import '../assets/styles/main.css'
 
 import '../assets/fonts/iconfont/iconfont.css'
 
+import _7705a157 from '../layouts/about.vue'
 import _309dff80 from '../layouts/article.vue'
 import _6f6c098b from '../layouts/default.vue'
 
-const layouts = { "_article": _309dff80,"_default": _6f6c098b }
+const layouts = { "_about": _7705a157,"_article": _309dff80,"_default": _6f6c098b }
 
 export default {
-  head: {"title":"nuxt-koa-mongo-blog2","meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"},{"hid":"description","name":"description","content":"My blog created with nuxt-koa2-mongodb"}],"link":[{"rel":"icon","type":"image\u002Fx-icon","href":"\u002Ffavicon.ico"}],"style":[],"script":[]},
+  head: {"meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1, user-scalable=no"}],"link":[{"rel":"icon","type":"image\u002Fx-icon","href":"\u002Ffavicon.ico"}],"style":[],"script":[]},
 
   render(h, props) {
     const loadingEl = h('nuxt-loading', { ref: 'loading' })

@@ -1,72 +1,120 @@
 <template>
-  <section style="display:flex">
-    <main-section
-      style="flex:1"
-    />
-    <side-section
-      id="sideSection"
-      style="flex:1; margin-top:20px"
-    />
+  <section>
+    <article-card :article-list="articleList" :image-path-prefix="imagePathPrefix" />
+    <div class="loadmore">
+      <el-button
+        v-if="isLoading"
+        size="small"
+        :loading="true"
+      >
+        加载中
+      </el-button>
+      <el-button
+        v-else
+        v-show="!isLastPage"
+        type="primary"
+        plain
+        size="small"
+        @click="loadMore"
+      >
+        加载更多
+      </el-button>
+      <p v-show="isLastPage">---没有更多文章了---</p>
+    </div>
   </section>
 </template>
 
 <script>
-import MainSection from '~/components/category/MainSection'
-import SideSection from '~/components/category/SideSection'
+import ArticleCard from '~/components/public/ArticleCard.vue'
 
 export default {
-
   components: {
-    MainSection,
-    SideSection
+    ArticleCard
   },
 
-  async fetch ({app, params, store}) {
-    let {data} = await app.$axios.get(
-      `/api/categories/${params.category}`,
-      {params: {pageSize: 3}}
-    )
-    let {success, categoryObj, cateArticleCount} = data
-    if (success) {
-      store.commit('getCateArticleList',{
-        cateArticleCount,
-        articleList: categoryObj.articles,
-        category:{
-          nameCN: categoryObj.nameCN,
-          nameEN: categoryObj.nameEN,
-          description: categoryObj.description
-        }
-      })
+  data () {
+    return {
+      isLoading: false,
+      pageNum: 1,
+      pageSize: 3
     }
   },
 
-
-  // 向文章 api 请求数据，将获取到的数据保存至 store 中
-  // async fetch ({ app, store }) {
-  //   // 获取主要区域文章数据
-  //   // let responseArticle = await app.$axios.get(`/api/categories/${}`, { params: {pageSize:6} })
-  //   let {articleList, totalArticleCount} = responseArticle.data
-  //   store.commit("getArticleList", {articleList, totalArticleCount})
-  //   // 获取侧边栏热门文章数据（如vuex中有数据则不获取）
-  //   let popularArticleList = store.state.popularList
-  //   if (popularArticleList.length === 0) {
-  //     let responsePopularArt = await app.$axios.get(`/api/popularArticle`, { params: {pageSize:5} })
-  //     let {popularList} = responsePopularArt.data
-  //     store.commit("getPopularList", popularList)
-  //   }
-  // },
-
-  methods:{
-
+  computed: {
+    // 计算总页数
+    totalPageCount () {
+      return this.cateArticleCount % this.pageSize === 0
+        ? this.cateArticleCount / this.pageSize
+        : parseInt( this.cateArticleCount / this.pageSize + 1 )
+    },
+    // 判断是否为最后一页
+    isLastPage () {
+      return this.pageNum === this.totalPageCount
+    }
   },
 
+  async asyncData ({app, params, store}) {
+    try {
+      let {data} = await app.$axios.get(
+        `/api/categories/${params.category}`,
+        { params: {pageSize: 3} }
+      )
+      let { categoryObj, cateArticleCount, imagePathPrefix } = data
+      let articleList = categoryObj.articles
+      let category = {
+        cnName: categoryObj.cnName,
+        enName: categoryObj.enName,
+        description: categoryObj.description
+      }
+      return { articleList, category, cateArticleCount, imagePathPrefix }
+    } catch (err) {
+      this.$message.error(err)
+    }
+  },
+
+  async fetch ({app, store}) {
+    if ( store.state.popularList.length === 0 ) {
+      let {data} = await app.$axios.get(
+        `/api/popularArticles`,
+        { params: {pageSize:5} }
+      )
+      let {popularList} = data
+      console.log(popularList)
+      store.commit("getPopularList", popularList)
+    }
+  },
+
+  methods: {
+    loadMore: async function () {
+      try {
+        this.isLoading = true
+        if (this.pageNum < this.totalPageCount) {
+          this.pageNum++
+          let {data} = await this.$axios.get(
+            `/api/categories/${this.category.enName}`,
+            { params: {pageNum: this.pageNum, pageSize: this.pageSize} }
+          )
+          let {categoryObj} = data
+          console.log(categoryObj)
+          this.articleList.concat(categoryObj.articles)
+          this.isLoading = false
+        }
+      } catch (err) {
+        this.$message.error(err)
+      }
+    },
+  },
+
+  head () {
+    return {
+      title: `${this.$store.state.category.cnName} | 酷核`,
+      meta: [
+        { name: 'description', content: '30岁辞职学习编程，只想说决定要做一件事情以后，多晚开始都不算晚。我将在这里分享编程学习中的一些思考和心路历程' },
+        { name: 'author', content: '赵一楠' },
+        { name: 'keywords', content: '编程, 自学, 转行, 学习'}
+      ],
+    }
+  }
 }
 
-
 </script>
-
-<style>
-
-
-
-</style>

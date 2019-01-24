@@ -1,28 +1,41 @@
 // 用到的elemmentUI组件：el-alert
-
 const Koa = require('koa')
 const views = require('koa-views')
 const json = require('koa-json')
-const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
 const mongoose = require('mongoose')
 const chalk = require('chalk')
-
-// const session = require('koa-generic-session')
-const MongoStore = require('koa-generic-session-mongo')
-// const session = require('koa-session')
-// const MongooseStore = require('koa-session-mongoose')
-const session = require('koa-session-minimal')
-
-
 const cors = require('koa2-cors');
+const path = require('path')
+const koaStatic = require('koa-static')
 
 const router = require('./routes')
-const config = require('./config/default') 
-
+const config = require('./config')
+const auth  = require('./middlewares/auth') 
 const app = new Koa()
 
+// 美化控制台输出
+const success = chalk.green.bold
+const error = chalk.red.bold
+
+// 连接到MongoDB
+mongoose.connect(config.dbUrl, {useNewUrlParser:true}, function(err) {
+  if(err) 
+    console.log(error('数据库连接失败！'))
+  else 
+    console.log(success('数据库连接成功！'))
+})
+
+// app.use(async (ctx, next) => {
+//   ctx.set('Access-Control-Allow-Origin', 'http://127.0.0.1:8080')
+//   // ctx.set('Access-Control-Allow-Credentials', 'true')
+//   ctx.set('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+//   ctx.set('Access-Control-Allow-Headers', 'X-Requested-With, Content-type');
+//   await next()
+// })
+
+// middlewares
 app.use(cors({
     origin: 'http://localhost:8080',
     exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
@@ -33,14 +46,22 @@ app.use(cors({
   }
 ))
 
-// 美化控制台输出
-var success = chalk.green.bold
-var error = chalk.red.bold
-
 // error handler
-onerror(app)
+app.use(async (ctx, next) => {
+  try {
+    await next()
+  } catch (err) {
+    ctx.status = err.status || 500
+    ctx.body = err.message
+    ctx.app.emit('error', err, ctx)
+  }
+})
 
-// middlewares
+app.use(koaStatic(
+  path.join(__dirname, config.servePath),
+  { maxage: 365 * 12 * 30 * 24 * 60 * 60 * 1000 }  // 缓存时间1年
+))
+
 app.use(bodyparser({
   enableTypes:['json', 'form', 'text']
 }))
@@ -48,9 +69,7 @@ app.use(json())
 app.use(logger())
 app.use(require('koa-static')(__dirname + '/public'))
 
-app.use(views(__dirname + '/views', {
-  extension: 'ejs'
-}))
+app.use(views(__dirname + '/views', { extension: 'ejs' }))
 
 // logger
 app.use(async (ctx, next) => {
@@ -60,70 +79,16 @@ app.use(async (ctx, next) => {
   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
 })
 
+app.keys = [config.cookieSecret]   // 设置cookie签名秘钥
 
-// app.use(async (ctx, next) => {
-//   ctx.set('Access-Control-Allow-Origin', 'http://127.0.0.1:8080')
-//   // ctx.set('Access-Control-Allow-Credentials', 'true')
-//   ctx.set('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
-//   ctx.set('Access-Control-Allow-Headers', 'X-Requested-With, Content-type');
-//   await next()
-// })
-
-// 连接到MongoDB
-mongoose.connect(config.dbURI, {useNewUrlParser:true}, function(err) {
-  if(err) 
-    console.log(error('数据库连接失败！'))
-  else 
-    console.log(success('数据库连接成功！'))
-})
-
-
-app.keys = ['nuxt koa blog']   // 设置cookie签名秘钥
-
-app.use(session({
-  store: new MongoStore()
-}))
+app.use(auth.authUser)
 
 // routes
 app.use(router.routes(), router.allowedMethods())
 
-// error-handling
-app.on('error', (err, ctx) => {
+// Centralized error handling
+app.on('error', async (err, ctx) => {
   console.error('server error', err, ctx)
 });
-
-
-
-
-// session 配置信息
-// const CONFIG = {
-//   key: 'koa:sess',
-//   maxAge: 86400000,
-//   overwrite: true,
-//   httpOnly: true,
-//   signed: true,
-//   rolling: false,
-//   store: new SessionStore({
-//       collection: 'navigation', //数据库集合
-//       connection: mongoose,     // 数据库链接实例
-//       expires: 86400, // 默认时间为1天
-//       name: 'session' // 保存session的表名称
-//   })
-// };
-
-// 以中间件的方式使用session
-// app.use(session(CONFIG, app));
-
-
-
-// app.use(session({
-//   maxAge: 30*24*60*60*1000,    // 设置cookie有效期，30天转换成毫秒数
-//   store: new MongooseStore({ 
-// //   // 这个是关键，connection的值是mongoose
-//   connection: mongoose,
-//   expires: 86400, // 1 day is the default
-// })   // 服务器端，将session信息保存在 MongoDB 中
-// }, app))
-
 
 module.exports = app

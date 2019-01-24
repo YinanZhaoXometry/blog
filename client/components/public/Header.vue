@@ -1,43 +1,118 @@
 <template>
-  <div>
-    <el-row
-      justyfy="center"
-      type="flex"
-    >
-      <el-menu
-        :default-active="$route.path"
-        class="el-menu-demo"
-        mode="horizontal"
-        @select="handleSelect"
+  <header class="header-container">
+    <div id="myNavbar" class="navbar">
+      <nuxt-link to="/" class="site-logo"><b>KuHe 酷核</b></nuxt-link>
+      <div class="search-container">
+        <input v-model="searchKeyword" type="text" placeholder="搜索酷核" @keyup.enter="search">
+        <button class="el-icon-search" @click="search" />
+      </div>
+      <nuxt-link
+        to="/"
+        :class="computeActiveClass('index')"
+        name="index"
+        @click.native="changeNavTab"
       >
-        <el-menu-item index="/">首页</el-menu-item>
-        <el-menu-item index="/categories/front-end">前端</el-menu-item>
-        <el-menu-item index="/categories/back-end">后端</el-menu-item>
-        <el-menu-item index="/archive">归档</el-menu-item>
-        <el-menu-item index="/about">关于</el-menu-item>
-      </el-menu>
-      <div class="line" />
-    </el-row>
-    <el-row>
-      <el-col>
-        <nuxt-link to="/"><b>KuHe 酷核</b></nuxt-link>
-        <span>学习编程永远都不晚</span>
-      </el-col>
-    </el-row>
-  </div>
+        首页
+      </nuxt-link>
+      <nuxt-link
+        to="/categories/front-end"
+        :class="computeActiveClass('front-end')"
+        name="front-end"
+        @click.native="changeNavTab"
+      >
+        前端
+      </nuxt-link>
+      <nuxt-link
+        to="/categories/back-end"
+        :class="computeActiveClass('back-end')"
+        name="back-end"
+        @click.native="changeNavTab"
+      >
+        后端
+      </nuxt-link>
+      <nuxt-link
+        to="/archive"
+        :class="computeActiveClass('archive')"
+        name="archive"
+        @click.native="changeNavTab"
+      >
+        归档
+      </nuxt-link>
+      <nuxt-link
+        to="/about"
+        :class="computeActiveClass('about')"
+        name="about"
+        @click.native="changeNavTab"
+      >
+        关于
+      </nuxt-link>
+      <div id="menu-icon" @click="toggleMenu">
+        <span />
+        <span />
+        <span />
+        <span />
+      </div>
+    </div>
+  </header>
 </template>
 
 <script>
 export default {
   data() {
     return {
-      categories: []
+      categories: [],
+      isNavActive: true,
+      currentActiveTab: 'index',
+      searchKeyword: '',
+      isWeb: true
     }
   },
+
+  created () {
+    let index = this.$route.path.lastIndexOf('/')
+    let pathName = this.$route.path.slice(index+1)
+    this.currentActiveTab = pathName ? pathName : 'index'
+  },
+
   methods: {
-      handleSelect(key) {
-        this.$router.push(key)
+    computeActiveClass (tabName) {
+      if (this.currentActiveTab === tabName)
+        return 'active'
+      else
+        return ''
+    },
+
+    changeNavTab (e) {
+      this.currentActiveTab = e.target.name
+      let classList = document.querySelector('.navbar').classList.toString()
+      if(classList.indexOf('responsive')!== -1) {
+        this.toggleMenu()
       }
+    },
+
+    search () {
+      if (this.searchKeyword.trim()) {
+        this.$router.push(`/search/${this.searchKeyword}`)
+        this.searchKeyword = ''
+      }
+    },
+
+    toggleMenu () {
+      this.toggleIcon()
+      let navbar = document.getElementById('myNavbar')
+      navbar.classList.toggle("responsive");
+    },
+
+    toggleIcon() {
+      let menuIcon = document.getElementById('menu-icon')
+      menuIcon.classList.toggle("open");
+    }
   }
 }
 </script>
+
+<style lang="less">
+
+@import '../../assets/less/public.less';
+
+</style>
