@@ -2,9 +2,9 @@
   <section class="top-section">
     <my-header id="navbar" />
     <div>
-      <nuxt class="content" />
+      <nuxt class="article-content" />
     </div>
-    <my-footer />
+    <my-footer class="article-footer" />
   </section>
 </template>
 
@@ -47,19 +47,8 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="less">
 
-top-section {
-  margin: 0;
-  padding: 0;
-  width:100%;
-}
+@import '../assets/less/layout.less';
 
-#navbar {
-  transition: top 0.5s;
-}
-
-.content {
-  margin-top: 100px !important;
-}
 </style>

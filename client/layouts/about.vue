@@ -1,10 +1,10 @@
 <template>
   <section>
     <my-header />
-    <div class="container-content">
-      <nuxt class="content" />
+    <div class="about-container-content">
+      <nuxt />
     </div>
-    <my-footer class="footer" />
+    <my-footer class="about-footer" />
   </section>
 </template>
 
@@ -20,14 +20,8 @@ export default {
 }
 </script>
 
-<style scoped>
-.container-content {
-  position: relative;
-  top: 60px;
-  width: 100%;
-}
-.footer {
-  margin-top: 60px;
-}
+<style lang="less">
+
+@import "../assets/less/layout.less";
 
 </style>

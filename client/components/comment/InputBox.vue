@@ -1,48 +1,64 @@
 <template>
-  <section>
+  <section class="input-box">
     <el-input
       v-model="inputValue"
       type="textarea"
       :rows="3"
-      placeholder="写下你的评论...（支持MarkDown，被你@的用户会收到邮件通知）"
+      placeholder="写下你的评论（支持MarkDown）"
       resize="none"
-      :autosize="{minRows: 3, maxRows: 6}"
+      :autosize="{minRows: 4, maxRows: 8}"
       @focus="isButtonsShow = true"
     />
     <transition name="el-fade-in-linear">
       <div v-show="isMainInputBox ? isButtonsShow : true">
         <!-- 填写用户信息区域 -->
-        <div v-if="!hasUserCache || isEditUserCache" type="flex">
-          <el-input v-model="fromWhom.name" placeholder="称呼 *" />
-          <el-input v-model="fromWhom.email" placeholder="邮箱 *" @blur="getUserAvatar(); $emit('onInputBlur', fromWhom.avatar)" />
-          <el-input v-model="fromWhom.site" placeholder="个人网址(选填)">
+        <div v-if="!hasUserCache || isEditUserCache" type="flex" class="user-info-box">
+          <el-input v-model="fromWhom.name" placeholder="请输入称呼" class="name">
+            <template slot="prepend">称呼 *</template>
+          </el-input>
+          <el-input
+            v-model="fromWhom.email"
+            placeholder="请输入邮箱邮箱"
+            class="email"
+            @blur="getUserAvatar(); $emit('onInputBlur', fromWhom.avatar)"
+          >
+            <template slot="prepend">邮箱 *</template>
+          </el-input>
+          <el-input v-model="fromWhom.site" placeholder="个人网址(选填)" class="site">
             <el-select slot="prepend" v-model="fromWhom.sitePrefix" placeholder="请选择">
               <el-option label="http://" value="http://" />
               <el-option label="https://" value="https://" />
             </el-select>
           </el-input>
-          <div v-if="!isEditUserCache">
-            <el-checkbox v-model="rememberMe">记住我</el-checkbox>
-          </div>
-          <div v-else>
-            <el-button type="danger" plain icon="el-icon-close" @click="isEditUserCache = false; readUserCache()" />
-            <el-button type="success" plain icon="el-icon-check" @click="updateUserCache" />
+          <div v-if="isEditUserCache" class="btn-decision">
+            <el-button type="danger" size="medium" plain icon="el-icon-close" @click="isEditUserCache = false; readUserCache()" />
+            <el-button type="success" size="medium" plain icon="el-icon-check" @click="updateUserCache" />
           </div>
         </div>
         <!-- 按钮区域 -->
-        <el-button round><i class="iconfont icon-biaoqing-xue" /></el-button>
-        <el-button round><i class="iconfont icon-tupian" /></el-button>
-        <span @click="onCancel">取消</span>
-        <el-button
-          type="success"
-          round
-          @click="isMainInputBox ? submitMainComment() : submitChildComment()"
-        >
-          发送
-        </el-button>
-        <!-- 修改用户信息区域 -->
-        <div v-if="hasUserCache">
-          <strong>{{ fromWhom.name }}</strong>
+        <div class="input-btn-group">
+          <el-button round class="emoji"><i class="iconfont icon-biaoqing-xue" /></el-button>
+          <el-button round class="picture"><i class="iconfont icon-tupian" /></el-button>
+          <el-button
+            type="success"
+            round
+            class="submit"
+            @click="isMainInputBox ? submitMainComment() : submitChildComment()"
+          >
+            发送
+          </el-button>
+          <span class="cancel" @click="onCancel">取消</span>
+          <el-checkbox
+            v-if="!isEditUserCache"
+            v-model="rememberMe"
+            class="remember-me"
+          >
+            记住我
+          </el-checkbox>
+        </div>
+        <!-- 用户信息设置区域 -->
+        <div v-if="hasUserCache" class="user-settings">
+          <strong class="name">{{ fromWhom.name }}</strong>
           <el-dropdown>
             <span class="el-dropdown-link">
               <i class="el-icon-setting" />
@@ -179,8 +195,8 @@ export default {
       if (isEmailValid) {
         let options= {
           protocol: 'https',
-          size: '100',
-          default: `https://api.adorable.io/avatars/100/${this.fromWhom.email}.png`,
+          size: '45',
+          default: `https://api.adorable.io/avatars/45/${this.fromWhom.email}.png`,
         }
         this.fromWhom.avatar = gravatar.url(this.fromWhom.email, options)
       }
@@ -263,3 +279,68 @@ export default {
   }
 }
 </script>
+
+<style>
+.input-btn-group {
+  margin: 10px 0;
+
+}
+.input-btn-group .submit, .input-btn-group .cancel, .input-btn-group .remember-me {
+  float: right;
+}
+
+.input-btn-group .remember-me {
+  height: 40px;
+  line-height: 40px;
+  margin-right: 50px;
+  color: #969696 !important;
+}
+
+.input-btn-group .cancel {
+  color: #969696;
+  height: 40px;
+  line-height: 40px;
+  margin-right: 15px;
+}
+.input-btn-group .cancel:hover {
+  color: black;
+}
+
+.user-settings .name {
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
+.user-info-box .name, .user-info-box .email, .user-info-box .site {
+  margin-top: 15px;
+}
+
+.user-info-box .name {
+  width: 45%;
+}
+
+.user-info-box .email {
+  width: 54%;
+}
+
+.user-info-box .name div, .user-info-box .email div {
+  padding: 0 10px;
+}
+
+.user-info-box .btn-decision {
+  margin: 15px auto;
+  display: flex;
+  justify-content: space-evenly;
+
+}
+
+.user-info-box .btn-decision button {
+  flex: 0 1 1;
+  width: 100%;
+}
+
+.user-info-box .remember-me {
+  margin: 15px 0;
+}
+
+</style>

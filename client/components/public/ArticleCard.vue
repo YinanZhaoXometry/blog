@@ -15,7 +15,7 @@
         <nuxt-link :to="`/articles/${item._id}`">
           <h3 class="text-title">
             {{ item.title }}
-            <span class="text-tag">
+            <span class="card-text-tag">
               <el-tag :type="item.isOriginal ? 'success' : 'info'" size="small">
                 {{ item.isOriginal ? '原创' : '转载' }}
               </el-tag>
@@ -38,7 +38,7 @@
     <!-- 移动端视图 -->
     <el-card
       v-for="item in articleList"
-      :key="item._id"
+      :key="item._id+'mobile'"
       shadow="always"
       class="card-mobile"
       :body-style="[{ padding: '0px'},{width: '100%'}, {display: 'flex'}]"
@@ -51,11 +51,11 @@
         />
       </div>
       <div class="card-text">
-        <div class="container">
+        <div class="card-text-container">
           <nuxt-link :to="`/articles/${item._id}`">
             <h3 class="text-title">
               {{ item.title }}
-              <span class="text-tag">
+              <span class="card-text-tag">
                 <el-tag :type="item.isOriginal ? 'success' : 'info'" size="small">
                   {{ item.isOriginal ? '原创' : '转载' }}
                 </el-tag>
@@ -103,130 +103,8 @@ export default {
 }
 </script>
 
-<style scoped>
-/* mobile */
-@media screen and (max-width: 767px) {
-  .container {
-   position: relative;
-   top:50%;
-   /* height: 50%; */
-  -webkit-transform: translateX(-50%) translateY(-50%);
-  transform: translateY(-65%);
+<style lang="less">
 
-  }
-
-  .card-mobile {
-    min-width: 400px;
-    padding-top: 73%;
-    position: relative;
-  }
-
-  .card-web {
-    display: none;
-  }
-  .card-mobile .card-image {
-    width: 100%;
-    height: 58%;
-    position: absolute;
-    top: 0;
-    /* height: 100%; */
-  }
-
-  .card-mobile .cover-image {
-    display: block;
-    width: 100%;
-    height: 100%;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: 0% 0%;
-  }
-
-  .card-mobile .card-text {
-    clear: both;
-    width: 100%;
-    height: 42%;
-    position: absolute;
-    top: 58%;
-    padding: 0 20px;
-    /* height: 100%; */
-  }
-  .card-mobile .text-tag {
-    position: relative;
-    top: -2px;
-  }
-  .card-mobile .text-title {
-    font-size: 1.1em;
-    margin: 10px 0;
-  }
-  .card-mobile .text-description {
-    font-size: 0.9em;
-    margin: 10px 0;
-  }
-  .card-mobile .text-time, .card-mobile .text-category {
-    font-size: 0.9em;
-    color:#999;
-  }
-}
-
-@media screen and (min-width: 768px) {
-  .card-web {
-    margin-bottom: 40px;
-    height:200px;
-    width: 100%;
-  }
-
-  /* .card>.el-card__body {
-    display: flex;
-  } */
-  .card-web .card-text {
-    flex: 1;
-    padding: 20px 40px;
-  }
-
-  .card-mobile {
-    display: none;
-  }
-  .card-web .card-image {
-    width: 200px;
-    height: 200px;
-  }
-  .card-web .cover-image {
-    display: block;
-    width: 100%;
-    height: 100%;
-    background-position: 50% 50%;
-  }
-  .card-web .text-category {
-    color: #757575;
-  }
-  .card-web .text-category:hover {
-    text-decoration: underline;
-  }
-  .card-web .text-title {
-    color: black;
-  }
-  .card-web .text-description, .card-web .text-time {
-    color: #757575;
-  }
-  .card-web .text-tag {
-    position: relative;
-    top: -4px;
-  }
-  .card-web .text-tag .el-tag {
-    border: none;
-  }
-
-  .card-web .text-title {
-    font-size: 1.3em;
-  }
-  .card-web .text-description {
-    font-size: 1.1em;
-  }
-  .card-web .text-time, .card-mobile .text-category {
-    font-size: 1.1em;
-    color:#999;
-  }
-}
-
+@import "../../assets/less/public.less";
 
 </style>

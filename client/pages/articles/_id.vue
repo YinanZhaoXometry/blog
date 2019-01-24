@@ -142,30 +142,30 @@ export default {
 </script>
 
 <style>
-  @import 'github-markdown-css';
-  @import 'highlight.js/styles/atom-one-light.css';
+@import 'github-markdown-css';
+@import 'highlight.js/styles/atom-one-light.css';
 
+.markdown-body {
+  box-sizing: border-box;
+  min-width: 200px;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 45px;
+}
+
+@media (max-width: 767px) {
   .markdown-body {
-    box-sizing: border-box;
-    min-width: 200px;
-    max-width: 700px;
-    margin: 0 auto;
-    padding: 45px;
+    padding: 15px;
   }
+}
 
-  @media (max-width: 767px) {
-    .markdown-body {
-      padding: 15px;
-    }
-  }
-
-  .article-tags {
-    margin-top: 10px;
-  }
-  .article-last {
-    float: left;
-  }
-  .article-next {
-    float: right;
-  }
+.article-tags {
+  margin-top: 10px;
+}
+.article-last {
+  float: left;
+}
+.article-next {
+  float: right;
+}
 </style>

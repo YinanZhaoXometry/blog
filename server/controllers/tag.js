@@ -1,5 +1,6 @@
 const tagModel = require('../models/tag')
 const articleModel = require('../models/article')
+const config = require('../config')
 
 module.exports = {
   // 获取所有标签
@@ -13,10 +14,14 @@ module.exports = {
   async getTagArticles (ctx, next) {
     let tagId = ctx.params.id
     let tagInfo = await tagModel.findOne({_id:tagId}, {})
-    let articleList = await articleModel.find({tags:tagId}, '-content -comments', {sort: {createTime: -1}})
+    let articleList = await articleModel
+      .find({tags:tagId}, '-content -comments', {sort: {createTime: -1}})
+      .populate('category')
+      .populate('coverImage')
     ctx.body = {
       articleList,
-      tagInfo
+      tagInfo,
+      imagePathPrefix: config.imagePathPrefix
     }
   },
 

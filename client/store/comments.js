@@ -15,3 +15,15 @@ export const mutations = {
     if(index !== -1) state.commentList[index].likes--
   }
 }
+
+export const actions = {
+  async fetchCommentList ({commit}, articleId) {
+    try {
+      let {data} = await this.$axios.get(`/api/comments/${articleId}`)
+        commit('setCommentList', data.comments)
+    } catch (err) {
+      alert(err)
+    }
+  }
+
+}

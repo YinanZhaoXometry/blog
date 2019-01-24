@@ -73,8 +73,15 @@ module.exports = {
     let options = {
       sort: {createTime: -1}
     }
-    let articles = await articleModel.find(conditions, "-content", options)
-    ctx.body = { articles }
+    let articles = await articleModel
+      .find(conditions, "-content", options)
+      .populate('category')
+      .populate('coverImage')
+    ctx.body = {
+      articles,
+      imagePathPrefix: config.imagePathPrefix
+    
+    }
   },
 
   // 发布文章（保存至数据库）

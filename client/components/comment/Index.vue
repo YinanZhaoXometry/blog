@@ -1,13 +1,14 @@
 <template>
   <section>
     <p>评论</p>
-    <div>
-      <div>
-        <img :src="avatarUrl || 'https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=100&f=y&d=mp'" :alt="avatarUrl || '匿名用户'">
-      </div>
+    <div class="main-inptut-box">
+      <img
+        :src="avatarUrl || '/avatar_unknow_user_45.png'" :alt="'user avatar' || 'anonymous User'"
+        class="avatar"
+      >
       <input-box :is-main-input-box="true" @onInputBlur="getAvatar" />
     </div>
-    <p>{{ comments.length }}&nbsp;条评论</p>
+    <p class="comment-header">{{ comments.length }}&nbsp;条评论</p>
     <comment v-for="item in comments" :key="item.id" :comment="item" />
   </section>
 </template>
@@ -51,3 +52,27 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.main-inptut-box {
+  position: relative;
+  margin: 0 0 30px 55px;
+}
+
+.main-inptut-box .avatar {
+  position: absolute;
+  left: -55px;
+  border-radius: 5px;
+  width: 45px;
+  height: 45px;
+}
+
+.comment-header {
+  font-weight: 700;
+  font-size: 17px;
+  padding-bottom: 20px;
+  margin-bottom: 0;
+  border-bottom: 1px solid #F0F0F0;
+}
+
+</style>

@@ -1,48 +1,89 @@
 <template>
-  <section>
+  <section class="comment">
     <!-- 父级评论区 -->
-    <div>
-      <img :src="getUserAvatar(comment.fromWhom.email)" alt="">
-      <div>
-        <p>{{ comment.fromWhom.name }}</p>
-        <p>{{ comment.createTime.fullDate }}</p>
+    <article class="main-comment">
+      <div class="comment-author">
+        <a :href="comment.fromWhom.sitePrefix+comment.fromWhom.site" class="avatar-container">
+          <img
+            class="avatar"
+            :src="getUserAvatar(comment.fromWhom.email)"
+            alt="user avatar"
+            onerror="this.src='/avatar_unknow_user_45.png'"
+          >
+        </a>
+        <div class="info">
+          <a :href="comment.fromWhom.sitePrefix+comment.fromWhom.site" class="name">
+            <span>{{ comment.fromWhom.name }}</span>
+          </a>
+          <br>
+          <span class="time">{{ comment.createTime.fullDate }}</span>
+        </div>
       </div>
-    </div>
-    <div v-html="comment.content" />
-    <div>
-      <span>
-        <el-button @click="likeComment(comment)">
-          <i :class="['iconfont', checkCommentLiked(comment._id) ? 'icon-like' : 'icon-like1']" />
-          <span>{{ comment.likes ? comment.likes+'人赞' : '赞' }}</span>
-        </el-button>
-      </span>
-      <span>
-        <el-button @click="onClickReply($event, true)"><i class="iconfont icon-_ico_reply" /> <span>回复</span></el-button>
-      </span>
-    </div>
+      <div class="comment-content" v-html="comment.content" />
+      <div class="button-group">
+        <span>
+          <el-button
+            :class="['comment-button', 'iconfont', checkCommentLiked(comment._id) ? 'icon-like' : 'icon-like1']"
+            type="text"
+            @click="likeComment(comment)"
+          >
+            {{ comment.likes ? comment.likes+'人赞' : '赞' }}
+          </el-button>
+        </span>
+        <span>
+          <el-button
+            class="comment-button iconfont icon-_ico_reply"
+            type="text"
+            @click="onClickReply($event, true)"
+          >
+            回复
+          </el-button>
+        </span>
+      </div>
+    </article>
+
     <!-- 子评论区 -->
-    <div>
-      <article v-for="subComment in comment.subComments" :key="subComment._id">
+    <div v-show="comment.subComments.length !== 0" class="sub-comment">
+      <article
+        v-for="subComment in comment.subComments"
+        :key="subComment._id"
+        class="info"
+      >
         <div>
-          <span>{{ subComment.fromWhom.name }}</span><span>: </span>
-          <span>{{ subComment.isReplyToParent ? '' : '@' + subComment.toWhom.name }}</span>
-          <span style="display:inline-block" v-html="subComment.content" />
+          <a :href="subComment.fromWhom.sitePrefix+subComment.fromWhom.site">
+            <span class="from-name">{{ subComment.fromWhom.name }}</span>
+          </a>
+          <span>: </span>
+          <span class="to-name">{{ subComment.isReplyToParent ? '' : '@' + subComment.toWhom.name }}</span>
+          <span class="comment-content" style="display:inline-block" v-html="subComment.content" />
         </div>
         <div>
-          <span>{{ subComment.createTime.fullDate }}</span>
-          <el-button @click="onClickReply($event, false, subComment)"><i>icon</i>回复</el-button>
+          <span class="time">{{ subComment.createTime.fullDate }}</span>
+          <el-button
+            class="comment-button iconfont icon-_ico_reply"
+            type="text"
+            @click="onClickReply($event, false, subComment)"
+          >
+            回复
+          </el-button>
         </div>
       </article>
+
       <div>
-        <el-button @click="onClickReply($event, true)">
-          <i class="el-icon-edit" />
-          <span>添加新评论</span>
+        <el-button
+          class="comment-button el-icon-edit"
+          type="text"
+          @click="onClickReply($event, true)"
+        >
+          添加新评论
         </el-button>
       </div>
+
       <transition name="el-fade-in-linear">
         <input-box
           v-show="isSubInputBoxShow"
           ref="inputbox"
+          class="sub-input-box"
           :is-main-input-box="false"
           :input-prefix="inputPrefix"
           @hideSubInputBox="onHide"
@@ -94,8 +135,8 @@ export default {
     getUserAvatar (email) {
       let options= {
         protocol: 'https',
-        size: '100',
-        default: `https://api.adorable.io/avatars/100/${email}.png`,
+        size: '45',
+        default: `https://api.adorable.io/avatars/45/${email}.png`,
       }
       return gravatar.url(email, options)
     },
@@ -157,7 +198,90 @@ export default {
 </script>
 
 <style>
-  .el-select .el-input {
-    width: 95px;
-  }
+
+.comment {
+  margin: 20px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.main-comment .comment-author {
+  height: 45px;
+  margin-bottom: 15px;
+}
+.main-comment .comment-content p {
+  margin: 10px 0;
+}
+.main-comment .avatar-container {
+  display: inline-block;
+  width: 50px;
+  height: 45px;
+}
+
+.main-comment .avatar {
+  border-radius: 5px;
+}
+
+.main-comment .info {
+  display: inline-block;
+  height: 45px;
+  vertical-align: top;
+
+}
+
+.main-comment .button-group {
+  margin-bottom: 15px;
+}
+
+.main-comment .button-group button {
+  margin-right: 10px;
+}
+
+.sub-comment {
+  border-left: 2px solid #d9d9d9;
+  padding: 5px 0 5px 20px;
+  margin: 20px 0;
+}
+
+.sub-comment .info {
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+  border-bottom: 1px dashed #f0f0f0;
+}
+
+.sub-comment .from-name, .sub-comment .to-name {
+  color: #0366d6;
+}
+
+.sub-comment .comment-content p{
+  margin-bottom: 0;
+}
+
+.sub-comment .sub-input-box {
+  margin-top: 20px;
+}
+
+.info .name {
+  color: black;
+}
+
+.info .time {
+  font-size: 14px;
+  color: #969696;
+}
+
+
+
+.el-select .el-input {
+  width: 95px;
+}
+
+
+.comment-button {
+  color: #969696;
+  padding: 5px 0;
+  font-size: 16px;
+}
+
+
+
 </style>

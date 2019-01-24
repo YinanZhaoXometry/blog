@@ -58,15 +58,8 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="less">
 
-.sidebar-card {
-  margin-bottom: 20px;
-}
-
-.article-list {
-  list-style-type: disc;
-  text-align: left;
-}
+@import "../../assets/less/public.less";
 
 </style>

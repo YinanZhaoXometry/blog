@@ -1,41 +1,5 @@
 <template>
   <section>
-    <!-- <el-row>
-      <nuxt-link
-        v-for="item in cateArticleList"
-        :key="item._id"
-        :to="{path: `/articles/${item._id}`}"
-      >
-        <el-card shadow="hover" style="height:200px">
-          <el-col :span="10">
-            <span>分类1</span>
-            <h2>{{ item.title }}</h2>
-            <p>{{ item.description }}</p>
-            <div>
-              <el-tag :type="item.isOriginal ? 'success' : 'info'">{{ item.isOriginal ? '原创' : '转载' }}</el-tag>
-              <span><i class="el-icon-date" /> &nbsp; {{ item.createTime.year === new Date().getFullYear() ? item.createTime.simpleDate : item.createTime.fullDate }}</span>
-            </div>
-            <template>
-              为 “私有(isPublic: false)” 文章，显示“私有”字样
-              <el-tag v-if="!item.isPublic" type="warning">
-                {{ '私有' }}
-              </el-tag>
-              为 “草稿(isPublished: false)” 文章，显示“草稿”字样
-              <el-tag v-if="!item.isPublished" type="warning">
-                {{ '草稿' }}
-              </el-tag>
-            </template>
-          </el-col>
-          <el-col :span="10">
-            <img
-              src="~/assets/1540478160349.png"
-              alt="封面图片"
-              style="display:block;height:200px"
-            >
-          </el-col>
-        </el-card>
-      </nuxt-link>
-    </el-row> -->
     <article-card :article-list="articleList" :image-path-prefix="imagePathPrefix" />
     <div class="loadmore">
       <el-button
@@ -62,6 +26,7 @@
 
 <script>
 import ArticleCard from '~/components/public/ArticleCard.vue'
+
 export default {
   components: {
     ArticleCard
@@ -76,16 +41,8 @@ export default {
   },
 
   computed: {
-    // cateArticleList () {
-    //   return this.$store.state.cateArticleList
-    // },
-
-    // category () {
-    //   return this.$store.state.category
-    // },
     // 计算总页数
     totalPageCount () {
-      // let cateArticleCount = this.$store.state.cateArticleCount
       return this.cateArticleCount % this.pageSize === 0
         ? this.cateArticleCount / this.pageSize
         : parseInt( this.cateArticleCount / this.pageSize + 1 )
@@ -103,16 +60,6 @@ export default {
         { params: {pageSize: 3} }
       )
       let { categoryObj, cateArticleCount, imagePathPrefix } = data
-      // store.commit('getCateArticleList',{
-      //   cateArticleCount,
-      //   articleList: categoryObj.articles,
-      //   category:{
-      //     cnName: categoryObj.cnName,
-      //     enName: categoryObj.enName,
-      //     description: categoryObj.description
-      //   }
-      // })
-      // store.commit('setImagePrefix', imagePathPrefix)
       let articleList = categoryObj.articles
       let category = {
         cnName: categoryObj.cnName,
@@ -150,7 +97,6 @@ export default {
           let {categoryObj} = data
           console.log(categoryObj)
           this.articleList.concat(categoryObj.articles)
-          // this.$store.commit('mergeCateArticleList', categoryObj)
           this.isLoading = false
         }
       } catch (err) {
@@ -171,13 +117,4 @@ export default {
   }
 }
 
-
 </script>
-
-<style>
-
-.loadmore {
-  text-align: center;
-}
-
-</style>

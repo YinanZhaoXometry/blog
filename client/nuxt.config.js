@@ -51,6 +51,17 @@ module.exports = {
   ],
 
   /*
+  ** Loaders
+  */
+  loader: [
+    {
+      test: /\.less$/,
+      loaders: 'style-loader!css-loader!less-loader'
+    }
+  ],
+
+
+  /*
   ** Nuxt.js modules
   */
   modules: [
