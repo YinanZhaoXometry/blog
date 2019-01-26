@@ -34,14 +34,14 @@
         </el-row>
       </el-col>
     </el-row>
-    <div class="clearfix">
+    <!-- <div class="clearfix">
       <nuxt-link to="/" class="article-last">
         <i class="el-icon-arrow-left" />上一篇
       </nuxt-link>
       <nuxt-link to="/" class="article-next">
         下一篇<i class="el-icon-arrow-right" />
       </nuxt-link>
-    </div>
+    </div> -->
     <comment :article-id="article._id" />
   </section>
 </template>

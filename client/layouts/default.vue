@@ -9,7 +9,7 @@
         <side-bar class="side-bar" />
       </div>
     </div>
-    <my-footer class="footer" />
+    <my-footer class="default-footer" />
   </section>
 </template>
 
@@ -28,10 +28,6 @@ export default {
 }
 </script>
 
-<style lang="less">
 
-@import '../assets/less/layout.less';
-
-</style>
 
 

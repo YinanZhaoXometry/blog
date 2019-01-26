@@ -1,25 +1,25 @@
 <template>
   <section>
     <article-card :article-list="articleList" :image-path-prefix="imagePathPrefix" />
-    <div class="loadmore">
+    <div class="loadmore-container">
       <el-button
         v-if="isLoading"
-        size="small"
         :loading="true"
+        plain
+        class="loadmore-isloading"
       >
         加载中
       </el-button>
       <el-button
         v-else
         v-show="!isLastPage"
-        type="primary"
         plain
-        size="small"
+        class="loadmore-button"
         @click="loadMore"
       >
         加载更多
       </el-button>
-      <p v-show="isLastPage">---没有更多文章了---</p>
+      <p v-show="isLastPage" class="loadmore-nomore">---没有更多文章了---</p>
     </div>
   </section>
 </template>
@@ -36,7 +36,6 @@ export default {
     return {
       isLoading: false,
       pageNum: 1,
-      pageSize: 3
     }
   },
 
@@ -55,9 +54,10 @@ export default {
 
   async asyncData ({app, params, store}) {
     try {
+      const pageSize = 1
       let {data} = await app.$axios.get(
         `/api/categories/${params.category}`,
-        { params: {pageSize: 3} }
+        { params: {pageSize} }
       )
       let { categoryObj, cateArticleCount, imagePathPrefix } = data
       let articleList = categoryObj.articles
@@ -66,9 +66,9 @@ export default {
         enName: categoryObj.enName,
         description: categoryObj.description
       }
-      return { articleList, category, cateArticleCount, imagePathPrefix }
+      return { articleList, category, cateArticleCount, imagePathPrefix, pageSize }
     } catch (err) {
-      this.$message.error(err)
+      console.log(err)
     }
   },
 
@@ -79,13 +79,12 @@ export default {
         { params: {pageSize:5} }
       )
       let {popularList} = data
-      console.log(popularList)
       store.commit("getPopularList", popularList)
     }
   },
 
   methods: {
-    loadMore: async function () {
+    async loadMore () {
       try {
         this.isLoading = true
         if (this.pageNum < this.totalPageCount) {
@@ -95,8 +94,7 @@ export default {
             { params: {pageNum: this.pageNum, pageSize: this.pageSize} }
           )
           let {categoryObj} = data
-          console.log(categoryObj)
-          this.articleList.concat(categoryObj.articles)
+          this.articleList = this.articleList.concat(categoryObj.articles)
           this.isLoading = false
         }
       } catch (err) {

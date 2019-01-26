@@ -15,6 +15,7 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+
 .icon-pricetags:before {
   content: "\e829";
 }
@@ -61,6 +62,7 @@
 
 .icon-like:before {
   content: "\e631";
+  color: #0074BF;
 }
 
 .icon-like1:before {

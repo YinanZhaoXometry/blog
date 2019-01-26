@@ -1,4 +1,6 @@
-// 主页 less
+@import "variables.less";
+
+// 主页样式
 //
 
 .card-article {
@@ -24,17 +26,17 @@
 }
 
 .text-category {
-  color: #757575;
+  color: @color-text-secondary;
 }
 .text-category:hover {
   text-decoration: underline;
 }
 .text-title {
-  color: black;
+  color: @color-text-primary;
 
 }
 .text-description, .text-time {
-  color: #757575;
+  color: @color-text-secondary;
 }
 .text-tag {
   position: absolute;
@@ -45,6 +47,4 @@
   border: none;
 }
 
-.loadmore {
-  text-align: center;
-}
+

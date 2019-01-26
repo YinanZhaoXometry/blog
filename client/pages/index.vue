@@ -1,26 +1,25 @@
 <template>
   <section>
     <article-card :article-list="articleList" :image-path-prefix="imagePathPrefix" />
-
-    <div class="loadmore">
+    <div class="loadmore-container">
       <el-button
         v-if="isLoading"
-        size="small"
         :loading="true"
+        plain
+        class="loadmore-isloading"
       >
         加载中
       </el-button>
       <el-button
         v-else
         v-show="!isLastPage"
-        type="primary"
         plain
-        size="small"
+        class="loadmore-button"
         @click="loadMore"
       >
         加载更多
       </el-button>
-      <p v-show="isLastPage">---没有更多文章了---</p>
+      <p v-show="isLastPage" class="loadmore-nomore">---没有更多文章了---</p>
     </div>
   </section>
 </template>
@@ -112,8 +111,3 @@ export default {
 
 </script>
 
-<style lang="less">
-
-@import '../assets/less/home.less';
-
-</style>

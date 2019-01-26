@@ -13,7 +13,7 @@ import { createStore } from './store.js'
 /* Plugins */
 
 import nuxt_plugin_axios_2c2a1397 from 'nuxt_plugin_axios_2c2a1397' // Source: ./axios.js
-import nuxt_plugin_elementui_a6a1b20a from 'nuxt_plugin_elementui_a6a1b20a' // Source: ../plugins/element-ui
+import nuxt_plugin_elementuimin_3ad96700 from 'nuxt_plugin_elementuimin_3ad96700' // Source: ../plugins/element-ui-min
 
 // Component: <no-ssr>
 Vue.component(NoSSR.name, NoSSR)
@@ -153,7 +153,7 @@ async function createApp(ssrContext) {
   // Plugin execution
 
   if (typeof nuxt_plugin_axios_2c2a1397 === 'function') await nuxt_plugin_axios_2c2a1397(app.context, inject)
-  if (typeof nuxt_plugin_elementui_a6a1b20a === 'function') await nuxt_plugin_elementui_a6a1b20a(app.context, inject)
+  if (typeof nuxt_plugin_elementuimin_3ad96700 === 'function') await nuxt_plugin_elementuimin_3ad96700(app.context, inject)
 
   // If server-side, wait for async component to be resolved first
   if (process.server && ssrContext && ssrContext.url) {

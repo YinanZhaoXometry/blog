@@ -25,6 +25,7 @@ module.exports = {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+
     ]
   },
 
@@ -37,9 +38,8 @@ module.exports = {
   ** Global CSS
   */
   css: [
+    '~/assets/less/index.less',
     '~/assets/theme/index.css',
-    '~/assets/styles/main.css',
-    // 'element-ui/lib/theme-chalk/index.css',
     '~/assets/fonts/iconfont/iconfont.css'
   ],
 
@@ -47,7 +47,7 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '~/plugins/element-ui'
+    '~/plugins/element-ui-min'
   ],
 
   /*
@@ -88,6 +88,14 @@ module.exports = {
   */
 
   build: {
+    babel: {
+      "plugins": [
+        [ "component", {
+            "libraryName": "element-ui",
+            "styleLibraryName": "theme-chalk"
+        }]
+      ]
+    },
     /*
     ** You can extend webpack config here
     */

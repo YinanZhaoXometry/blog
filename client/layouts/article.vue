@@ -47,8 +47,3 @@ export default {
 }
 </script>
 
-<style lang="less">
-
-@import '../assets/less/layout.less';
-
-</style>

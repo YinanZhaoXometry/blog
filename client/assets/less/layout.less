@@ -1,5 +1,10 @@
+@import "variables.less";
+
+//
+// =============================================
 // ## Default layout
 //
+
 .fade-enter-active, .fade-leave-active {
   transition: opacity 0.6s;
 }
@@ -11,12 +16,25 @@
   width: 100%;
   top: 130px;
 }
-.footer {
-  margin-top: 130px;
+.default-footer {
+  margin-top: 140px;
+  margin-bottom: 20px;
+  line-height: 2;
 }
 
-.loadmore-button {
+.loadmore-container {
   text-align: center;
+}
+
+.loadmore-button, .loadmore-isloading {
+  width: 100%;
+  color: @gray !important;
+}
+.loadmore-button:hover {
+  color: @color-theme !important;
+}
+.loadmore-nomore {
+  color: @gray !important;
 }
 
 @media screen and (min-width: 993px) {
@@ -35,7 +53,6 @@
   .side-bar {
     max-width: 350px;
   }
-
 }
 
 @media screen and (min-width: 768px) and (max-width: 992px) {
@@ -78,6 +95,8 @@
 
 .article-footer {
   margin-top: 30px;
+  margin-bottom: 20px;
+  line-height: 2;
 }
 
 
@@ -90,4 +109,6 @@
 }
 .about-footer {
   margin-top: 60px;
+  margin-bottom: 20px;
+  line-height: 2;
 }

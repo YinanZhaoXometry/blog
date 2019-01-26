@@ -22,28 +22,29 @@
       <div class="comment-content" v-html="comment.content" />
       <div class="button-group">
         <span>
-          <el-button
-            :class="['comment-button', 'iconfont', checkCommentLiked(comment._id) ? 'icon-like' : 'icon-like1']"
+          <span
+            class="comment-button"
             type="text"
             @click="likeComment(comment)"
           >
+            <i :class="['iconfont', checkCommentLiked(comment._id) ? 'icon-like' : 'icon-like1']" />
             {{ comment.likes ? comment.likes+'人赞' : '赞' }}
-          </el-button>
+          </span>
         </span>
         <span>
-          <el-button
+          <span
             class="comment-button iconfont icon-_ico_reply"
             type="text"
             @click="onClickReply($event, true)"
           >
             回复
-          </el-button>
+          </span>
         </span>
       </div>
     </article>
 
     <!-- 子评论区 -->
-    <div v-show="comment.subComments.length !== 0" class="sub-comment">
+    <div v-show="isSubInputBoxShow || comment.subComments.length !== 0" class="sub-comment">
       <article
         v-for="subComment in comment.subComments"
         :key="subComment._id"
@@ -59,24 +60,24 @@
         </div>
         <div>
           <span class="time">{{ subComment.createTime.fullDate }}</span>
-          <el-button
+          <span
             class="comment-button iconfont icon-_ico_reply"
             type="text"
             @click="onClickReply($event, false, subComment)"
           >
             回复
-          </el-button>
+          </span>
         </div>
       </article>
 
       <div>
-        <el-button
+        <span
           class="comment-button el-icon-edit"
           type="text"
           @click="onClickReply($event, true)"
         >
           添加新评论
-        </el-button>
+        </span>
       </div>
 
       <transition name="el-fade-in-linear">
@@ -196,92 +197,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-.comment {
-  margin: 20px 0;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.main-comment .comment-author {
-  height: 45px;
-  margin-bottom: 15px;
-}
-.main-comment .comment-content p {
-  margin: 10px 0;
-}
-.main-comment .avatar-container {
-  display: inline-block;
-  width: 50px;
-  height: 45px;
-}
-
-.main-comment .avatar {
-  border-radius: 5px;
-}
-
-.main-comment .info {
-  display: inline-block;
-  height: 45px;
-  vertical-align: top;
-
-}
-
-.main-comment .button-group {
-  margin-bottom: 15px;
-}
-
-.main-comment .button-group button {
-  margin-right: 10px;
-}
-
-.sub-comment {
-  border-left: 2px solid #d9d9d9;
-  padding: 5px 0 5px 20px;
-  margin: 20px 0;
-}
-
-.sub-comment .info {
-  padding-bottom: 15px;
-  margin-bottom: 15px;
-  border-bottom: 1px dashed #f0f0f0;
-}
-
-.sub-comment .from-name, .sub-comment .to-name {
-  color: #0366d6;
-}
-
-.sub-comment .comment-content p{
-  margin-bottom: 0;
-}
-
-.sub-comment .sub-input-box {
-  margin-top: 20px;
-}
-
-.info .name {
-  color: black;
-}
-
-.info .time {
-  font-size: 14px;
-  color: #969696;
-}
-
-
-
-.el-select .el-input {
-  width: 95px;
-}
-
-
-.comment-button {
-  color: #969696;
-  padding: 5px 0;
-  font-size: 16px;
-}
-
-
-
-</style>

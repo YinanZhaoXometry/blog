@@ -1,6 +1,5 @@
 <template>
   <section>
-    <p>评论</p>
     <div class="main-inptut-box">
       <img
         :src="avatarUrl || '/avatar_unknow_user_45.png'" :alt="'user avatar' || 'anonymous User'"
@@ -52,27 +51,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.main-inptut-box {
-  position: relative;
-  margin: 0 0 30px 55px;
-}
-
-.main-inptut-box .avatar {
-  position: absolute;
-  left: -55px;
-  border-radius: 5px;
-  width: 45px;
-  height: 45px;
-}
-
-.comment-header {
-  font-weight: 700;
-  font-size: 17px;
-  padding-bottom: 20px;
-  margin-bottom: 0;
-  border-bottom: 1px solid #F0F0F0;
-}
-
-</style>

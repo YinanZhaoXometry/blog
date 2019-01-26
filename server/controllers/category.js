@@ -12,6 +12,7 @@ module.exports = {
 
   // 获取xx分类下的文章
   async getCateArticles (ctx, next) {
+    console.log(1111, ctx.query)
     let categoryName = ctx.params.category
     let { pageNum, pageSize } = ctx.query
     pageNum = pageNum ? parseInt(pageNum) : 1
