@@ -6,10 +6,10 @@ const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
 const mongoose = require('mongoose')
 const chalk = require('chalk')
-const cors = require('koa2-cors');
+// const cors = require('koa2-cors');
 const path = require('path')
 const koaStatic = require('koa-static')
-
+const historyApiFallback = require('koa-history-api-fallback')
 const router = require('./routes')
 const config = require('./config')
 const auth  = require('./middlewares/auth') 
@@ -36,15 +36,15 @@ mongoose.connect(config.dbUrl, {useNewUrlParser:true}, function(err) {
 // })
 
 // middlewares
-app.use(cors({
-    origin: 'http://localhost:8080',
-    exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
-    maxAge: 5,
-    credentials: true,
-    allowMethods: ['GET', 'POST', 'DELETE', 'PATCH'],
-    allowHeaders: ['Content-Type', 'Authorization', 'Accept'],
-  }
-))
+// app.use(cors({
+//     origin: 'http://localhost:8080',
+//     exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
+//     maxAge: 5,
+//     credentials: true,
+//     allowMethods: ['GET', 'POST', 'DELETE', 'PATCH'],
+//     allowHeaders: ['Content-Type', 'Authorization', 'Accept'],
+//   }
+// ))
 
 // error handler
 app.use(async (ctx, next) => {
@@ -57,10 +57,7 @@ app.use(async (ctx, next) => {
   }
 })
 
-app.use(koaStatic(
-  path.join(__dirname, config.servePath),
-  { maxage: 365 * 12 * 30 * 24 * 60 * 60 * 1000 }  // 缓存时间1年
-))
+
 
 app.use(bodyparser({
   enableTypes:['json', 'form', 'text']
@@ -85,6 +82,13 @@ app.use(auth.authUser)
 
 // routes
 app.use(router.routes(), router.allowedMethods())
+
+app.use(historyApiFallback())
+
+app.use(koaStatic(
+  path.join(__dirname, config.servePath),
+  { maxage: 365 * 12 * 30 * 24 * 60 * 60 * 1000 }  // 缓存时间1年
+))
 
 // Centralized error handling
 app.on('error', async (err, ctx) => {

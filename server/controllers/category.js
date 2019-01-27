@@ -12,7 +12,6 @@ module.exports = {
 
   // 获取xx分类下的文章
   async getCateArticles (ctx, next) {
-    console.log(1111, ctx.query)
     let categoryName = ctx.params.category
     let { pageNum, pageSize } = ctx.query
     pageNum = pageNum ? parseInt(pageNum) : 1
@@ -58,6 +57,28 @@ module.exports = {
   saveArticleToCategory (categoryId, articleId) {
     let queryObj = categoryModel.updateOne({_id: categoryId}, { $push: {articles: articleId} })
     return queryObj
+  },
+
+  async updateCategory (ctx, next) {
+    let {_id} = ctx.params
+    let {cnName, enName, description} = ctx.request.body
+    let result = await categoryModel.updateOne(
+      { _id }, 
+      { $set: {cnName, enName, description} }
+    )
+    if (result.nModified !== 0) {
+      ctx.body = {
+        message: '修改成功'
+      }
+    }else{
+      ctx.throw('304', '无变化')
+    }
+  },
+
+  async deleteCategory (ctx, next) {
+    let {_id} = ctx.params
+    let result = await categoryModel.deleteOne({_id})
+    if (result.n !== 0) ctx.status = 200
   }
 }  
   

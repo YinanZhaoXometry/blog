@@ -31,12 +31,12 @@ router
     .patch('/articles', allowIfLoggedin, articleController.updateArticle)                // 修改文章
     .delete('/articles/:id', allowIfLoggedin, articleController.deleteArticle)           // 删除文章
     .post('/categories', allowIfLoggedin, categoryController.saveCategory)               // 增加分类
+    .patch('/categories/:_id', categoryController.updateCategory)                         // 修改分类
+    .delete('/categories/:_id', categoryController.deleteCategory)                  // 删除分类
     .post('/upload/images', allowIfLoggedin, imageController.uploadNewImage)               // 上传图片
     .patch('/upload/images', allowIfLoggedin, imageController.uploadCroppedImage)               // 上传图片
     .post('/tags', tagController.saveTags)       // 添加新标签                          // 获取标签
     // .put('/tags', tagController.renameTag)            
-    // .patch('/categories', articleController.updateCategory)            // 修改某分类
-    // .delete('/categories/:category', articleController.deleteCategory) // 删除某分类
     
     /* 前端/后台页面共用api */
     .get('/categories', categoryController.getCategories)                // 获取所有分类信息

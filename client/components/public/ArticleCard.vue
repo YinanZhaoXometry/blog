@@ -102,9 +102,3 @@ export default {
   }
 }
 </script>
-
-<style lang="less">
-
-@import "../../assets/less/public.less";
-
-</style>

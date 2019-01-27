@@ -26,7 +26,7 @@
           <el-col :span="18">
             <el-row>
               <el-upload
-                action="http://localhost:3030/api/upload/images/"
+                action="/api/upload/images/"
                 :with-credentials="true"
                 :on-success="handleSuccessUpload"
               >
@@ -118,7 +118,7 @@ export default {
       dialogVisible: false,
 
       // 图片剪裁相关
-      urlSourceImg: '../../../static/upload/500.jpg',
+      urlSourceImg: '',
       canvasCroppedImgWeb: null,
       canvasCroppedImgMobile: null,
       isCropForWeb: true,
@@ -148,6 +148,7 @@ export default {
     // 上传成功后调用的处理函数
     async handleSuccessUpload (response, file, fileList) {
       this.selectedFileName = response.fileName
+      console.log(response.url)
       let res = await this.$axios.get(response.url, {responseType:'blob'})
       let blob = res.data
       const reader = new FileReader();

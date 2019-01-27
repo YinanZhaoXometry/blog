@@ -58,7 +58,6 @@ export default {
 
   methods: {
     login: async function (name, pwd) {
-      console.log(document.cookie)
       try {
         let dataSend = { name, pwd }
         let {data} = await this.$axios.post('/api/login', dataSend)
@@ -66,7 +65,8 @@ export default {
         this.showMessage(message, 'success')
         this.$router.push('/')
       } catch (err) {
-        this.showMessage(err, 'error')
+        console.log(err)
+        this.showMessage(err.toString(), 'error')
       }
     },
 

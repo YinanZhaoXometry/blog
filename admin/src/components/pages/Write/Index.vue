@@ -95,6 +95,22 @@
     </el-row>
     <el-row>
       <el-col :span="24">
+        <el-checkbox v-model="checked">是旧文章，设置发表时间？</el-checkbox>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="24">
+        <el-date-picker
+          v-show="checked"
+          v-model="datePickerValue"
+          type="datetime"
+          placeholder="设置发表时间"
+          default-time="12:00:00"
+        />
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="24">
         <el-button
           size="small"
           type="success"
@@ -140,6 +156,8 @@ export default {
       category: '',
       isOriginal: true,
       isPublic: true,
+      checked: false,
+      datePickerValue: '',
 
       // 标签相关
       totalTagList: [],
@@ -250,6 +268,7 @@ export default {
         isPublic: this.isPublic,
         isPublished,
         isOriginal: this.isOriginal,
+        createTime: this.datePickerValue
       }
 
       // 发表文章

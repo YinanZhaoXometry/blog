@@ -1,7 +1,7 @@
 import app from '../main'
 import axios from 'axios'
 
-axios.defaults.baseURL = 'http://localhost:3030'
+axios.defaults.baseURL = process.env.NODE_ENV === 'development' ? '' : 'http://66.42.37.118'
 axios.defaults.withCredentials = true
 
 axios.interceptors.response.use(

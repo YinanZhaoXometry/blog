@@ -25,7 +25,7 @@
         >
           <el-button
             type="text"
-            @click="dialogFormVisible = true"
+            @click="handleAdd"
           >
             + 增加分类
           </el-button>
@@ -33,23 +33,24 @@
         <template slot-scope="scope">
           <el-button
             size="mini"
-            @click="handleEdit(scope.$index, scope.row)"
+            @click="handleEdit(scope.row)"
           >
             编辑
           </el-button>
           <el-button
             size="mini"
             type="danger"
-            @click="handleDelete(scope.$index, scope.row)"
+            @click="handleDelete(scope.row)"
           >
             删除
           </el-button>
         </template>
       </el-table-column>
     </el-table>
+    <!-- 对话框 -->
     <el-dialog
-      title="添加文章分类"
-      :visible.sync="dialogFormVisible"
+      :title="dialogTitle"
+      :visible.sync="isDialogShow"
       center
     >
       <el-form :model="form">
@@ -92,12 +93,13 @@
         <el-button @click="handleCancel">取消</el-button>
         <el-button
           type="primary"
-          @click="addCategory"
+          @click="handleConfirm"
         >
           确定
         </el-button>
       </div>
     </el-dialog>
+    <!-- 删除确认框 -->
   </section>
 </template>
 
@@ -108,8 +110,10 @@ export default {
   data () {
     return {
       tableData: [],
-
-      dialogFormVisible: false,
+      isDialogShow: false,
+      dialogTitle: '',
+      requestUrl: '',
+      isGET: null,
       formLabelWidth: '70px',
       form: {
         enName: '',
@@ -129,28 +133,68 @@ export default {
 
   methods: {
     // 在弹出对话框中，点击确定后的处理函数
-    addCategory: async function () {
+    async handleConfirm () {
       try {
-        let {data} = await this.$axios.post('/api/categories', this.form)
+        console.log(this.requestUrl)
+        let {data} =
+          this.isGET
+          ? await this.$axios.post(this.requestUrl, this.form)
+          : await this.$axios.patch(this.requestUrl, this.form)
         let {message} = data
-        var msgType = 'success'
+        this.$message.success(message)
+        window.setTimeout(() => {
+          window.location.reload()
+        }, 1000)
       } catch (err) {
-        var msgType = 'error'
-        let message = err
+        this.$message.error(err.toString())
       }
-      this.$message({
-          type: msgType,
-          message: message
-      })
       this.form = {}
-      this.dialogFormVisible = false
+      this.isDialogShow = false
     },
 
     //在弹出的添加文章分类对话框，点击取消后的处理函数
     handleCancel () {
       this.form = {}
-      this.dialogFormVisible = false
+      this.isDialogShow = false
     },
+
+    handleAdd () {
+      this.dialogTitle = '增加文章分类'
+      this.isDialogShow = true
+      this.requestUrl = '/api/categories'
+      this.isGET = true
+    },
+    handleEdit (category) {
+      this.dialogTitle = '修改文章分类'
+      let { cnName, enName, description } = category
+      this.form = { cnName, enName, description }
+      this.isDialogShow =true
+      this.requestUrl = `/api/categories/${category._id}`
+      this.isGET = false
+
+    },
+    handleDelete (category) {
+      this.$confirm('此操作将永久删除该分类, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+      }).then(
+        async () => {
+        await this.$axios.delete(`/api/categories/${category._id}`)
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
+        window.setTimeout(() => {
+          window.location.reload()
+        }, 1000)
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
+    }
   }
 }
 </script>

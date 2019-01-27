@@ -101,7 +101,7 @@ module.exports = {
     // 定义返回客户端数据对象
     let data = {
       fileName: imageObj.name,
-      url: 'http://localhost:3030/images/' + imageObj.name,
+      url: '/images/' + imageObj.name,
     }
     ctx.response.body = data
   },
