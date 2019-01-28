@@ -1,7 +1,7 @@
 <template>
   <header class="header-container">
     <div id="myNavbar" class="navbar">
-      <nuxt-link to="/" class="site-logo"><b>KuHe 酷核</b></nuxt-link>
+      <nuxt-link to="/" class="site-logo">KuHe 酷核</nuxt-link>
       <div class="search-container">
         <input v-model="searchKeyword" type="text" placeholder="搜索酷核" @keyup.enter="search">
         <button class="el-icon-search" @click="search" />
@@ -15,20 +15,20 @@
         首页
       </nuxt-link>
       <nuxt-link
-        to="/categories/front-end"
-        :class="computeActiveClass('front-end')"
-        name="front-end"
+        to="/categories/coding"
+        :class="computeActiveClass('coding')"
+        name="coding"
         @click.native="changeNavTab"
       >
-        前端
+        编程
       </nuxt-link>
       <nuxt-link
-        to="/categories/back-end"
-        :class="computeActiveClass('back-end')"
-        name="back-end"
+        to="/categories/productivity"
+        :class="computeActiveClass('productivity')"
+        name="productivity"
         @click.native="changeNavTab"
       >
-        后端
+        生产力
       </nuxt-link>
       <nuxt-link
         to="/archive"

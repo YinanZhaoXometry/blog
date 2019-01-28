@@ -1,6 +1,11 @@
 <template>
   <section>
-    <article-card :article-list="articleList" :image-path-prefix="imagePathPrefix" />
+    <article-card v-if="articleList" :article-list="articleList" :image-path-prefix="imagePathPrefix" />
+    <!-- 加载动画 -->
+    <div v-else class="sk-double-bounce">
+      <div class="sk-child sk-double-bounce1" />
+      <div class="sk-child sk-double-bounce2" />
+    </div>
     <div class="loadmore-container">
       <el-button
         v-if="isLoading"
@@ -36,16 +41,15 @@ export default {
     return {
       pageNum: 1,
       isLoading: false,
-      pageSize: 8
+      pageSize: 6
     }
   },
   computed: {
     // 计算总页数
     totalPageCount () {
-      let totalArticleCount = this.totalArticleCount
-      return totalArticleCount % this.pageSize === 0
-              ? totalArticleCount / this.pageSize
-              : parseInt(totalArticleCount / this.pageSize + 1)
+      return this.totalArticleCount % this.pageSize === 0
+              ? this.totalArticleCount / this.pageSize
+              : parseInt(this.totalArticleCount / this.pageSize + 1)
     },
     // 判断是否为最后一页
     isLastPage () {
@@ -57,16 +61,17 @@ export default {
   // 向文章 api 请求数据，将获取到的数据保存至 store 中
   async asyncData ({ app, store }) {
     try {
-      let getArticles = app.$axios.get(`/api/articles`, { params: {pageSize:8} })
+      let getArticles = app.$axios.get(`/api/articles`, { params: {pageSize:6} })
       let getPopularArticles = app.$axios.get(`/api/popularArticles`, { params: {pageSize:5} })
       let [responseA, responseB] = await Promise.all( [getArticles, getPopularArticles] )
       let { articleList, totalArticleCount, imagePathPrefix } = responseA.data
       let {popularList} = responseB.data
       store.commit("getPopularList", popularList)
       return {articleList, totalArticleCount, imagePathPrefix}
-
     } catch (err) {
       console.log(err)
+      let articleList = null
+      return {articleList}
     }
   },
 
@@ -80,7 +85,7 @@ export default {
           { params: {pageNum: this.pageNum, pageSize: this.pageSize} }
         )
         let {articleList} = data
-        this.$store.commit('mergeList', articleList)
+        this.articleList = this.articleList.concat(articleList)
       }
       this.isLoading = false
     },
@@ -111,3 +116,39 @@ export default {
 
 </script>
 
+
+<style>
+.sk-double-bounce {
+  width: 40px;
+  height: 40px;
+  position: relative;
+  margin: 40px auto; }
+  .sk-double-bounce .sk-child {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: #1D365D;
+    opacity: 0.6;
+    position: absolute;
+    top: 0;
+    left: 0;
+    -webkit-animation: sk-doubleBounce 2s infinite ease-in-out;
+            animation: sk-doubleBounce 2s infinite ease-in-out; }
+  .sk-double-bounce .sk-double-bounce2 {
+    -webkit-animation-delay: -1.0s;
+            animation-delay: -1.0s; }
+@-webkit-keyframes sk-doubleBounce {
+  0%, 100% {
+    -webkit-transform: scale(0);
+            transform: scale(0); }
+  50% {
+    -webkit-transform: scale(1);
+            transform: scale(1); } }
+@keyframes sk-doubleBounce {
+  0%, 100% {
+    -webkit-transform: scale(0);
+            transform: scale(0); }
+  50% {
+    -webkit-transform: scale(1);
+            transform: scale(1); } }
+</style>

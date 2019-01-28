@@ -5,7 +5,7 @@
   "description": "A Vue.js project",
   "author": "zhaoyn7 <zhaoyn7@126.com>",
   "scripts": {
-    "build": "node build/build.js",
+    "build": "NODE_ENV=production node build/build.js",
     "lint": "eslint --ext .js,.vue src",
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev"

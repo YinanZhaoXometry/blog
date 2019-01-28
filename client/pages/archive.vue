@@ -23,14 +23,6 @@
             <span>{{ item.category.cnName }}</span>
           </nuxt-link>
         </el-col>
-        <template>
-          <el-tag v-if="!item.isPublic" class="article-tag" type="warning" size="small">
-            {{ '私有' }}
-          </el-tag>
-          <el-tag v-if="!item.isPublished" class="article-tag" type="warning" size="small">
-            {{ '草稿' }}
-          </el-tag>
-        </template>
       </el-row>
     </div>
   </section>
@@ -38,14 +30,6 @@
 
 <script>
 export default {
-  data () {
-    return {
-      displayYear: '',
-      displayYear1:1,
-      displayDate: 0,
-    }
-  },
-
   methods: {
     calc (item, index, articleList) {
       if (index>0 && index<= articleList.length-1){
@@ -54,7 +38,6 @@ export default {
         return result
       } return true
     },
-
   },
 
   async asyncData ({app, store}) {
@@ -63,7 +46,7 @@ export default {
       let {articleList, totalArticleCount} = data
       return {articleList, totalArticleCount}
     } catch (err) {
-      this.$message.error(err)
+      console.log(err)
     }
   },
 
@@ -79,8 +62,6 @@ export default {
   }
 
 }
-
-
 </script>
 
 <style scoped>

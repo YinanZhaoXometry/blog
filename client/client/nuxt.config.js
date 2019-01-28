@@ -32,7 +32,7 @@ module.exports = {
   /*
   ** Customize the progress-bar color
   */
-  loading: { color: '#fff' },
+  loading: { color: '#0074BF', height: '3px' },
 
   /*
   ** Global CSS
@@ -73,16 +73,17 @@ module.exports = {
   ** Axios module configuration
   */
   axios: {
+    baseURL: "http://kuhe.io"
     // See https://github.com/nuxt-community/axios-module#options
   },
 
   /*
   ** 设置代理
   */
-  proxy: {
-    '/api/': {target:'http://127.0.0.1:3030' },
-    '/images/': {target:'http://127.0.0.1:3030' }
-  },
+  // proxy: {
+  //   '/api/': {target:'http://127.0.0.1:3030' },
+  //   '/images/': {target:'http://127.0.0.1:3030' }
+  // },
 
   /*
   ** Build configuration

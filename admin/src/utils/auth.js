@@ -8,7 +8,7 @@ export default {
           return true
         })
         .catch((err)=>{
-          app.$message.error(err)
+          console.log(err)
           return false
         })
   }

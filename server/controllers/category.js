@@ -18,23 +18,27 @@ module.exports = {
     pageSize = parseInt(pageSize)
     // 获取xx分类下的文章总数量
     let result = await categoryModel.findOne({ enName: categoryName },{})
-    let cateArticleCount = result.articles.length
-    // 获取分类对象，其中包含当前分类下的所有文章
-    let categoryObj = await categoryModel
-      .findOne({ enName:categoryName },{})
-      .populate({
-        path: 'articles',
-        options: {
-          sort: { time: -1 }, 
-          skip: (pageNum -1) * pageSize,
-          limit: pageSize,
-        },
-        populate: { path: 'coverImage' }
-      })
-    ctx.body = {
-      categoryObj,
-      cateArticleCount,
-      imagePathPrefix: config.imagePathPrefix
+    if(result === null) {
+      ctx.throw(400, '没有该分类')
+    } else{
+      let cateArticleCount = result.articles.length
+      // 获取分类对象，其中包含当前分类下的所有文章
+      let categoryObj = await categoryModel
+        .findOne({ enName:categoryName },{})
+        .populate({
+          path: 'articles',
+          options: {
+            sort: { time: -1 }, 
+            skip: (pageNum -1) * pageSize,
+            limit: pageSize,
+          },
+          populate: { path: 'coverImage' }
+        })
+      ctx.body = {
+        categoryObj,
+        cateArticleCount,
+        imagePathPrefix: config.imagePathPrefix
+      }
     }
   },
 

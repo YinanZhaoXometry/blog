@@ -20,11 +20,12 @@
               {{ article.views }}
             </el-button>
           </el-col>
-          <el-col :span="10" class="article-tags">
+          <el-col :span="10">
             <el-button
               v-for="tag in article.tags"
               :key="tag._id"
-              size="mini"
+              size="medium"
+              class="article-tags"
             >
               <nuxt-link :to="`/tags/${tag._id}`">
                 {{ tag.name }}
@@ -160,7 +161,7 @@ export default {
 }
 
 .article-tags {
-  margin-top: 10px;
+  /* margin-top: 10px; */
 }
 .article-last {
   float: left;

@@ -49,6 +49,7 @@
 }
 
 .site-logo {
+  font-weight: 550;
   font-size: 25px !important;
   padding: 0 30px !important;
 }
@@ -58,6 +59,7 @@
   float: left;
   display: block;
   margin-top: 20px;
+  margin-right: 20px;
   font-size: 16px;
 
   input[type=text] {
@@ -103,7 +105,6 @@
   }
 }
 
-
 // 响应式菜单栏布局
 @media screen and (max-width: 992px) {
   #menu-icon {
@@ -116,7 +117,7 @@
       display: block;
       visibility: collapse;
       opacity: 0;
-      transition: visibility .5s, opacity .5s;
+      transition: visibility .3s, opacity .3s;
       float: none;
       width: 100%;
       font-size: 20px;
@@ -131,7 +132,7 @@
       visibility: collapse;
       opacity: 0;
       display: block;
-      transition: visibility .3s, opacity .4s;
+      transition: visibility .3s, opacity .3s;
       float: none;
       text-align: center;
       width: 100%;
@@ -235,6 +236,45 @@
     width: 0%;
     left: 50%;
   }
+  .navbar {
+    height: 80px;
+    overflow: hidden;
+  }
+  .navbar.responsive {
+    height: 842px;
+    overflow: visible;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .header-container {
+    height: 50px !important;
+  }
+  .site-logo {
+    height: 50px !important;
+    font-size: 22px !important;
+    line-height: 50px !important;
+    padding: 0 0 0 15px !important;
+  }
+  #menu-icon {
+    margin-top: 15px;
+    margin-right: 15px;
+  }
+  .navbar{
+    a:not(.site-logo), input[type=text], button {
+      height: 50px !important;
+      font-size: 17px !important;
+      line-height: 50px !important;
+    }
+  }
+  .navbar {
+    height: 50px;
+    overflow: hidden;
+  }
+  .navbar.responsive {
+    height: 385px;
+    overflow: visible;
+  }
 }
 
 
@@ -251,6 +291,7 @@
 .article-list {
   list-style-type: disc;
   text-align: left;
+  line-height: 2;
 }
 
 
@@ -271,7 +312,7 @@
     width: 100%;
     .card-text {
       flex: 1;
-      padding: 20px 40px;
+      padding: 20px 30px;
     }
     .card-image {
       width: 200px;
@@ -301,11 +342,17 @@
     }
     .text-title {
       font-size: 1.3em;
+      margin: 12px 0;
     }
     .text-description {
-      font-size: 1.1em;
+      font-size: 1em;
+      margin: 10px 0;
     }
-    .text-time, .text-category {
+    .text-time {
+      font-size: 1em;
+      color:@color-text-secondary;
+    }
+    .text-category {
       font-size: 1.1em;
       color:@color-text-secondary;
     }
@@ -325,7 +372,6 @@
     transform: translateY(-65%);
   }
   .card-mobile {
-    min-width: 400px;
     padding-top: 73%;
     position: relative;
     .card-image {
@@ -344,11 +390,11 @@
     }
     .card-text {
       clear: both;
-      width: 100%;
+      width: 93%;
       height: 42%;
       position: absolute;
       top: 58%;
-      padding: 0 20px;
+      padding: 0 0 0 20px;
     }
     .card-text-tag {
       position: relative;

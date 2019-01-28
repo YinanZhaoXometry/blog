@@ -87,8 +87,7 @@ module.exports = {
   // 发布文章（保存至数据库）
   async saveArticle (ctx, next) {
     let dataObj = ctx.request.body
-    let date =new Date(dataObj.createTime)
-    dataObj.createTime = getTimeObj(date)
+    dataObj.createTime = getTimeObj(dataObj.createTime)
     let newDoc = new articleModel(dataObj)
     let savedDoc = await newDoc.save()
     let result = await saveArticleToCategory(savedDoc.category, savedDoc._id)

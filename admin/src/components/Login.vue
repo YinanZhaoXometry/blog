@@ -27,7 +27,7 @@
             <el-button
               type="primary"
               style="width:100%"
-              @click="login(name, pwd)"
+              @click="login"
             >
               登陆
             </el-button>
@@ -57,16 +57,21 @@ export default {
   },
 
   methods: {
-    login: async function (name, pwd) {
+    async login () {
       try {
-        let dataSend = { name, pwd }
+        if (!this.name.trim()) return this.$message.warning('请输入用户名')
+        if (!this.pwd.trim()) return this.$message.warning('请输入密码')
+        let dataSend = { name: this.name, pwd: this.pwd }
         let {data} = await this.$axios.post('/api/login', dataSend)
         let {message} = data
         this.showMessage(message, 'success')
         this.$router.push('/')
       } catch (err) {
-        console.log(err)
-        this.showMessage(err.toString(), 'error')
+        if (err.response) {
+          this.$message.error(err.response.data)
+        } else {
+          this.$message.error(err.toString())
+        }
       }
     },
 

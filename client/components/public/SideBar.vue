@@ -2,7 +2,7 @@
   <section>
     <!-- 作者信息 -->
     <el-card class="sidebar-card" :body-style="[{ padding: '5px 20px 20px'}, {'text-align': 'center'}]">
-      <h4><i class="iconfont icon-guanyuwomen" />作者信息</h4>
+      <h4><i class="iconfont icon-guanyuwomen" /> 作者信息</h4>
       <hr>
       <nuxt-link to="/about">
         <p>赵一楠</p>
@@ -22,7 +22,7 @@
     </el-card>
     <!-- 热门文章 -->
     <el-card class="sidebar-card" :body-style="[{ padding: '5px 20px 20px'}, {'text-align': 'center'}]">
-      <h4><i class="iconfont icon-popular" />热门文章</h4>
+      <h4><i class="iconfont icon-popular" /> 热门文章</h4>
       <hr>
       <ul class="article-list">
         <nuxt-link

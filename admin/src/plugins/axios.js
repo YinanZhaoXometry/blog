@@ -1,7 +1,7 @@
 import app from '../main'
 import axios from 'axios'
 
-axios.defaults.baseURL = process.env.NODE_ENV === 'development' ? '' : 'http://66.42.37.118'
+axios.defaults.baseURL = process.env.NODE_ENV === 'development' ? '' : 'http://kuhe.io'
 axios.defaults.withCredentials = true
 
 axios.interceptors.response.use(
@@ -14,7 +14,7 @@ axios.interceptors.response.use(
         app.$router.replace({ path: '/login' })
       }
     }
-    return Promise.reject(error.response.data.error)
+    return Promise.reject(error)
   }
 )
 

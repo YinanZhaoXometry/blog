@@ -63,7 +63,9 @@ function handleIncomingImage (ctx) {
           ? renameNewImg(filename)
           : renameCroppedImg(fieldname, filename)
         // 获取文件储存路径
-        let localFilePath = './public/images/'+ localFileName
+        let localFilePath = process.env.NODE_ENV === 'development' 
+          ? './public/images/'+ localFileName
+          : config.servePath + '/images/' + localFileName
         // 将接收到的file保存在服务器上
         file.on('end', function() {
           switch (fieldname) {

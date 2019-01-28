@@ -1,6 +1,6 @@
 // 定义工具函数返回time对象，储存不同时间格式，方便后续使用（精确到毫秒、年、月、日、分钟）
 const getTimeObj = function  (userSetDate) {
-  let date = userSetDate ? userSetDate : new Date()
+  let date = userSetDate ? new Date(userSetDate) : new Date()
   let year = date.getFullYear()
   let month = date.getMonth()+1
   let day = date.getDate()

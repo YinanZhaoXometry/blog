@@ -74,7 +74,8 @@ const routes = [
 
 const router = new Router({
   mode: 'history',
-  routes
+  routes,
+  base: '/admin/'
 })
 
 router.beforeEach(
@@ -82,9 +83,9 @@ router.beforeEach(
     if (to.matched.some(record => record.meta.requireAuth)) {
       let isLoggedIn = await auth.checkLogin()
       if (!isLoggedIn) {
-        next({ path: '/login' })
+        return next( '/login' )
       }
-      next()
+     return next()
     }
     next()
 })

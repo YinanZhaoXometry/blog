@@ -32,7 +32,7 @@ module.exports = {
   /*
   ** Customize the progress-bar color
   */
-  loading: { color: '#fff' },
+  loading: { color: '#0074BF', height: '3px' },
 
   /*
   ** Global CSS
@@ -73,6 +73,7 @@ module.exports = {
   ** Axios module configuration
   */
   axios: {
+    // baseURL: "http://kuhe.io"
     // See https://github.com/nuxt-community/axios-module#options
   },
 

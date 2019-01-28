@@ -7,8 +7,8 @@ const logger = require('koa-logger')
 const mongoose = require('mongoose')
 const chalk = require('chalk')
 // const cors = require('koa2-cors');
-const path = require('path')
-const koaStatic = require('koa-static')
+// const path = require('path')
+// const koaStatic = require('koa-static')
 const historyApiFallback = require('koa-history-api-fallback')
 const router = require('./routes')
 const config = require('./config')
@@ -85,10 +85,10 @@ app.use(router.routes(), router.allowedMethods())
 
 app.use(historyApiFallback())
 
-app.use(koaStatic(
-  path.join(__dirname, config.servePath),
-  { maxage: 365 * 12 * 30 * 24 * 60 * 60 * 1000 }  // 缓存时间1年
-))
+// app.use(koaStatic(
+//   path.join(__dirname, config.servePath),
+//   { maxage: 365 * 12 * 30 * 24 * 60 * 60 * 1000 }  // 缓存时间1年
+// ))
 
 // Centralized error handling
 app.on('error', async (err, ctx) => {

@@ -1,26 +1,29 @@
 <template>
   <section>
-    <article-card :article-list="articleList" :image-path-prefix="imagePathPrefix" />
-    <div class="loadmore-container">
-      <el-button
-        v-if="isLoading"
-        :loading="true"
-        plain
-        class="loadmore-isloading"
-      >
-        加载中
-      </el-button>
-      <el-button
-        v-else
-        v-show="!isLastPage"
-        plain
-        class="loadmore-button"
-        @click="loadMore"
-      >
-        加载更多
-      </el-button>
-      <p v-show="isLastPage" class="loadmore-nomore">---没有更多文章了---</p>
+    <div v-if="articleList.length!==0">
+      <article-card :article-list="articleList" :image-path-prefix="imagePathPrefix" />
+      <div class="loadmore-container">
+        <el-button
+          v-if="isLoading"
+          :loading="true"
+          plain
+          class="loadmore-isloading"
+        >
+          加载中
+        </el-button>
+        <el-button
+          v-else
+          v-show="!isLastPage"
+          plain
+          class="loadmore-button"
+          @click="loadMore"
+        >
+          加载更多
+        </el-button>
+        <p v-show="isLastPage" class="loadmore-nomore">---没有更多文章了---</p>
+      </div>
     </div>
+    <div v-else class="loadmore-container"><p class="loadmore-nomore">---暂无文章---</p></div>
   </section>
 </template>
 
@@ -69,6 +72,8 @@ export default {
       return { articleList, category, cateArticleCount, imagePathPrefix, pageSize }
     } catch (err) {
       console.log(err)
+      let articleList = []
+      return {articleList}
     }
   },
 
