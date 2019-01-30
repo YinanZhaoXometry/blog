@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { Tag, Button, Icon, Card, Row, Col, Input, Select, Option, Checkbox } from 'element-ui'
+import { Tag, Button, Icon, Card, Row, Col, Input, Select, Option, Checkbox, Message, DropdownMenu, Dropdown, DropdownItem, Popover } from 'element-ui'
 import locale from 'element-ui/lib/locale/lang/zh-CN'
 
 export default () => {
@@ -14,4 +14,9 @@ export default () => {
   Vue.use(Select)
   Vue.use(Option)
   Vue.use(Checkbox)
+  Vue.use(DropdownMenu)
+  Vue.use(Dropdown)
+  Vue.use(DropdownItem)
+  Vue.use(Popover)
+  Vue.prototype.$message = Message
 }

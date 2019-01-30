@@ -73,7 +73,7 @@ module.exports = {
   ** Axios module configuration
   */
   axios: {
-    // baseURL: "http://kuhe.io"
+    // baseURL: "https://kuhe.io"
     // See https://github.com/nuxt-community/axios-module#options
   },
 

@@ -11,7 +11,7 @@
         <p v-if="!article">努力加载中...</p>
         <div v-html="article.htmlContent" />
         <el-row>
-          <el-col :span="10">
+          <el-col :span="12">
             <el-button round @click="likeArticle">
               <i :class="['iconfont', isArticleLiked ? 'icon-like' : 'icon-like1']" />
               {{ article.likes ? article.likes + '人赞' : '赞' }}
@@ -160,9 +160,6 @@ export default {
   }
 }
 
-.article-tags {
-  /* margin-top: 10px; */
-}
 .article-last {
   float: left;
 }

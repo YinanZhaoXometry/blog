@@ -20,21 +20,7 @@
     "gravatar": "^1.8.0",
     "highlight.js": "^9.13.1",
     "koa": "^2.5.2",
-    "nuxt-start": "^2.4.0"
-  },
-  "devDependencies": {
-    "@babel/node": "^7.2.2",
-    "@babel/preset-env": "^7.2.0",
-    "acorn": "^6.0.4",
-    "babel-eslint": "^8.2.1",
-    "babel-plugin-component": "^1.1.1",
-    "element-theme": "^2.0.1",
-    "element-theme-chalk": "git+https://github.com/ElementUI/theme-chalk.git",
-    "eslint": "^5.0.1",
-    "eslint-loader": "^2.0.0",
-    "eslint-plugin-vue": "^5.0.0",
-    "less": "^3.9.0",
-    "less-loader": "^4.1.0",
-    "nodemon": "^1.11.0"
+    "nuxt": "^2.3.4",
+    "nuxt-start": "^2.3.4"
   }
 }

@@ -49,7 +49,7 @@
           </el-button>
           <span class="cancel" @click="onCancel">取消</span>
           <el-checkbox
-            v-if="!isEditUserCache"
+            v-if="!hasUserCache"
             v-model="rememberMe"
             class="remember-me"
           >
@@ -146,7 +146,7 @@ export default {
 
 
   methods: {
-    // 读取保存在本地的 用户信息
+    // 读取保存在本地的用户信息
     readUserCache () {
       if (window.localStorage) {
         let fromWhom = window.localStorage.getItem('user_info')
@@ -206,6 +206,7 @@ export default {
     onCancel () {
       this.$emit('hideSubInputBox')
       this.isButtonsShow = false
+      this.isEditUserCache = false
       this.clearUserInput()
     },
 
@@ -231,8 +232,9 @@ export default {
         this.isButtonsShow = false
         if (this.rememberMe) { this.saveUserCache() }
       } catch (err) {
-        let message = err.response.data ? err.response.data : err.toString()
-        this.$message.error(message)
+        console.log(err)
+        // let message = err.response.data ? err.response.data : err.toString()
+        // this.$message.error(message)
       }
       this.clearUserInput()
     },
@@ -263,7 +265,7 @@ export default {
           content,
           isReplyToParent
         }
-        var {data} = await this.$axios.patch('/api/comments', dataObj)
+        var res = await this.$axios.patch('/api/comments', dataObj)
         this.$emit('hideSubInputBox')
         let {message} = data
         this.$message.success(message)
