@@ -7,4 +7,4 @@
 
 
 #### 博客管理员后台发表文章时，上传封面图片并剪裁
-![Imgur](https://i.imgur.com/Qp1O02J.gif)
+![Imgur2](https://i.imgur.com/WFKvmGJ.gif)
