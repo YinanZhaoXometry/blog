@@ -3,4 +3,4 @@
 [上线地址](https://kuhe.io)
 
 #### 响应式布局
-![响应式布局](https://ws2.sinaimg.cn/large/006tNc79ly1g01gjmbgwcg30s40md7wk.gif)
+[Imgur](https://i.imgur.com/X3Q6Bvj.gifv)
