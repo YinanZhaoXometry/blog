@@ -4,3 +4,7 @@
 
 #### 响应式布局
 ![Imgur](https://i.imgur.com/X3Q6Bvj.gif)
+
+
+#### 博客管理员后台发表文章时，上传封面图片并剪裁
+![Imgur](https://i.imgur.com/Qp1O02J.gif)
