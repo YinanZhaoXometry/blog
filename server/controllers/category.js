@@ -5,9 +5,7 @@ module.exports = {
   // 获得所有分类
   async getCategories (ctx, next) {
     let result = await categoryModel.find({}, {})
-    ctx.body = {
-      result
-    }
+    ctx.body = { result }
   },
 
   // 获取xx分类下的文章
@@ -52,9 +50,7 @@ module.exports = {
       articles: []
     })
     await newDoc.save()
-    ctx.body = {
-      message: '成功添加文章分类！'
-    }
+    ctx.body = { message: '成功添加文章分类！' }
   },
 
   // 定义方法，用于在”category“document中加入相关“article”的_id
@@ -71,9 +67,7 @@ module.exports = {
       { $set: {cnName, enName, description} }
     )
     if (result.nModified !== 0) {
-      ctx.body = {
-        message: '修改成功'
-      }
+      ctx.body = { message: '修改成功' }
     }else{
       ctx.throw('304', '无变化')
     }

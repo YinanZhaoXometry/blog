@@ -14,7 +14,7 @@
       </p>
       <p>姓名：赵一楠</p>
       <p>学历：本科毕业</p>
-      <p>80后，曾经在核电站工作过7年，2018年8月辞职学习编程。</p>
+      <p>80后</p>
 
       <h3>技术栈：</h3>
       <ul>
@@ -22,12 +22,6 @@
         <li>Vue、Vue-router、Nuxt、Vuex</li>
         <li>MongoDB(Mongoose)</li>
         <li>HTML5,CSS,JavaScript</li>
-      </ul>
-      <h3>学习目标：</h3>
-      <ul>
-        <li>React全家桶</li>
-        <li>移动端：RN、Flutter + Dart(?)</li>
-        <li>桌面端：Electron(?)</li>
       </ul>
       <h3>个人信条：</h3>
       <ul>
@@ -53,8 +47,9 @@
     <h2>PROJECTS</h2>
     <div>
       <b>酷核 kuhe.io</b>
-      <p>也就是本站，花了快2个月才做完，一个人从前端做到后端，所有代码都是自己敲的，自己也是头一回进行了：页面设计、服务器、前端页面、adminUI的搭建过程。受益匪浅。</p>
-      <p>在项目制作期间，由于对有些方面还不是太懂，抱着学习的态度，参考了几个开源博客项目，自己也从中学到很多：</p>
+      <p>本项目是个人技术博客项目，分为前端页面展示部分、前端admin文章管理部分和 后端服务部分。</p>
+      <p>独立从前端做到后端，所有代码都是自己敲的，自己也是头一回进行了：页面设计、服务器、前端页面、adminUI的搭建过程，在搭建过程中学到很多。</p>
+      <p>在项目制作期间，由于对有些方面还不是太熟，抱着学习的态度，参考了几个开源博客项目，自己也从中学到很多：</p>
       <ul>
         <li><a href="https://github.com/jkchao/blog-front" target="blank">jkChao</a>，<a href="https://jkchao.cn/" target="blank">个人博客</a></li>
         <li><a href="https://github.com/warriorBrian/nuxt-blog" target="blank">warriorBrian</a>，<a href="http://www.brianlee.cn/" target="blank">个人博客</a></li>

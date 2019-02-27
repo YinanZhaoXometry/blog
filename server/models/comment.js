@@ -1,8 +1,8 @@
 const mongoose = require('mongoose')
 const ObjectId = mongoose.Schema.Types.ObjectId
 
-// 定义子评论subComment的Schema
-let subCommentSchema = new mongoose.Schema({
+// 子评论Schema
+const subCommentSchema = new mongoose.Schema({
   isReplyToParent: { type: Boolean },
   content: { type: String, required: true },  // 子评论内容
   createTime: {}, // 发布日期
@@ -22,8 +22,8 @@ let subCommentSchema = new mongoose.Schema({
   }
 })
 
-// 定义父评论comment的Schema
-let commentSchema = new mongoose.Schema({
+// 父评论Schema
+const commentSchema = new mongoose.Schema({
   articleId: { type: ObjectId, required: true},  // 所评论文章的_id
   content: { type: String, required: true, validate: /\S+/ }, // 评论内容
   likes: { type: Number, default: 0 }, // 点赞数

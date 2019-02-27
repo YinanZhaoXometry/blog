@@ -232,9 +232,8 @@ export default {
         this.isButtonsShow = false
         if (this.rememberMe) { this.saveUserCache() }
       } catch (err) {
-        console.log(err)
-        // let message = err.response.data ? err.response.data : err.toString()
-        // this.$message.error(message)
+        let message = err.response.data ? err.response.data : err.toString()
+        this.$message.error(message)
       }
       this.clearUserInput()
     },

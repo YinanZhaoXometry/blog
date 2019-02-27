@@ -14,6 +14,7 @@ const articleSchema = new mongoose.Schema({
   tags: [{ type: ObjectId, ref: 'tagModel' }], // 标签
   comments: [{ type: ObjectId, ref: 'commentModel' }],   // 评论
   coverImage: { type: ObjectId, ref: 'imageModel' },   // 封面图片
+  isTopPinned: { type: Boolean, default: false},  // 是否置顶
   isPublic: { type: Boolean, default: true },     // 是否公开
   isPublished: { type: Boolean },  // 是否发表
   isOriginal: { type: Boolean, default: true },   // 是否原创
