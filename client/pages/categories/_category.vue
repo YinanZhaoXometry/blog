@@ -57,7 +57,7 @@ export default {
 
   async asyncData ({app, params, store}) {
     try {
-      const pageSize = 1
+      const pageSize = 7
       let {data} = await app.$axios.get(
         `/api/categories/${params.category}`,
         { params: {pageSize} }

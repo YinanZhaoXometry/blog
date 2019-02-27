@@ -31,7 +31,7 @@
 
 <script>
 import ArticleCard from '~/components/public/ArticleCard.vue'
-
+import {Bus} from '~/components/public/EventBus'
 export default {
   components: {
     ArticleCard
@@ -74,7 +74,9 @@ export default {
       return {articleList}
     }
   },
-
+  mounted () {
+    Bus.$emit('DataTransfer', this.totalArticleCount)
+  },
   methods:{
     loadMore: async function () {
       this.isLoading = true

@@ -11,7 +11,7 @@
       <nuxt-link to="/archive" class="hover-underline">
         <p>
           <span>日志</span>
-          <span>3</span>
+          <span>{{ totalArticleCount }}</span>
         </p>
       </nuxt-link>
       <p>
@@ -40,16 +40,24 @@
   </section>
 </template>
 <script>
+import {Bus} from './EventBus'
 export default {
   components: {
   },
-  props: {
-
+  data () {
+    return {
+      totalArticleCount: null
+    }
   },
   computed: {
     popularArticleList() {
       return this.$store.state.popularList
     }
+  },
+  created () {
+    Bus.$on('DataTransfer', (totalArticleCount) => {
+      this.totalArticleCount = totalArticleCount
+    })
   }
 }
 </script>
