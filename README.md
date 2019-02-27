@@ -1,23 +1,40 @@
-# SSR-blog-nuxt-koa-mongo 酷核
+# 酷核 Kuhe.io
 
-个人技术博客项目，前后端分离，服务端渲染，响应式布局。A personal blog system built nuxt-koa-mongo, features SSR
-[上线地址](https://kuhe.io)
+> 本项目是个人技术博客项目，分为前端页面展示部分、前端admin文章管理部分和 后端服务部分。
 
+> [上线地址](https://kuhe.io)
 
+关键字：博客项目，前后端分离，服务端渲染，响应式布局
 
-#### 技术栈：
-Vue / Vue Router / Nuxt，Koa2，MongoDB，ElementUI，Less，JWT
+##  技术栈：
 
-#### 介绍：
+Vue / Vue Router / Nuxt，Koa2，MongoDB(Mongoose)，ElementUI，Less，JWT
+
+## 项目由来
+
+希望把Vue相关的知识沉淀一下，能想到的最好的方式还是通过项目实操，来锻炼自己的技术能力。
+
+博客是一个技术人员的必备，写博客不仅梳理了你的知识结构，同时也加深了和知识之间的链接，这样日积月累会让自己的知识结构更加牢固，所以最终还是决定做一个个人博客系统。
+
+##  技术栈选择
+
+- 服务端渲染：必须要支持服务端渲染，一开始准备自己搞vue服务端渲染。
+- 响应式布局：一开始准备用BootStrap但是在Vue上其实和原生BootStrap的语法完全不同了，果断放弃，最后是自己写的media query实现的响应式布局。
+- Element UI：选了一个相对主流的视图组件，虽然可选择的组件偏少，但是还是够用了，组件样式都挺好看的。
+- 没有使用Vuex--对Vuex还不太熟，在后来的社区项目中用到了，争取重构的时候补上。
+
+## 项目特点：
 
 - 评论组件样式高仿简书，支持使用Web Storage存储用户信息，发布评论不用重复填写用户信息；使用sanitize-html对评论区留言进行过滤，防止XSS攻击
-- 评论区头像会根据用户邮箱地址获取Gravatar，如用户未设置Gravatar，则会拉取adorable API的随机头像并显示；博客后台模仿微信公众号UI，制作了封面图片上传和剪裁组件
+- 评论区头像会根据用户邮箱地址获取Gravatar，如用户未设置Gravatar，则会拉取adorable API的随机头像并显示；
+- 博客后台模仿微信公众号UI，制作了封面图片上传和剪裁组件
 - 进行了初步的SEO优化；支持https；部署使用CentOS + NginX + PM2；该项目从构想、设计到数据库设计、REST API设计以及前后端的实现，均为本人独立完成
 
+## 动图展示
 
-#### 响应式布局
+### 响应式布局
 ![Imgur](https://i.imgur.com/GR7dfed.gif)
 
 
-#### 博客管理员后台发表文章时，上传封面图片并剪裁
+### 博客管理员后台发表文章时，上传封面图片并剪裁
 ![Imgur2](https://i.imgur.com/NloO5ut.gif)

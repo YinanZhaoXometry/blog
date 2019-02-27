@@ -33,6 +33,7 @@ export default {
   },
   methods: {
     handleScroll () {
+      let doc = document.querySelector('.top-section')
       let currentScrollPos = window.pageYOffset
       let navbar = document.getElementById('navbar')
       if (this.prevScrollPos > currentScrollPos) {
