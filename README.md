@@ -52,4 +52,6 @@ Vue / Vue Router / Nuxt，Koa2，MongoDB(Mongoose)，ElementUI，Less，JWT
 ### 响应式布局
 ![Imgur](https://i.imgur.com/GR7dfed.gif)
 
+### 博客管理员后台发表文章时，上传封面图片并剪裁
+![Imgur2](https://i.imgur.com/NloO5ut.gif)
 
