@@ -1,13 +1,11 @@
 import axios from '../plugins/axios'
-import app from '../main'
+// import app from '../main'
 
 export default {
-   checkLogin () {
+   checkLogin() {
       return axios.get('/api/login')
-        .then(()=>{
-          return true
-        })
-        .catch((err)=>{
+        .then(() => true)
+        .catch(err => {
           console.log(err)
           return false
         })
