@@ -11,7 +11,7 @@
     "start": "npm run dev"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.18.1",
     "element-ui": "^2.4.5",
     "github-markdown-css": "^2.10.0",
     "highlight.js": "^9.13.1",
