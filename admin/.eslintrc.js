@@ -2,23 +2,22 @@ module.exports = {
   root: true,
   env: {
     browser: true,
-    node: true
+    node: true,
+    es6: true,
   },
   parserOptions: {
-    parser: 'babel-eslint'
+    parser: 'babel-eslint',
+    sourceType: 'module'
   },
-  extends: [
-    'plugin:vue/recommended'
-  ],
-  // required to lint *.vue files
+  extends: ['plugin:vue/recommended'],
   plugins: [
     'vue'
   ],
-  // add your custom rules here
   rules: {
     'vue/component-name-in-template-casing': ["error", "kebab-case"],
     "vue/singleline-html-element-content-newline": "off",
     'vue/no-unused-vars' : 'off',
-    "vue/max-attributes-per-line": "off"
+    "vue/max-attributes-per-line": "off",
+    "vue/multiline-html-element-content-newline": "off"
   }
 }

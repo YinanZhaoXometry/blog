@@ -1,13 +1,15 @@
-import axios from '../plugins/axios'
-// import app from '../main'
+import Cookies from 'js-cookie'
 
-export default {
-   checkLogin() {
-      return axios.get('/api/login')
-        .then(() => true)
-        .catch(err => {
-          console.log(err)
-          return false
-        })
-  }
+const TokenKey = 'vue_admin_template_token'
+
+export function getToken() {
+  return Cookies.get(TokenKey)
+}
+
+export function setToken(token) {
+  return Cookies.set(TokenKey, token)
+}
+
+export function removeToken() {
+  return Cookies.remove(TokenKey)
 }

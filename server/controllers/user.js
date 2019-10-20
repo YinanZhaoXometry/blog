@@ -10,6 +10,7 @@ module.exports = {
   async login (ctx, next) {
     let {name, pwd} = ctx.request.body
     let userDoc = await userModel.findOne({name}, null)   // 在数据库中按照输入的登录名查找
+    console.log(userDoc)
     if (!userDoc) {
       ctx.throw(401, '用户名或密码错误！')
     } 
