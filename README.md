@@ -1,57 +1,99 @@
-# 酷核 Kuhe.io
+<!-- AUTO-GENERATED-CONTENT:START (STARTER) -->
+<p align="center">
+  <a href="https://www.gatsbyjs.org">
+    <img alt="Gatsby" src="https://www.gatsbyjs.org/monogram.svg" width="60" />
+  </a>
+</p>
+<h1 align="center">
+  Gatsby's blog starter
+</h1>
 
-> 本项目是个人技术博客项目，分为前端页面展示部分、前端admin文章管理部分和 后端服务部分。
+Kick off your project with this blog boilerplate. This starter ships with the main Gatsby configuration files you might need to get up and running blazing fast with the blazing fast app generator for React.
 
-> [上线地址](https://kuhe.io)
+_Have another more specific idea? You may want to check out our vibrant collection of [official and community-created starters](https://www.gatsbyjs.org/docs/gatsby-starters/)._
 
-关键字：博客项目，前后端分离，服务端渲染，响应式布局
+## 🚀 Quick start
 
-##  技术栈：
+1.  **Create a Gatsby site.**
 
-Vue / Vue Router / Nuxt，Koa2，MongoDB(Mongoose)，ElementUI，Less，JWT
+    Use the Gatsby CLI to create a new site, specifying the blog starter.
 
-## 项目由来
+    ```shell
+    # create a new Gatsby site using the blog starter
+    gatsby new my-blog-starter https://github.com/gatsbyjs/gatsby-starter-blog
+    ```
 
-希望把Vue相关的知识沉淀一下，能想到的最好的方式还是通过项目实操，来锻炼自己的技术能力。
+1.  **Start developing.**
 
-博客是一个技术人员的必备，写博客不仅梳理了你的知识结构，同时也加深了和知识之间的链接，这样日积月累会让自己的知识结构更加牢固，所以最终还是决定做一个个人博客系统。该项目从构想、设计到数据库设计、REST API设计以及前后端的实现，均为本人独立完成。
+    Navigate into your new site’s directory and start it up.
 
-##  技术栈选择
+    ```shell
+    cd my-blog-starter/
+    gatsby develop
+    ```
 
-- 服务端渲染：必须要支持服务端渲染，一开始准备自己搞vue服务端渲染。
-- 响应式布局：一开始准备用BootStrap但是在Vue上其实和原生BootStrap的语法完全不同了，果断放弃，最后是自己写的media query实现的响应式布局。
-- Element UI：选了一个相对主流的视图组件，虽然可选择的组件偏少，但是还是够用了，组件样式都挺好看的。
-- 没有使用Vuex--对Vuex还不太熟，在后来的社区项目中用到了，争取重构的时候补上。
+1.  **Open the source code and start editing!**
 
-## 项目特点：
+    Your site is now running at `http://localhost:8000`!
 
-1）前端博客页面部分：
+    _Note: You'll also see a second link: _`http://localhost:8000/___graphql`_. This is a tool you can use to experiment with querying your data. Learn more about using this tool in the [Gatsby tutorial](https://www.gatsbyjs.org/tutorial/part-five/#introducing-graphiql)._
 
-- 基于Nuxt构建，支持服务端渲染，使用Element UI、Less，使用Axios进行前后端通讯；
-- 独立封装了仿简书的评论组件，使用Web Storage存储用户信息，发布评论不用重复填写用户信息；
-- 评论区头像会根据用户邮箱地址获取Gravatar，如用户未设置Gravatar，则会拉取adorable API的随机头像并显示；
-- 支持文章点赞和取消点赞，支持按标签检索，支持关键字全文搜索。
-- 进行了初步的SEO优化；支持https
+    Open the `my-blog-starter` directory in your code editor of choice and edit `src/pages/index.js`. Save your changes and the browser will update in real time!
 
-2）前端管理员系统：
+## 🧐 What's inside?
 
-- 基于Vue-cli+Vue-Router，独立封装了仿微信公众号的文章封面上传、剪裁组件，支持图片1:1和2.35:1的剪裁。
+A quick look at the top-level files and directories you'll see in a Gatsby project.
 
-3）后端：
+    .
+    ├── node_modules
+    ├── src
+    ├── .gitignore
+    ├── .prettierrc
+    ├── gatsby-browser.js
+    ├── gatsby-config.js
+    ├── gatsby-node.js
+    ├── gatsby-ssr.js
+    ├── LICENSE
+    ├── package-lock.json
+    ├── package.json
+    └── README.md
 
-- 使用Koa+MongoDB，Koa错误集中化处理；
-- 使用Mongoose进行数据检索、筛选和排序；
-- 使用JWT+Session+Cookie进行用户登陆权鉴；
-- 支持将上传图片重命名并存储在本地；
-- 对用户提交的评论信息使用sanitize-html对评论区留言进行过滤，防止XSS攻击。
+1.  **`/node_modules`**: This directory contains all of the modules of code that your project depends on (npm packages) are automatically installed.
 
-4）部署使用CentOS + NginX + PM2；
+2.  **`/src`**: This directory will contain all of the code related to what you will see on the front-end of your site (what you see in the browser) such as your site header or a page template. `src` is a convention for “source code”.
 
-## 动图展示
+3.  **`.gitignore`**: This file tells git which files it should not track / not maintain a version history for.
 
-### 响应式布局
-![Imgur](https://i.imgur.com/GR7dfed.gif)
+4.  **`.prettierrc`**: This is a configuration file for [Prettier](https://prettier.io/). Prettier is a tool to help keep the formatting of your code consistent.
 
-### 博客管理员后台发表文章时，上传封面图片并剪裁
-![Imgur2](https://i.imgur.com/NloO5ut.gif)
+5.  **`gatsby-browser.js`**: This file is where Gatsby expects to find any usage of the [Gatsby browser APIs](https://www.gatsbyjs.org/docs/browser-apis/) (if any). These allow customization/extension of default Gatsby settings affecting the browser.
 
+6.  **`gatsby-config.js`**: This is the main configuration file for a Gatsby site. This is where you can specify information about your site (metadata) like the site title and description, which Gatsby plugins you’d like to include, etc. (Check out the [config docs](https://www.gatsbyjs.org/docs/gatsby-config/) for more detail).
+
+7.  **`gatsby-node.js`**: This file is where Gatsby expects to find any usage of the [Gatsby Node APIs](https://www.gatsbyjs.org/docs/node-apis/) (if any). These allow customization/extension of default Gatsby settings affecting pieces of the site build process.
+
+8.  **`gatsby-ssr.js`**: This file is where Gatsby expects to find any usage of the [Gatsby server-side rendering APIs](https://www.gatsbyjs.org/docs/ssr-apis/) (if any). These allow customization of default Gatsby settings affecting server-side rendering.
+
+9.  **`LICENSE`**: Gatsby is licensed under the MIT license.
+
+10. **`package-lock.json`** (See `package.json` below, first). This is an automatically generated file based on the exact versions of your npm dependencies that were installed for your project. **(You won’t change this file directly).**
+
+11. **`package.json`**: A manifest file for Node.js projects, which includes things like metadata (the project’s name, author, etc). This manifest is how npm knows which packages to install for your project.
+
+12. **`README.md`**: A text file containing useful reference information about your project.
+
+## 🎓 Learning Gatsby
+
+Looking for more guidance? Full documentation for Gatsby lives [on the website](https://www.gatsbyjs.org/). Here are some places to start:
+
+- **For most developers, we recommend starting with our [in-depth tutorial for creating a site with Gatsby](https://www.gatsbyjs.org/tutorial/).** It starts with zero assumptions about your level of ability and walks through every step of the process.
+
+- **To dive straight into code samples, head [to our documentation](https://www.gatsbyjs.org/docs/).** In particular, check out the _Guides_, _API Reference_, and _Advanced Tutorials_ sections in the sidebar.
+
+## 💫 Deploy
+
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/gatsbyjs/gatsby-starter-blog)
+
+[![Deploy with ZEIT Now](https://zeit.co/button)](https://zeit.co/import/project?template=https://github.com/gatsbyjs/gatsby-starter-blog)
+
+<!-- AUTO-GENERATED-CONTENT:END -->
