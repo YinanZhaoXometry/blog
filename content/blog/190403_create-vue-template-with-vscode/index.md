@@ -1,6 +1,6 @@
 ---
 title: 如何使用VS Code快速创建单文件vue模板
-date: "2019-04-03T20:40:32.000+08:00"
+date: "2019-04-03T20:40"
 description: 如何使用VS Code快速创建单文件vue模板。
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: 用JSONP实现跨域AJAX请求
-date: "2018-11-16T12:40:32.000+08:00"
+date: "2018-11-16T12:40"
 description: 用JSONP实现跨域AJAX请求。
 ---
 

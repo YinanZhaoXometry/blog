@@ -1,0 +1,19 @@
+@import './variables.css';
+
+body {
+  background-color: var(--bg);
+  transition: color .2s ease-out, background .2s ease-out;
+  color: var(--text-normal);
+}
+
+body.light {
+  --bg: #fff;
+  --text-link: var(--color-primary);
+  --text-normal: #222;
+}
+
+body.dark {
+  --bg: #121212;
+  --text-link: var(--color-primary);
+  --text-normal: rgba(255, 255, 255, 0.88);
+}

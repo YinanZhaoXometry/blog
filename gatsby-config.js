@@ -1,14 +1,16 @@
 module.exports = {
   siteMetadata: {
-    title: `Gatsby Starter Blog`,
+    title: `酷核 Kuhe`,
     author: {
-      name: `Kyle Mathews`,
-      summary: `who lives and works in San Francisco building useful things.`,
+      name: `Yinan Zhao`,
+      summary: `who lives and works in Beijing trying to build useful things.`,
     },
-    description: `A starter blog demonstrating what Gatsby can do.`,
-    siteUrl: `https://gatsby-starter-blog-demo.netlify.com/`,
+    description: `Kuhe.io a technical blog.`,
+    siteUrl: `https://kuhe.io`,
     social: {
-      twitter: `kylemathews`,
+      github: `onezhaoyn`,
+      weibo: `onezhaoyn`,
+      twitter: `onezhaoyn`,
     },
   },
   plugins: [
@@ -74,6 +76,13 @@ module.exports = {
       resolve: `gatsby-plugin-typography`,
       options: {
         pathToConfigModule: `src/utils/typography`,
+      },
+    },
+    {
+      resolve: 'gatsby-plugin-buildtime-timezone',
+      options: {
+        tz: 'Pacific/Auckland',
+        format: 'ddd, DD MMM YYYY hh:mm A',
       },
     },
     // this (optional) plugin enables Progressive Web App + Offline functionality
