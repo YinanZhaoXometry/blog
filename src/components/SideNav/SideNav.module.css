@@ -1,0 +1,21 @@
+.side-nav {
+  position: fixed;
+  right: 0;
+  top: 0;
+}
+.header {
+  height: 100px;
+  margin-bottom: 15px;
+}
+.menu {
+  padding-left: 10px;
+  font-size: 16px;
+  list-style: none;
+}
+.menu-item {
+  padding: 20px 0;
+  margin-bottom: 0;
+}
+.menu-item:not(:last-child) {
+  border-bottom: 1px solid black;
+}

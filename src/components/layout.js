@@ -1,6 +1,7 @@
 import React from "react"
 import { Link } from "gatsby"
 import Toggle from './Toggle/Toggle'
+import SideNav from './SideNav/SideNav'
 
 import { rhythm, scale } from "../utils/typography"
 
@@ -72,6 +73,7 @@ class Layout extends React.Component {
           padding: `${rhythm(1.5)} ${rhythm(3 / 4)}`,
         }}
       >
+        <SideNav />
         <header
           style={{
             display: 'flex', 

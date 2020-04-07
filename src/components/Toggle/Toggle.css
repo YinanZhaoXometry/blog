@@ -36,7 +36,7 @@
   height: 24px;
   padding: 0;
   border-radius: 30px;
-  background-color: hsl(222, 14%, 7%);
+  background-color: #4d4d4d;
   transition: all 0.2s ease;
 }
 
@@ -58,6 +58,12 @@
   opacity: 1;
   transition: opacity 0.25s ease;
 }
+.react-toggle-track-check::before {
+  content: "\1F31C";
+  position: absolute;
+  top: 55.9%;
+  transform: translateY(-50%);
+}
 
 .react-toggle-track-x {
   position: absolute;
@@ -75,6 +81,11 @@
 
 .react-toggle--checked .react-toggle-track-x {
   opacity: 0;
+}
+.react-toggle-track-x::before {
+  content: "\1F31E";
+  position: absolute;
+  top: 55.9%;
 }
 
 .react-toggle-thumb {
@@ -96,9 +107,9 @@
 }
 
 .react-toggle--focus .react-toggle-thumb {
-  box-shadow: 0px 0px 2px 3px rgb(255, 167, 196);
+  box-shadow: 0px 0px 2px 3px #19ab27;
 }
 
 .react-toggle:active .react-toggle-thumb {
-  box-shadow: 0px 0px 5px 5px rgb(255, 167, 196);
+  box-shadow: 0px 0px 5px 5px #19ab27
 }
