@@ -2,27 +2,35 @@ import React from "react"
 import { Link } from "gatsby"
 import Toggle from './Toggle/Toggle'
 import SideNav from './SideNav/SideNav'
+import MenuButton from './MenuButton/MenuButton'
 
 import { rhythm, scale } from "../utils/typography"
+import styles from './layout.module.css'
 
 class Layout extends React.Component {
   constructor() {
     super();
-    this.state = { theme: null };
+    this.state = {
+      theme: null,
+      menuVisible: false,
+      layoutWrapper: null
+    };
   };
 
   componentDidMount() {
-    this.setState({ theme: window.__theme });
+    this.setState({
+      theme: window.__theme,
+      layoutWrapper: document.getElementById('gatsby-focus-wrapper')
+    });
     window.__onThemeChange = () => {
       this.setState({ theme: window.__theme });
     };
   }
 
-  render() {
-    const { location, title, children } = this.props
+  renderHeader() {
+    const { location, title } = this.props
+    let header;
     const rootPath = `${__PATH_PREFIX__}/`
-    let header
-
     if (location.pathname === rootPath) {
       header = (
         <h1
@@ -64,16 +72,31 @@ class Layout extends React.Component {
         </h3>
       )
     }
+    return header
+  }
+
+  handleMenuButtonClick() {
+    this.setState({ menuVisible: true })
+    this.state.layoutWrapper.style.paddingRight = '200px'
+  }
+  
+  handleSideNavClick() {
+    this.setState({ menuVisible: false })
+    this.state.layoutWrapper.style.paddingRight = '0'
+  }
+
+  render() {
+    const { children } = this.props
     return (
       <div
+        className={`${styles.layout}`}
         style={{
-          marginLeft: `auto`,
-          marginRight: `auto`,
           maxWidth: rhythm(24),
           padding: `${rhythm(1.5)} ${rhythm(3 / 4)}`,
         }}
       >
-        <SideNav />
+        <MenuButton onClick={() => this.handleMenuButtonClick()} />
+        <SideNav onClick={() => this.handleSideNavClick()} menuVisible={this.state.menuVisible} />
         <header
           style={{
             display: 'flex', 
@@ -82,7 +105,7 @@ class Layout extends React.Component {
             marginBottom: rhythm(1.5),
           }}
         >
-          {header}
+          {this.renderHeader()}
           {this.state.theme === null ? (
             <div style={{ height: '24px' }}></div>
           ) : (
@@ -98,7 +121,7 @@ class Layout extends React.Component {
         </header>
         <main>{children}</main>
         <footer>
-          Made with by <a href="/">Yinan Zhao</a> | KuHe.io ️© {new Date().getFullYear()}
+          Made by <a href="/">Yinan Zhao</a> | KuHe.io ️© {new Date().getFullYear()}
         </footer>
       </div>
     )

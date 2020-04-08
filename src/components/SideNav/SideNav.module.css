@@ -2,6 +2,17 @@
   position: fixed;
   right: 0;
   top: 0;
+  height: 100%;
+  width: 200px;
+  z-index: 1;
+  background: #f2f2f0;
+  border-left: 1px solid #e5e4e1;
+  box-shadow: inset -2px 0 7px rgba(0, 0, 0, .1);
+  transform: translate3d(200px, 0, 0);
+  transition: transform .25s ease-out;
+}
+.side-nav.visible {
+  transform: translateX(0);
 }
 .header {
   height: 100px;

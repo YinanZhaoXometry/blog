@@ -17,3 +17,8 @@ body.dark {
   --text-link: var(--color-primary);
   --text-normal: rgba(255, 255, 255, 0.88);
 }
+
+#gatsby-focus-wrapper {
+  padding-right: 0;
+  transition: padding .3s ease-out;
+}
