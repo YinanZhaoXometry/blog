@@ -76,13 +76,20 @@ class Layout extends React.Component {
   }
 
   handleMenuButtonClick() {
-    this.setState({ menuVisible: true })
-    this.state.layoutWrapper.style.paddingRight = '200px'
+    let elem = this.state.layoutWrapper
+    if (this.state.menuVisible) {
+      this.setState({ menuVisible: false })
+      elem.style.paddingRight = '0px'
+    } else {
+      this.setState({ menuVisible: true })
+      elem.style.paddingRight = '300px'
+    }
   }
   
   handleSideNavClick() {
     this.setState({ menuVisible: false })
-    this.state.layoutWrapper.style.paddingRight = '0'
+    let elem =  this.state.layoutWrapper
+    elem.style.paddingRight = '0'
   }
 
   render() {
@@ -95,7 +102,6 @@ class Layout extends React.Component {
           padding: `${rhythm(1.5)} ${rhythm(3 / 4)}`,
         }}
       >
-        <MenuButton onClick={() => this.handleMenuButtonClick()} />
         <SideNav onClick={() => this.handleSideNavClick()} menuVisible={this.state.menuVisible} />
         <header
           style={{
@@ -106,18 +112,21 @@ class Layout extends React.Component {
           }}
         >
           {this.renderHeader()}
-          {this.state.theme === null ? (
-            <div style={{ height: '24px' }}></div>
-          ) : (
-            <Toggle
-              checked={this.state.theme === 'dark'}
-              onChange={e =>
-                window.__setPreferredTheme(
-                  e.target.checked ? 'dark' : 'light'
-                )
-              }
-            />
-          )}
+          <div style={{ display: 'flex', alignItems: 'center'}}>
+            {this.state.theme === null ? (
+              <div style={{ height: '24px' }}></div>
+            ) : (
+                <Toggle
+                  checked={this.state.theme === 'dark'}
+                  onChange={e =>
+                    window.__setPreferredTheme(
+                      e.target.checked ? 'dark' : 'light'
+                    )
+                  }
+                />
+              )}
+            {<MenuButton onClick={() => this.handleMenuButtonClick()} />}
+          </div>
         </header>
         <main>{children}</main>
         <footer>

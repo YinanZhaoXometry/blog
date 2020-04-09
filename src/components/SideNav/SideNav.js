@@ -15,11 +15,11 @@ export default class SideNav extends React.Component {
     return (
       <div className={`${styles.sideNav} ${this.props.menuVisible && styles.visible}`}>
         <div className={styles.header}>
-          <span className={styles.headerTitle}>menu</span>
-          <span className={styles.headerButton} onClick={this.handleClick}>X</span>
+          <span className={styles.headerTitle}>Menu</span>
+          <span className={styles.headerButton} onClick={this.handleClick}></span>
         </div>
         <ul className={styles.menu}>
-          <li className={styles.menuItem}>Home</li>
+          <li className={`${styles.menuItem} ${styles.active}`}>Home</li>
           <li className={styles.menuItem}>About</li>
           <li className={styles.menuItem}>Projects</li>
         </ul>

@@ -4,6 +4,7 @@ body {
   background-color: var(--bg);
   transition: color .2s ease-out, background .2s ease-out;
   color: var(--text-normal);
+  -webkit-font-smoothing: antialiased;
 }
 
 body.light {

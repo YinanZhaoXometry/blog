@@ -8,14 +8,13 @@ export default class MenuButton extends React.Component {
   }
 
   handleClick() {
-    console.log(this.props)
     this.props.onClick()
   }
 
   render() {
     return (
       <div className={styles.menuButton} onClick={this.handleClick}>
-        <span className={styles.icon}></span>
+        {/* <span className={styles.icon}></span> */}
         <span className={styles.text}>Menu</span>
       </div>
     )

@@ -1,19 +1,24 @@
 .menu-button {
-  position: fixed;
+  /* position: fixed;
   top: 0;
-  right: 0;
-  margin: 20px;
-  border: 1px solid black;
+  right: 0; */
+  display: inline-block;
+  /* margin: 20px; */
+  /* border: 1px solid #c2c7cc; */
+  margin-left: 5px;
   border-radius: 30px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 3px 5px;
+  padding: 3px 8px;
+  transition: all ease .3s;
+  font-size: 16px;
+  color: #8a9199;
 }
 .menu-button:hover {
-  color: yellow;
-  border-color: yellow;
+  color: #2bb673;
+  border-color: #2bb673;
 }
 .icon {
   display: inline-block;
