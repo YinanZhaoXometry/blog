@@ -15,6 +15,8 @@ class Layout extends React.Component {
       menuVisible: false,
       layoutWrapper: null
     };
+    this.handleSideNavClick = this.handleSideNavClick.bind(this);
+    this.handleMenuButtonClick = this.handleMenuButtonClick.bind(this);
   };
 
   componentDidMount() {
@@ -25,6 +27,13 @@ class Layout extends React.Component {
     window.__onThemeChange = () => {
       this.setState({ theme: window.__theme });
     };
+    document.body.addEventListener('click', () => {
+      if (this.state.menuVisible) {
+        let elem = this.state.layoutWrapper
+        this.setState({ menuVisible: false })
+        elem.style.paddingRight = '0'
+      }
+    })
   }
 
   renderHeader() {
@@ -37,7 +46,8 @@ class Layout extends React.Component {
           style={{
             ...scale(1.5),
             marginTop: 0,
-            marginBottom: 0
+            marginBottom: 0,
+            color: this.state.theme === 'dark' && '#2bb673'
           }}
         >
           <Link
@@ -57,7 +67,8 @@ class Layout extends React.Component {
           style={{
             fontFamily: `Montserrat, sans-serif`,
             marginTop: 0,
-            marginBottom: 0
+            marginBottom: 0,
+            color: this.state.theme === 'dark' && '#2bb673'
           }}
         >
           <Link
@@ -75,7 +86,10 @@ class Layout extends React.Component {
     return header
   }
 
-  handleMenuButtonClick() {
+  handleMenuButtonClick(event,a) {
+    console.log('event', event,a)
+    event.stopPropagation();
+    console.log('1', this.state.menuVisible)
     let elem = this.state.layoutWrapper
     if (this.state.menuVisible) {
       this.setState({ menuVisible: false })
@@ -102,7 +116,7 @@ class Layout extends React.Component {
           padding: `${rhythm(1.5)} ${rhythm(3 / 4)}`,
         }}
       >
-        <SideNav onClick={() => this.handleSideNavClick()} menuVisible={this.state.menuVisible} />
+        <SideNav onClick={this.handleSideNavClick} menuVisible={this.state.menuVisible} />
         <header
           style={{
             display: 'flex', 
@@ -125,7 +139,7 @@ class Layout extends React.Component {
                   }
                 />
               )}
-            {<MenuButton onClick={() => this.handleMenuButtonClick()} />}
+            {<MenuButton onClick={this.handleMenuButtonClick(e)} />}
           </div>
         </header>
         <main>{children}</main>
