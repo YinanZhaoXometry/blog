@@ -24,6 +24,13 @@ module.exports = {
     {
       resolve: `gatsby-source-filesystem`,
       options: {
+        path: `${__dirname}/content/profile`,
+        name: `profile`,
+      },
+    },
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
         path: `${__dirname}/content/assets`,
         name: `assets`,
       },
@@ -76,13 +83,6 @@ module.exports = {
       resolve: `gatsby-plugin-typography`,
       options: {
         pathToConfigModule: `src/utils/typography`,
-      },
-    },
-    {
-      resolve: 'gatsby-plugin-buildtime-timezone',
-      options: {
-        tz: 'Pacific/Auckland',
-        format: 'ddd, DD MMM YYYY hh:mm A',
       },
     },
     // this (optional) plugin enables Progressive Web App + Offline functionality

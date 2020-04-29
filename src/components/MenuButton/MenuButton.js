@@ -7,8 +7,9 @@ export default class MenuButton extends React.Component {
     this.handleClick = this.handleClick.bind(this);
   }
 
-  handleClick() {
-    this.props.onClick()
+  handleClick(e) {
+    e.stopPropagation()
+    this.props.onClick(e)
   }
 
   render() {

@@ -12,6 +12,7 @@
   transition: transform .25s ease-out;
   overflow-x: hidden;
   overflow-y: scroll;
+  user-select: none;
 }
 .side-nav.visible {
   transform: translateX(0);

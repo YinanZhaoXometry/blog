@@ -27,7 +27,8 @@ class Layout extends React.Component {
     window.__onThemeChange = () => {
       this.setState({ theme: window.__theme });
     };
-    document.body.addEventListener('click', () => {
+    window.addEventListener('click', () => {
+      console.log('click')
       if (this.state.menuVisible) {
         let elem = this.state.layoutWrapper
         this.setState({ menuVisible: false })
@@ -86,10 +87,8 @@ class Layout extends React.Component {
     return header
   }
 
-  handleMenuButtonClick(event,a) {
-    console.log('event', event,a)
+  handleMenuButtonClick(event) {
     event.stopPropagation();
-    console.log('1', this.state.menuVisible)
     let elem = this.state.layoutWrapper
     if (this.state.menuVisible) {
       this.setState({ menuVisible: false })
@@ -139,7 +138,7 @@ class Layout extends React.Component {
                   }
                 />
               )}
-            {<MenuButton onClick={this.handleMenuButtonClick(e)} />}
+            {<MenuButton onClick={this.handleMenuButtonClick} />}
           </div>
         </header>
         <main>{children}</main>
