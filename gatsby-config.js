@@ -3,10 +3,10 @@ module.exports = {
     title: `酷核 Kuhe`,
     author: {
       name: `Yinan Zhao`,
-      summary: `who lives and works in Beijing trying to build useful things.`,
+      summary: `who enjoys creating things, and persuing his dreams.`,
     },
-    description: `Kuhe.io a technical blog.`,
-    siteUrl: `https://kuhe.io`,
+    description: `Kuhe.run blog focus mainly on frontend technologies.`,
+    siteUrl: `https://kuhe.run`,
     social: {
       github: `onezhaoyn`,
       weibo: `onezhaoyn`,

@@ -1,11 +1,11 @@
 import React from "react"
 import { Link } from "gatsby"
-import Toggle from './Toggle/Toggle'
-import SideNav from './SideNav/SideNav'
-import MenuButton from './MenuButton/MenuButton'
+import Toggle from './Toggle'
+import SideNav from './SideNav'
+import MenuButton from './MenuButton'
 
 import { rhythm, scale } from "../utils/typography"
-import styles from './layout.module.css'
+import styles from './Layout.module.css'
 
 class Layout extends React.Component {
   constructor() {
@@ -115,7 +115,7 @@ class Layout extends React.Component {
           padding: `${rhythm(1.5)} ${rhythm(3 / 4)}`,
         }}
       >
-        <SideNav onClick={this.handleSideNavClick} menuVisible={this.state.menuVisible} />
+        {/* <SideNav onClick={this.handleSideNavClick} menuVisible={this.state.menuVisible} /> */}
         <header
           style={{
             display: 'flex', 
@@ -138,12 +138,12 @@ class Layout extends React.Component {
                   }
                 />
               )}
-            {<MenuButton onClick={this.handleMenuButtonClick} />}
+            {/* {<MenuButton onClick={this.handleMenuButtonClick} />} */}
           </div>
         </header>
         <main>{children}</main>
         <footer>
-          Made by <a href="/">Yinan Zhao</a> | KuHe.io ️© {new Date().getFullYear()}
+          Made by <a href="/">Yinan Zhao</a> | KuHe.run ️© {new Date().getFullYear()}
         </footer>
       </div>
     )
