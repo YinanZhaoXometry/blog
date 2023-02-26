@@ -1,13 +1,20 @@
 ---
 id: x26u7mxd81wcam73qz7b0gk
+<<<<<<< HEAD
 title: 用 JSONP 实现跨域 AJAX 请求
+=======
+title: 20181116-用JSONP实现跨域AJAX请求
+>>>>>>> 12c251b (init)
 desc: ''
 updated: 1677378013768
 created: 1677377967041
 ---
 
+<<<<<<< HEAD
 > 写于：2018-11-16
 
+=======
+>>>>>>> 12c251b (init)
 互联网的同源政策避免了很多安全问题，但是在限制作恶的同时也造成一些不便，比如你想要向自己的服务器发送 AJAX 请求时，却被告知跨域而禁止执行。比如某家大型公司（比如维基百科）有多个子域名：
 
 > - wikipedia.com
@@ -38,9 +45,15 @@ JSONP 就是利用了 script 元素这一特点：服务器将一段 JS 代码�
 
 ```js
 function myCallback(data) {
+<<<<<<< HEAD
 	var h1 = document.createElement('h1'); //创建h1标签用于显示数据
 	h1.innerHTML = data.response; //将数据添加至h1标签内部
 	document.body.appendChild(h1); //将h1标签添加到body中
+=======
+  var h1 = document.createElement('h1'); //创建h1标签用于显示数据
+  h1.innerHTML = data.response; //将数据添加至h1标签内部
+  document.body.appendChild(h1); //将h1标签添加到body中
+>>>>>>> 12c251b (init)
 }
 ```
 
@@ -85,17 +98,30 @@ myCallbackFuntion({"response": "hello world from JSONP!"})
 ```js
 // 将跨域请求封装成函数
 function crossOriginRequest() {
+<<<<<<< HEAD
 	var script = document.createElement('script'); //创建script元素并添加scr属性
 	script.src = 'http://localhost/user.php:3000?callback=myCallback';
 	document.body.appendChild(script); //在body尾部加入元素
 	var lastScript = document.body.querySelector('script:last-child');
 	//获取最后添加的script元素
 	document.body.removeChild(lastScript); //移除body尾部的script元素
+=======
+  var script = document.createElement('script'); //创建script元素并添加scr属性
+  script.src = 'http://localhost/user.php:3000?callback=myCallback';
+  document.body.appendChild(script); //在body尾部加入元素
+  var lastScript = document.body.querySelector('script:last-child');
+  //获取最后添加的script元素
+  document.body.removeChild(lastScript); //移除body尾部的script元素
+>>>>>>> 12c251b (init)
 }
 
 // 在页面加载时调用跨域请求函数
 window.onload = function () {
+<<<<<<< HEAD
 	crossOriginRequest();
+=======
+  crossOriginRequest();
+>>>>>>> 12c251b (init)
 };
 ```
 
